@@ -1,13 +1,17 @@
 <body class="row">
     <div class="container d-flex justify-content-center">
-        <div class="box">
-            <h3 class="text-center mt-3 mb-5">Inicio de sesión</h3>
+        <div class="box" data-aos="flip-left">
+            <h3 class="text-center mb-5">Inicio de sesión</h3>
             <form [formGroup]="loginForm" (ngSubmit)="loginUser()">
+
+                <!--Correo electrónico-->
                 <div class="mb-3">
                     <label class="mb-1"><b>Usuario</b></label>
                     <input type="text" class="form-control form-control-lg bg-light fs-6"
                         formControlName="email" placeholder="Usuario*">
                 </div>
+
+                <!--Contraseña-->
                 <div class="mb-5">
                     <label class="mb-1"><b>Contraseña</b></label>
                     <div class="input-group">
@@ -19,6 +23,7 @@
                     </div>
                 </div>
 
+                <!--Botón para iniciar sesión-->
                 <div class="content-buttons">
                     <button type="submit" class="mb-3 btn btn-lg btn-primary w-100 fs-6">Iniciar sesión</button>
                     <button type="button" (click)="goToForgotPassword()"
@@ -27,10 +32,12 @@
                     </button>
                 </div>
 
+                <!--Redirigir al fomulario de registro-->
                 <div class="no-account">
                     <p class="mt-4 text-center"> <a (click)="goToRegisterForm()">¿No tienes una cuenta? Regístrate ahora</a></p>
                 </div>
 
+                <!--Términos y condiciones-->
                 <div class="row text-center mt-5 terms-and-conditions">
                     <span>Al registrarte en Poliword, aceptas nuestros <b class="terms">Términos y Condiciones</b> y
                         también la <b class="politics">Política de Privacidad</b></span>

@@ -1,10 +1,10 @@
-import { AppComponent } from './../../app.component';
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import * as iconos from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { Router } from '@angular/router';
+import * as iconos from '@fortawesome/free-solid-svg-icons';
+import * as AOS from 'aos';
 
 @Component({
   selector: 'app-login',
@@ -27,19 +27,30 @@ export class LoginComponent {
   //Constructor
   constructor(
     private router: Router
-  ){}
+  ) { }
+
+  //NgOnInit()
+  ngOnInit() {
+    AOS.init();
+  }
 
   // Método para obtener el tipo de entrada de contraseña según la visibilidad
   getPasswordInputType() {
     return this.showPassword ? 'text' : 'password';
   }
 
+  //Método que verifica el icono de password
   togglePasswordVisibility() {
     this.showPassword = !this.showPassword;
   }
 
+  // Método que inicia la sesión del usuario
+  loginUser() {
+  }
+
   // Método que redirige al módulo de recuperar la contraseña
   goToForgotPassword() {
+    this.router.navigateByUrl("auth/forgot-password");
   }
 
   // Método que redirige al formulario de registro de usuario
@@ -47,9 +58,6 @@ export class LoginComponent {
     this.router.navigateByUrl("auth/register");
   }
 
-  // Método que inicia la sesión del usuario
-  loginUser(){
-  }
 
   /*Icons to use*/
   iconForgotPassword = iconos.faLock;
