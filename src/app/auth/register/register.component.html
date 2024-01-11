@@ -1,0 +1,71 @@
+<body class="row">
+    <div class="container d-flex justify-content-center">
+        <div class="box">
+            <h3 class="text-center mt-3 mb-4">Registro de usuario</h3>
+            <form [formGroup]="registerForm" (ngSubmit)="registerNewUser()">
+                <div class="mb-3">
+                    <label class="mb-1"><b>Usuario</b></label>
+                    <input type="text" class="form-control form-control-lg bg-light fs-6" formControlName="email"
+                        placeholder="Usuario*" [ngClass]="{
+                            'is-invalid': registerForm.get('email')?.hasError('required') && registerForm.get('email')?.touched || registerForm.get('email')?.hasError('pattern')==true,
+                            'is-valid': registerForm.get('email')?.hasError('required')==false && registerForm.get('email')?.hasError('pattern') == false
+                            }">
+                    @if (registerForm.get('email')?.hasError('required') && registerForm.get('email')?.touched) {
+                        <div class="validators">
+                            <small>¡Este campo es requerido!</small>
+                        </div>
+                    }
+                    @if (registerForm.get('email')?.hasError('pattern')) {
+                        <div class="validators">
+                            <small>¡No posee formato de correo electrónico!</small>
+                        </div>
+                    }
+                </div>
+                <div class="mb-3">
+                    <label class="mb-1"><b>Contraseña</b></label>
+                    <div class="input-group">
+                        <input type="{{getPasswordInputType()}}" class="form-control form-control-lg bg-light fs-6"
+                            formControlName="password" placeholder="Contraseña*">
+                        <span class="input-group-text" (click)="togglePasswordVisibility()">
+                            <fa-icon [icon]="showPassword  ? iconHidePassword: iconViewPassword"></fa-icon>
+                        </span>
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label class="mb-1"><b>Fecha de nacimiento</b></label>
+                    <input type="date" class="form-control form-control-lg bg-light fs-6" formControlName="birthdate">
+                </div>
+                <div class="mb-5">
+                    <label class="mb-1"><b>Tipo de usuario</b></label>
+                    <select class="form-select form-select-lg fs-6" [(ngModel)]="optionTypeUserSelected"
+                        formControlName="typeUser" [ngClass]="{
+                            'is-invalid': registerForm.get('typeUser')?.hasError('required') && registerForm.get('typeUser')?.touched,
+                            'is-valid': optionTypeUserSelected!= ''
+                            }">
+                        <option value="" selected disabled>Seleccione una opción</option>
+                        <option value="teacher">Profesor(a)</option>
+                        <option value="estudiante">Estudiante</option>
+                    </select>
+                    @if (registerForm.get('typeUser')?.hasError('required') && registerForm.get('typeUser')?.touched) {
+                    <div class="validators">
+                        <small>¡Este campo es requerido!</small>
+                    </div>
+                    }
+                </div>
+
+                <div class="content-buttons">
+                    <button type="submit" class="mb-3 btn btn-lg btn-primary w-100 fs-6">Registrarme</button>
+                </div>
+
+                <div class="no-account">
+                    <p class="mt-3 text-center"> <a (click)="goToLoginForm()">¿Ya tienes una cuenta? Inicia sesión</a></p>
+                </div>
+
+                <div class="row text-center mt-3 mb-3 terms-and-conditions">
+                    <span>Al registrarte en Poliword, aceptas nuestros <b class="terms">Términos y Condiciones</b> y
+                        también la <b class="politics">Política de Privacidad</b></span>
+                </div>
+            </form>
+        </div>
+    </div>
+</body>
