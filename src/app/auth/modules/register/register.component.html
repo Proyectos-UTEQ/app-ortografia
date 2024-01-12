@@ -6,7 +6,7 @@
                 <!--Email-->
                 <div class="mb-3">
                     <label class="mb-1"><b>Email</b></label>
-                    <input type="text" class="form-control form-control-lg bg-light fs-6" formControlName="email"
+                    <input type="email" class="form-control form-control-lg bg-light fs-6" formControlName="email"
                         placeholder="Email*" [ngClass]="{
                             'is-invalid': registerForm.get('email')?.hasError('required') && registerForm.get('email')?.touched || registerForm.get('email')?.hasError('pattern')==true,
                             'is-valid': registerForm.get('email')?.hasError('required')==false && registerForm.get('email')?.hasError('pattern') == false

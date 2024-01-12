@@ -67,3 +67,10 @@ h3{
 .input-group-text>fa-icon:hover{
     cursor: pointer;
 }
+
+@media only screen and (max-width: 768px) {
+    .container .box{
+        padding: 25px 30px !important;
+        margin: 20px !important;
+    }
+}
