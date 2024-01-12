@@ -3,6 +3,7 @@ import { LoginComponent } from './auth/modules/login/login.component';
 import { RegisterComponent } from './auth/modules/register/register.component';
 import { ForgotPasswordComponent } from './auth/modules/forgot-password/forgot-password.component';
 import { TermsConditionsComponent } from './auth/modules/terms-conditions/terms-conditions.component';
+import { DashboardComponent } from './shared-components/dashboard/dashboard.component';
 
 export const routes: Routes = [
     { path: '', redirectTo: 'auth', pathMatch: 'full' },
@@ -16,11 +17,11 @@ export const routes: Routes = [
             { path: '', redirectTo: 'login', pathMatch: 'full' },
         ]
     },
-    // { 
-    //     path: 'student',
-    //     children: [
-    //         { path: 'probando', component: ProbandoComponent },
-    //         { path: '', redirectTo: 'probando', pathMatch: 'full' },
-    //     ]
-    // },
+    { 
+        path: 'student',
+        children: [
+            { path: 'home', component: DashboardComponent },
+            { path: '', redirectTo: 'home', pathMatch: 'full' },
+        ]
+    },
 ];
