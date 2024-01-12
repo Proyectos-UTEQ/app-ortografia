@@ -9,6 +9,7 @@ import { environment } from '../../../../environments/environment.prod';
 import { HttpClientModule } from '@angular/common/http';
 import { ToastrModule } from 'ngx-toastr';
 import { ToastAlertsService } from '../../services/toast-alerts.service';
+import { TermsConditionsComponent } from '../terms-conditions/terms-conditions.component';
 import * as iconos from '@fortawesome/free-solid-svg-icons';
 import * as AOS from 'aos';
 
@@ -114,6 +115,12 @@ export class LoginComponent {
   // Método que redirige al formulario de registro de usuario
   goToRegisterForm() {
     this.router.navigateByUrl("auth/register");
+  }
+
+  //Método que redirige al apartado de términos y condiciones
+  goToTermsConditions(type: number) {
+    TermsConditionsComponent.type = type;
+    this.router.navigateByUrl("auth/terms-conditions");
   }
 
   // Icons to use

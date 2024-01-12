@@ -7,6 +7,7 @@ import { Router } from '@angular/router';
 import { ToastAlertsService } from '../../services/toast-alerts.service';
 import { HttpClientModule } from '@angular/common/http';
 import { ToastrModule } from 'ngx-toastr';
+import * as AOS from 'aos';
 
 @Component({
   selector: 'app-forgot-password',
@@ -37,6 +38,7 @@ export class ForgotPasswordComponent {
 
   //ngOnInit()
   ngOnInit(){
+    AOS.init();
     this.createForgotPasswordForm();
   }
 
