@@ -39,12 +39,12 @@ export class DashboardComponent {
     this.router.navigate(['options-home'], { relativeTo: this.routerActivated })
 
     if(sessionStorage.getItem("typeUser")==environment.STUDENT){
-      this.optionsMenu.push({icon: this.iconPractice, optionName: 'Practicar', link: '/practice', status: true});
-      this.optionsMenu.push({icon: this.iconPositions, optionName: 'Posiciones', link: '/positions', status: true});
-      this.optionsMenu.push({icon: this.iconMyClass, optionName: 'Mis clases', link: '/my-class', status: true});
-      this.optionsMenu.push({icon: this.iconChatIA, optionName: 'Chat IA', link: '/chat-ia', status: true});
-      this.optionsMenu.push({icon: this.iconHelp, optionName: 'Ayuda', link: '/help', status: true});
-      this.optionsMenu.push({icon: this.iconInformation, optionName: 'Acerca de', link: '/information', status: true});
+      this.optionsMenu.push({icon: this.iconPractice, optionName: 'Practicar', link: 'practice/options', status: true});
+      this.optionsMenu.push({icon: this.iconPositions, optionName: 'Posiciones', link: 'positions/positions-table', status: true});
+      this.optionsMenu.push({icon: this.iconMyClass, optionName: 'Mis clases', link: 'classes/my-class', status: true});
+      this.optionsMenu.push({icon: this.iconChatIA, optionName: 'Chat IA', link: 'chat-ia', status: true});
+      this.optionsMenu.push({icon: this.iconHelp, optionName: 'Ayuda', link: 'help', status: true});
+      this.optionsMenu.push({icon: this.iconInformation, optionName: 'Acerca de', link: 'information', status: true});
     }
     else if(sessionStorage.getItem("typeUser")==environment.TEACHER){
 
