@@ -7,16 +7,23 @@ import { ApiResponseLogin } from '../../interfaces/login';
 import { LoginService } from '../../services/login.service';
 import { environment } from '../../../../environments/environment.prod';
 import { HttpClientModule } from '@angular/common/http';
-import { ToastrModule, ToastrService } from 'ngx-toastr';
+import { ToastrModule } from 'ngx-toastr';
+import { ToastAlertsService } from '../../services/toast-alerts.service';
 import * as iconos from '@fortawesome/free-solid-svg-icons';
 import * as AOS from 'aos';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, FontAwesomeModule, HttpClientModule, ToastrModule],
+  imports: [
+    CommonModule, 
+    FontAwesomeModule, 
+    ReactiveFormsModule, 
+    HttpClientModule, 
+    ToastrModule
+  ],
   providers: [
-    LoginService
+    LoginService,
   ],
   templateUrl: './login.component.html',
   styleUrl: './login.component.css',
@@ -26,18 +33,18 @@ export class LoginComponent {
   //Variables
   showPassword: boolean = false;
   spinnerStatus: boolean = false;
-
+  
   //Fomrulario de login
   loginForm = new FormGroup({
     email: new FormControl('', Validators.required),
     password: new FormControl('', Validators.required)
   })
-
+  
   //Constructor
   constructor(
     private router: Router,
     private api: LoginService,
-    private toastr: ToastrService
+    private toastr: ToastAlertsService
   ) { }
 
   //NgOnInit()
@@ -71,35 +78,31 @@ export class LoginComponent {
         email: this.loginForm.value.email,
         password: this.loginForm.value.password
       };
-  
       this.api.loginUser(body)
         .subscribe({
           next: (res: ApiResponseLogin) => {
             sessionStorage.setItem("token", res.token);
             sessionStorage.setItem("typeUser", res.user.type_user);
-  
             if (res.user.type_user == environment.STUDENT) {
-              console.log(res);
               this.spinnerStatus = true;
               this.router.navigateByUrl('/student/home/dashboard');
-              this.showToastSuccess("Inicio de sesión exitoso", "Bienvenido")
+              this.toastr.showToastSuccess("Inicio de sesión exitoso", "Bienvenido")
             } else if (res.user.type_user === environment.TEACHER) {
               this.router.navigateByUrl('/teacher/home/dashboard');
-              this.showToastSuccess("Bienvenido de nuevo!", "Profesor")
+              this.toastr.showToastSuccess("Bienvenido de nuevo!", "Profesor")
             } else if (res.user.type_user === environment.ADMIN) {
               this.router.navigateByUrl('/student/home/dashboard');
-              this.showToastSuccess("Bienvenido de nuevo!", "Administrador")
+              this.toastr.showToastSuccess("Bienvenido de nuevo!", "Administrador")
             }
           },
           error: (error) => {
-            console.error(error);
             this.spinnerStatus = true;
-            this.showToastError("Error", "Credenciales incorrectas");
+            this.toastr.showToastError("Error", "Credenciales incorrectas");
           }
         });
     } else {
       this.spinnerStatus = true;
-      this.showToastError("Error", "Primero debe ingresar sus credenciales de acceso");
+      this.toastr.showToastError("Error", "Primero debe ingresar sus credenciales de acceso");
     }
   }
 
@@ -113,24 +116,7 @@ export class LoginComponent {
     this.router.navigateByUrl("auth/register");
   }
 
-  // Método que muestra un toast con mensaje de ÉXITO
-  showToastSuccess(message: string, title: string) {
-    this.toastr.success(message, title, {
-      progressBar: true,
-      timeOut: 3000,
-    });
-  }
-
-  // Método que muestra un toast con mensaje de ERROR
-  showToastError(title: string, message: string) {
-    this.toastr.error(message, title, {
-      progressBar: true,
-      timeOut: 3000,
-    });
-  }
-
-
-  /*Icons to use*/
+  // Icons to use
   iconForgotPassword = iconos.faLock;
   iconViewPassword = iconos.faEye;
   iconHidePassword = iconos.faEyeSlash;

@@ -26,10 +26,8 @@ export class LoginService {
     private http: HttpClient
   ) { }
 
-  /*Método que consume el servicio para login*/
+  /*Método que consume el servicio para iniciar sesión*/
   loginUser(body:any): Observable<ApiResponseLogin> {
-    /* this.getHeaders(headers); */
-    console.log(this.urlApi);
     return this.http.post<ApiResponseLogin>(this.urlApi + "/api/auth/sign-in", body);
   }
 
@@ -44,8 +42,6 @@ export class LoginService {
     }
     this.headers = this.headers.delete('Authorization');
     this.headers = this.headers.append('Authorization', `Bearer ${sessionStorage.getItem('token')}`);
-    console.log("probando")
-    console.log(sessionStorage.getItem('token'))
     this.options = { headers: this.headers };
     return this.options;
   }

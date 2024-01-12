@@ -3,6 +3,25 @@
         <div class="box" data-aos="flip-left">
             <h3 class="text-center mt-3 mb-4">Registro de usuario</h3>
             <form [formGroup]="registerForm" (ngSubmit)="registerNewUser()">
+                <!--Nombre-->
+                <div class="mb-3">
+                    <label class="mb-1"><b>Nombre</b></label>
+                    <input type="text" class="form-control form-control-lg bg-light fs-6" formControlName="first_name"
+                        placeholder="Nombre*" [ngClass]="{
+                            'is-invalid': registerForm.get('first_name')?.hasError('required') && registerForm.get('first_name')?.touched || registerForm.get('first_name')?.hasError('pattern')==true,
+                            'is-valid': registerForm.get('first_name')?.hasError('required')==false && registerForm.get('first_name')?.hasError('pattern') == false && registerForm.get('first_name')?.value?.length >= 4
+                            }">
+                    @if (registerForm.get('first_name')?.hasError('required') && registerForm.get('first_name')?.touched) {
+                    <div class="validators">
+                        <small>¡Este campo es requerido!</small>
+                    </div>
+                    }
+                    @if (registerForm.get('first_name')?.hasError('pattern')) {
+                    <div class="validators">
+                        <small>¡Solo se permiten letras!</small>
+                    </div>
+                    }
+                </div>
                 <!--Email-->
                 <div class="mb-3">
                     <label class="mb-1"><b>Email</b></label>
@@ -53,39 +72,19 @@
                         </div>
                     }
         </div>
-        <!--Fecha de nacimiento-->
-        <div class="mb-3">
-            <label class="mb-1"><b>Fecha de nacimiento</b></label>
-            <input type="date" class="form-control form-control-lg bg-light fs-6" formControlName="birthDate"
-            [ngClass]="{
-                'is-invalid': registerForm.get('birthDate')?.hasError('required') && registerForm.get('birthDate')?.touched || isFechaInvalida(),
-                'is-valid': registerForm.get('fecha_nacimiento')?.value?.length >= 10 
-            }" [max]="getTodayDateString()" [min]="getMinDate()">
-            @if(isFechaInvalida()){
-                <div class="validators">
-                    <small>¡Debes tener al menos 12 años!</small>
-                </div>
-            }
-            @if(registerForm.get('birthDate')?.hasError('required') &&registerForm.get('birthDate')?.touched){
-                <div class="validators">
-                    <small>¡Este campo es requerido!</small>
-                </div>
-            }
-        </div>
-        
         <!--Tipo de usuario-->
         <div class="mb-5">
             <label class="mb-1"><b>Tipo de usuario</b></label>
             <select class="form-select form-select-lg fs-6" [(ngModel)]="optionTypeUserSelected"
-                formControlName="typeUser" [ngClass]="{
-                            'is-invalid': registerForm.get('typeUser')?.hasError('required') && registerForm.get('typeUser')?.touched,
+                formControlName="type_user" [ngClass]="{
+                            'is-invalid': registerForm.get('type_user')?.hasError('required') && registerForm.get('type_user')?.touched,
                             'is-valid': optionTypeUserSelected!= ''
                             }">
                 <option value="" selected disabled>Seleccione una opción</option>
                 <option value="teacher">Profesor(a)</option>
-                <option value="estudiante">Estudiante</option>
+                <option value="student">Estudiante</option>
             </select>
-            @if (registerForm.get('typeUser')?.hasError('required') && registerForm.get('typeUser')?.touched) {
+            @if (registerForm.get('type_user')?.hasError('required') && registerForm.get('type_user')?.touched) {
             <div class="validators">
                 <small>¡Este campo es requerido!</small>
             </div>
@@ -94,7 +93,8 @@
 
         <!--Botón de registro-->
         <div class="content-buttons">
-            <button type="submit" class="mb-3 btn btn-lg btn-primary w-100 fs-6">Registrarme</button>
+            <button type="submit" class="mb-3 btn btn-lg btn-primary w-100 fs-6"
+            [disabled]="!registerForm.valid">Registrarme</button>
         </div>
 
         <!--Iniciar sesión con cuenta existente-->

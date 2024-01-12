@@ -1,15 +1,29 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
-import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import * as iconos from '@fortawesome/free-solid-svg-icons';
 import * as AOS from 'aos';
+import { RegisterUserService } from '../../services/register-user.service';
+import { ApiResponseRegisterUserI } from '../../interfaces/register-user';
+import { ToastAlertsService } from '../../services/toast-alerts.service';
+import { HttpClientModule } from '@angular/common/http';
+import { ToastrModule } from 'ngx-toastr';
 
 @Component({
   selector: 'app-register',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, FormsModule, FontAwesomeModule],
+  imports: [
+    CommonModule, 
+    FontAwesomeModule, 
+    ReactiveFormsModule, 
+    HttpClientModule,
+    ToastrModule
+  ],
+  providers: [
+    RegisterUserService
+  ],
   templateUrl: './register.component.html',
   styleUrls: ['./register.component.css', '../login/login.component.css']
 })
@@ -22,7 +36,9 @@ export class RegisterComponent {
   //Constructor
   constructor(
     private formBuilder: FormBuilder,
-    private router: Router
+    private router: Router,
+    private registerUserService: RegisterUserService,
+    private toastr: ToastAlertsService
   ) { }
 
   //ngOnInit
@@ -34,6 +50,12 @@ export class RegisterComponent {
   //Método que crea el formulario de registro de usuario
   createRegisterForm() {
     this.registerForm = this.formBuilder.group({
+      first_name: ['',
+        [
+          Validators.required,
+          Validators.pattern('^[a-zA-ZáéíóúÁÉÍÓÚñÑ\\s]*$')
+        ],
+      ],
       email: ['',
         [
           Validators.required,
@@ -43,17 +65,17 @@ export class RegisterComponent {
       password: ['',
         [
           Validators.required,
-          Validators.pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*['"!@#$%^&*()_/+{}.:<>?-]).{8,20}$/), 
+          Validators.pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*['"!@#$%^&*()_/+{}.:<>?-]).{8,20}$/),
           Validators.minLength(8),
-          Validators.maxLength(20) 
+          Validators.maxLength(20)
         ],
       ],
-      birthDate: ['',
-        [
-          Validators.required
-        ],
-      ],
-      typeUser: ['',
+      // birthDate: ['',
+      //   [
+      //     Validators.required
+      //   ],
+      // ],
+      type_user: ['',
         [
           Validators.required
         ],
@@ -82,7 +104,7 @@ export class RegisterComponent {
     return number < 10 ? `0${number}` : `${number}`;
   }
 
-  //Para deshabilitar la fecha
+  //Para deshabilitar la fecha después de la fecha actual
   getTodayDateString(): string {
     const today = new Date();
     const year = today.getFullYear() - 5;
@@ -91,6 +113,7 @@ export class RegisterComponent {
     return `${year}-${this.padZero(month)}-${this.padZero(day)}`;
   }
 
+  //Para obtener la fecha mínima
   getMinDate(): string {
     const today = new Date();
     const year = today.getFullYear() - 100;
@@ -98,7 +121,6 @@ export class RegisterComponent {
     const day = today.getDate();
     return `${year}-${this.padZero(month)}-${this.padZero(day)}`;
   }
-
 
   // Método para obtener el tipo de entrada de contraseña según la visibilidad
   getPasswordInputType() {
@@ -109,7 +131,6 @@ export class RegisterComponent {
     this.showPassword = !this.showPassword;
   }
 
-
   // Método que redirige al login
   goToLoginForm() {
     this.router.navigateByUrl("auth/login");
@@ -117,6 +138,18 @@ export class RegisterComponent {
 
   // Método que registra un nuevo usuario
   registerNewUser() {
+    this.registerUserService.registerNewUser(this.registerForm.value)
+    .subscribe({
+      next: (res: ApiResponseRegisterUserI) => {
+        if (res.status == "success") {
+          this.toastr.showToastSuccess("Usuario registrado con éxito", "Éxito")
+          this.router.navigateByUrl("auth/login");
+        }
+      },
+      error: (err: any) => {
+        this.toastr.showToastError("Error", "No se ha podido registrar el usuario");
+      }
+    })
   }
 
   /*Icons to use*/
