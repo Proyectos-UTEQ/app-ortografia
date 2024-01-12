@@ -86,6 +86,7 @@ export class LoginComponent {
             sessionStorage.setItem("typeUser", res.user.type_user);
             if (res.user.type_user == environment.STUDENT) {
               this.spinnerStatus = true;
+              sessionStorage.setItem("infoUser", JSON.stringify(res.user));
               this.router.navigateByUrl('/student/home/learn/modules');
               this.toastr.showToastSuccess("Inicio de sesión exitoso", "Bienvenido")
             } else if (res.user.type_user === environment.TEACHER) {

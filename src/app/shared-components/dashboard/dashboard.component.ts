@@ -5,6 +5,7 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { DashboardI } from '../interfaces/dashboard';
 import { environment } from '../../../environments/environment';
 import * as iconos from '@fortawesome/free-solid-svg-icons';
+import { UserLoginI } from '../../auth/interfaces/login';
 
 @Component({
   selector: 'app-dashboard',
@@ -20,8 +21,8 @@ import * as iconos from '@fortawesome/free-solid-svg-icons';
 export class DashboardComponent {
 
   //Variables
-  isDropdownActive: boolean[] = [false, false, false, false];
   optionsMenu: DashboardI [] = [];
+  userInformation: UserLoginI = {} as UserLoginI;
 
   //constructor
   constructor(
@@ -31,7 +32,7 @@ export class DashboardComponent {
 
   //ngOnInit()
   ngOnInit(){
-    this.showHideChildsOption();
+    this.userInformation = JSON.parse(sessionStorage.getItem("infoUser") || '{}');
     this.showHideMenuProfile();
     this.showHideSidebar();
     this.detectedScreen();
@@ -50,37 +51,6 @@ export class DashboardComponent {
 
     }
     else (sessionStorage.getItem("typeUser")==environment.ADMIN)
-  }
-
-
-  // Método que muestra y oculta los hijos de una opción del menú
-  showHideChildsOption() {
-    const allDropdown = document.querySelectorAll<HTMLDivElement>('#sidebar .side-dropdown');
-    allDropdown.forEach((item: HTMLDivElement) => {
-      const a = item.parentElement?.querySelector<HTMLAnchorElement>('a:first-child');
-      a?.addEventListener('click', function (e: Event) {
-        e.preventDefault();
-        if (!item.classList.contains('active')) {
-          allDropdown.forEach((i: HTMLDivElement) => {
-            const aLink = i.parentElement?.querySelector<HTMLAnchorElement>('a:first-child');
-            if (aLink)
-              aLink.classList.remove('active');
-            i.classList.remove('show');
-          });
-        }
-        item.classList.toggle('active');
-        item.classList.toggle('show');
-      });
-    });
-  }
-
-  toggleDropdown(index: number) {
-    for (let i = 0; i < this.isDropdownActive.length; i++) {
-      if (i !== index) {
-        this.isDropdownActive[i] = false;
-      }
-    }
-    this.isDropdownActive[index] = !this.isDropdownActive[index];
   }
 
   // Método que muestra y oculta el menú de la foto de perfil
@@ -149,6 +119,11 @@ export class DashboardComponent {
         link.classList.add('active');
       });
     });
+  }
+
+  //Método que obtiene la información del usuario logueado
+  getUser() {
+    console.log(sessionStorage.getItem("user"));
   }
 
   //Método que cierra la sesión del usuario

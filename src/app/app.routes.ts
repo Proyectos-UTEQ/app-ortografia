@@ -35,10 +35,10 @@ export const routes: Routes = [
                     { path: 'chat-ia', component: ChatIaComponent },
                     // { path: 'help', component:  HelpComponent},
                     // { path: 'information', component: InformationComponent },
-                    { path: '', redirectTo: 'home', pathMatch: 'full' },
+                    { path: '', redirectTo: 'learn/modules', pathMatch: 'full' },
                 ],
             },
-            { path: '', redirectTo: 'student', pathMatch: 'full' },
+            { path: '', redirectTo: '/student/home/learn/modules', pathMatch: 'full' },
         ]
     },
 ];
