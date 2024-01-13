@@ -1,1 +1,20 @@
-<p>modules works!</p>
+<body>
+    <div class="row d-flex justify-content-lg-start">
+        <div class="title-module mt-3 mx-1">
+            <h4 id="titulo"><fa-icon [icon]="iconModules" class="icon-title"></fa-icon> Módulos</h4>
+          </div>
+          <br />
+          @for(module of arrayModulesStudent; track module.id){
+            <div class="card-col col-xs-12 col-sm-6 col-md-4 col-lg-3 mt-3 mb-3">
+                <div class="card">
+                    <img src="../../../../../assets/bg-module.svg" class="card-img-top"
+                        alt="background-module">
+                    <div class="card-body">
+                        <p class="mb-3"><b>{{module.title}}</b></p>
+                        <p class="text-body-card">{{module.short_description}}</p>
+                    </div>
+                </div>
+            </div>
+          }
+    </div>
+</body>

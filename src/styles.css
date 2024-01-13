@@ -46,3 +46,13 @@
 .form-select{
     padding: 7px !important;
 }
+
+/*Styles for title modules*/
+.title-module>h4{
+    font-weight: 700;
+    color: var(--black) !important;
+}
+
+.title-module>h4>fa-icon{
+    color: var(--primary-color) !important;
+}
