@@ -2,11 +2,12 @@ import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
 import { Component } from '@angular/core';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import * as iconos from '@fortawesome/free-solid-svg-icons';
 import { ModulesService } from '../../../services/modules.service';
 import { ApiResponseModulesStudentI, DataModulesStudentI } from '../../../interfaces/modules';
 import { ToastrModule } from 'ngx-toastr';
 import { ToastAlertsService } from '../../../../auth/services/toast-alerts.service';
+import { SpinnerComponent } from '../../../../shared-components/spinner/spinner.component';
+import * as iconos from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-modules',
@@ -15,7 +16,8 @@ import { ToastAlertsService } from '../../../../auth/services/toast-alerts.servi
     CommonModule,
     FontAwesomeModule,
     HttpClientModule,
-    ToastrModule
+    ToastrModule,
+    SpinnerComponent
   ],
   providers: [
     ModulesService
@@ -26,6 +28,7 @@ import { ToastAlertsService } from '../../../../auth/services/toast-alerts.servi
 export class ModulesComponent {
   //Variables
   arrayModulesStudent: DataModulesStudentI[] = []
+  spinnerStatus: boolean = false;
 
   //Constructor
   constructor(
@@ -36,6 +39,7 @@ export class ModulesComponent {
   //ngOnInit()
   ngOnInit(){
     this.getAllModulesStudent(1,20,"title","asc");
+    this.spinnerStatus = true;
   }
 
   /*Método que obtiene los headers*/
@@ -48,15 +52,15 @@ export class ModulesComponent {
 
   //Método que consume el servicio para obtener todos los módulos de la plataforma
   getAllModulesStudent(page: number, limit: number, sort: string, order: string) {
-    //this.spinnerStatus = false;
+    this.spinnerStatus = false;
     this.modulesStudentService.getAllModulesStudent(this.getHeaders(), page, limit, sort, order)
       .subscribe({
         next: (data: ApiResponseModulesStudentI) => {
           this.arrayModulesStudent = data.data;
-          //this.spinnerStatus = true;
+          this.spinnerStatus = true;
         },
         error: (error) => {
-          //this.spinnerStatus = true;
+          this.spinnerStatus = true;
           this.toastr.showToastError("Error", "No se pudo cargar la lista de categorías");
         }
       });
