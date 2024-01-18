@@ -3,34 +3,15 @@ export interface ApiResponseModulesStudentI {
     data: [
         DataModulesStudentI
     ],
-    details: {
-        page: number;
-        total_page: number;
-        total_items: number;
-        items_per_page: number;
-    }
+    details: DetailsPage;
 }
 
-//Método que contiene la información detallada de un módulo
+//Interfaz con la data del módulo
 export interface DataModulesStudentI {
     id: number;
     created_at: string;
     updated_at: string;
-    create_by: {
-        id: number;
-        first_name: string;
-        last_name: string;
-        email: string;
-        birth_date: string;
-        points_earned: number;
-        whatsapp: string;
-        telegram: string;
-        telegram_id: number;
-        url_avatar: string;
-        status: string;
-        type_user: string;
-        perfil_update_required: boolean
-    },
+    create_by: CreatedByI;
     code: string;
     title: string;
     short_description: string;
@@ -41,4 +22,29 @@ export interface DataModulesStudentI {
     index: number;
     is_public: boolean
     is_subscribed: boolean;
+}
+
+//Interfaz dentro de la data del módulo que indica quién creó el módulo
+export interface CreatedByI{
+    id: number;
+    first_name: string;
+    last_name: string;
+    email: string;
+    birth_date: string;
+    points_earned: number;
+    whatsapp: string;
+    telegram: string;
+    telegram_id: number;
+    url_avatar: string;
+    status: string;
+    type_user: string;
+    perfil_update_required: boolean
+}
+
+//Interfaz que contiene la información de la paginación
+export interface DetailsPage{
+    page: number;
+    total_page: number;
+    total_items: number;
+    items_per_page: number;
 }

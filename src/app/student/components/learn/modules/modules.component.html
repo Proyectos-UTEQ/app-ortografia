@@ -1,22 +1,56 @@
 <app-spinner *ngIf="!spinnerStatus"></app-spinner>
 
 <body>
-    <div class="row d-flex justify-content-lg-start">
+    <div class="row d-flex">
         <div class="title-module mt-3 mx-1">
             <h4 id="titulo"><fa-icon [icon]="iconModules" class="icon-title"></fa-icon> Módulos</h4>
-          </div>
-          <br />
-          @for(module of arrayModulesStudent; track module.id){
-            <div class="card-col col-xs-12 col-sm-6 col-md-4 col-lg-3 mt-3 mb-3">
-                <div class="card">
-                    <img src="../../../../../assets/bg-module.svg" class="card-img-top"
-                        alt="background-module">
-                    <div class="card-body">
-                        <p class="mb-3"><b>{{module.title}}</b></p>
-                        <p class="text-body-card">{{module.short_description}}</p>
-                    </div>
+        </div>
+
+        <div class="d-flex flex-wrap mb-2 justify-content-between">
+            <form class="col-12 col-md-3 mt-3">
+                <select class="form-select" aria-label="Default select example"
+                (change)="onFilterChange($event)">
+                    <option value="subscribed" selected>Módulos suscritos</option>
+                    <option value="all">Todos los módulos</option>
+                </select>
+            </form>
+            <button type="button" class="btn btn-primary btn-sm col-12 col-md-2 mt-3">
+                <fa-icon [icon]="iconAdd"></fa-icon> Suscribirme</button>
+        </div>
+
+        @for(module of arrayModulesStudent.data; track module.id){
+        <div class="card-col col-xs-12 col-sm-6 col-md-6 col-lg-4 mt-3 mb-3">
+            <div class="card">
+                <img src="../../../../../assets/bg-module.svg" class="card-img-top" alt="background-module">
+                <div class="card-body">
+                    <p class="mb-2"><b>{{module.title}}</b></p>
+                    @if(statusFilter === "all"){
+                        <p class="text-body-card mb-2"
+                        [ngClass]="{'text-success': module.is_subscribed, 'text-primary': !module.is_subscribed}">
+                        <b>{{module.is_subscribed ? "Suscrito" : "Disponible"}}</b>
+                    </p>
+                    }
+                    <p class="text-body-card">{{module.short_description}}</p>
                 </div>
             </div>
-          }
+        </div>
+        }
+
+        <nav aria-label="Page navigation example">
+            <ul class="pagination justify-content-center">
+                <li class="page-item disabled">
+                    <a class="page-link" tabindex="-1" aria-disabled="true">Previous</a>
+                </li>
+                @for(page of arrayPaginator; track $index){
+                    <li class="page-item">
+                        <a class="page-link" (click)="pageChanged($index+1)">{{ $index+1 }}</a> 
+                    </li>
+                }
+                <li class="page-item">
+                    <a class="page-link">Next</a>
+                </li>
+            </ul>
+        </nav>
+
     </div>
 </body>

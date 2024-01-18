@@ -31,10 +31,6 @@ export class ModulesService {
     queryParams += `limit=${limit}&`;
     queryParams += `sort=${sort}&`;
     queryParams += `order=${order}`;
-    console.log("Ruta completa");
-    console.log(`/api/module/with-is-subscribed${queryParams}`);
-    console.log("options");
-    console.log(this.options);
     return this.http.get<ApiResponseModulesStudentI>(this.urlApi + `/api/module/with-is-subscribed${queryParams}`, this.options);
   }
 
