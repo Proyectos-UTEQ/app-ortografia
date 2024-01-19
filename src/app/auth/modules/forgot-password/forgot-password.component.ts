@@ -4,7 +4,7 @@ import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { FormGroup, FormBuilder, Validators, ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
-import { ToastAlertsService } from '../../services/toast-alerts.service';
+import { ToastAlertsService } from '../../../shared-components/services/toast-alerts.service';
 import { HttpClientModule } from '@angular/common/http';
 import { ToastrModule } from 'ngx-toastr';
 import * as AOS from 'aos';

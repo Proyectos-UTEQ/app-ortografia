@@ -1,13 +1,13 @@
-//Interfaz de respuesta de la Api con el array de módulos
-export interface ApiResponseModulesStudentI {
+//Interfaz de respuesta de la Api con el array de TODOS los módulos registrados en la aplicación
+export interface ApiResponseAllModulesI {
     data: [
-        DataModulesStudentI
+        DataAllModulesI
     ],
     details: DetailsPage;
 }
 
-//Interfaz con la data del módulo
-export interface DataModulesStudentI {
+//Interfaz con la data de los módulos
+export interface DataAllModulesI {
     id: number;
     created_at: string;
     updated_at: string;

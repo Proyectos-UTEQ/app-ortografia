@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { environment } from '../../../environments/environment';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { ApiResponseModulesStudentI } from '../interfaces/modules';
+import { ApiResponseAllModulesI } from '../interfaces/modules';
 
 @Injectable({
   providedIn: 'root'
@@ -23,15 +23,15 @@ export class ModulesService {
     private http: HttpClient,
   ) { }
 
-  //Método que consume el servicio que obtiene TODOS los módulos para mostrar a un estudiante
-  getAllModulesStudent(headers: Map<string, any>, page: number, limit: number, sort: string, order: string): Observable<ApiResponseModulesStudentI> {
+  //Método que consume el servicio que obtiene TODOS los módulos disponibles en la aplicación
+  getAllModulesStudent(headers: Map<string, any>, page: number, limit: number, sort: string, order: string): Observable<ApiResponseAllModulesI> {
     this.options = this.getHeaders(headers);
     let queryParams = "?";
     queryParams += `page=${page}&`;
     queryParams += `limit=${limit}&`;
     queryParams += `sort=${sort}&`;
     queryParams += `order=${order}`;
-    return this.http.get<ApiResponseModulesStudentI>(this.urlApi + `/api/module/with-is-subscribed${queryParams}`, this.options);
+    return this.http.get<ApiResponseAllModulesI>(this.urlApi + `/api/module/with-is-subscribed${queryParams}`, this.options);
   }
 
   //Método que obtiene los headers

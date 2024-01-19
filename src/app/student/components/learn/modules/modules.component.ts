@@ -2,15 +2,16 @@ import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
 import { Component } from '@angular/core';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import { ModulesService } from '../../../services/modules.service';
-import { ApiResponseModulesStudentI, DataModulesStudentI, DetailsPage } from '../../../interfaces/modules';
 import { ToastrModule } from 'ngx-toastr';
-import { ToastAlertsService } from '../../../../auth/services/toast-alerts.service';
 import { SpinnerComponent } from '../../../../shared-components/spinner/spinner.component';
-import { SubscribedModulesService } from '../../../services/subscribed-modules.service';
-import { ApiResponseSubscribedModulesI } from '../../../interfaces/subscribed-modules';
-import * as iconos from '@fortawesome/free-solid-svg-icons';
 import { SweetAlertsConfirm } from '../../../../shared-components/alerts/confirm-alerts.component';
+import { ToastAlertsService } from '../../../../shared-components/services/toast-alerts.service';
+import { ModulesService } from '../../../services/modules.service';
+import { SubscribedModulesService } from '../../../services/subscribed-modules.service';
+import { ApiResponseAllModulesI } from '../../../interfaces/modules';
+import { ApiResponseSubscribedModulesI } from '../../../interfaces/subscribed-modules';
+import { environment } from '../../../../../environments/environment';
+import * as iconos from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-modules',
@@ -32,13 +33,15 @@ import { SweetAlertsConfirm } from '../../../../shared-components/alerts/confirm
 })
 export class ModulesComponent {
   //Variables
-  arrayModulesStudent: ApiResponseModulesStudentI = {} as ApiResponseModulesStudentI;
-  arraySubscribedModulesStudent: ApiResponseSubscribedModulesI = {} as ApiResponseSubscribedModulesI;
+  arrayModules: ApiResponseAllModulesI = {} as ApiResponseAllModulesI;
   spinnerStatus: boolean = false;
-  totalPage: number = 0;
   arrayPaginator: number[] = [];
+  totalPage: number = environment.TOTAL_PAGES;
   currentPage: number = 1;
-  statusFilter: string = "subscribed";
+  itemsForPage: number = environment.ITEMS_FOR_PAGE;
+  orderBy: string = environment.ORDER_BY;
+  modeOrder: string = environment.MODE_ORDER;
+  statusFilter: string = "all";
 
   //Constructor
   constructor(
@@ -51,7 +54,7 @@ export class ModulesComponent {
   //ngOnInit()
   ngOnInit() {
     this.spinnerStatus = true;
-    this.getModulesSubscribedStudent(this.currentPage, 6, "title", "asc");
+    this.getAllModules(this.currentPage, this.itemsForPage, this.orderBy, this.modeOrder);
   }
 
   /*Método que obtiene los headers*/
@@ -63,30 +66,35 @@ export class ModulesComponent {
   }
 
   //Método que consume el servicio para obtener todos los módulos de la plataforma
-  getAllModulesStudent(page: number, limit: number, sort: string, order: string) {
+  getAllModules(page: number, limit: number, sort: string, order: string) {
     this.spinnerStatus = false;
     this.allModulesService.getAllModulesStudent(this.getHeaders(), page, limit, sort, order)
       .subscribe({
-        next: (data: ApiResponseModulesStudentI) => {
-          this.arrayModulesStudent = data;
+        next: (data: ApiResponseAllModulesI) => {
+          this.arrayModules = data;
           this.totalPage = data.details.total_page;
           this.setPaginator();
           this.spinnerStatus = true;
         },
         error: (error) => {
           this.spinnerStatus = true;
-          this.toastr.showToastError("Error", "No se pudo cargar el listado de módulos");
+          this.toastr.showToastError("Error", "No se pudo cargar el listado de módulos generales");
         }
       });
   }
 
   //Método que consume el servicio para obtener los módulos a los que el estudiante está suscrito
-  getModulesSubscribedStudent(page: number, limit: number, sort: string, order: string) {
+  getModulesSubscribed(page: number, limit: number, sort: string, order: string) {
     this.spinnerStatus = false;
     this.modulesSuscribedStudent.getModulesSubscribedStudent(this.getHeaders(), page, limit, sort, order)
       .subscribe({
         next: (data: ApiResponseSubscribedModulesI) => {
-          this.arrayModulesStudent = data;
+          if (Object.keys(data).length != 0) {
+            this.arrayModules = data;
+          }
+          else {
+            this.toastr.showToastInformation("Información", "Actualmente no te encuentras suscrito a ningún módulo");
+          }
           this.totalPage = data.details.total_page;
           this.setPaginator();
           this.spinnerStatus = true;
@@ -101,15 +109,15 @@ export class ModulesComponent {
   //Método que cambia el filtro entre todos lo módulos y los módulos suscritos
   onFilterChange(event: any) {
     const value = event.target.value;
-    if (value === "all") {
-      this.arrayModulesStudent = {} as ApiResponseModulesStudentI;
-      this.statusFilter = "all";
-      this.getAllModulesStudent(1, 6, "title", "asc");
-    }
-    else if (value === "subscribed") {
-      this.arraySubscribedModulesStudent = {} as ApiResponseSubscribedModulesI;
+    if (value === "subscribed") {
+      this.arrayModules = {} as ApiResponseSubscribedModulesI;
       this.statusFilter = "subscribed";
-      this.getModulesSubscribedStudent(1, 6, "title", "asc");
+      this.getModulesSubscribed(1, this.itemsForPage, this.orderBy, this.modeOrder);
+    }
+    else if (value === "all") {
+      this.arrayModules = {} as ApiResponseAllModulesI;
+      this.statusFilter = "all";
+      this.getAllModules(1, this.itemsForPage, this.orderBy, this.modeOrder);
     }
   }
 
@@ -124,11 +132,14 @@ export class ModulesComponent {
   // Método para manejar el cambio de página
   pageChanged(page: number) {
     this.currentPage = page;
-    this.getAllModulesStudent(this.currentPage, 6, "title", "asc");
+    if (this.statusFilter === "subscribed") 
+      this.getModulesSubscribed(this.currentPage, this.itemsForPage, this.orderBy, this.modeOrder);
+    else if (this.statusFilter === "all") 
+      this.getAllModules(this.currentPage, this.itemsForPage, this.orderBy, this.modeOrder);
   }
 
   //Método que muestra un alert para preguntar si desea practiar en el módulo
-  showAlertPractice(nameModule: string){
+  showAlertPractice(nameModule: string) {
     this.sweetAlerts.alertConfirmCancelQuestion("Nueva práctica", "¿Deseas practicar ahora en el módulo \"" + nameModule + "\"?").then(respuesta => {
       if (respuesta.value == true) {
         this.spinnerStatus = false;
@@ -138,7 +149,7 @@ export class ModulesComponent {
   }
 
   //Método que muestra un alert para preguntar si desea suscribirse a un curso
-  showAlertSuscribe(nameModule: string){
+  showAlertSuscribe(nameModule: string) {
     this.sweetAlerts.alertConfirmCancelInformation("Módulo disponible", "Actualmente no te encuestras suscrito en el módulo de \"" + nameModule + "\" ¿Deseas suscribirte ahora?").then(respuesta => {
       if (respuesta.value == true) {
         this.spinnerStatus = false;
@@ -150,4 +161,7 @@ export class ModulesComponent {
   //Icons to use
   iconModules = iconos.faCubes;
   iconAdd = iconos.faPlusCircle;
+  iconTitle = iconos.faCube;
+  iconBack = iconos.faArrowLeft;
+  iconNext = iconos.faArrowRight;
 }

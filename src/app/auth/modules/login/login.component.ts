@@ -9,7 +9,7 @@ import { LoginService } from '../../services/login.service';
 import { environment } from '../../../../environments/environment.prod';
 import { HttpClientModule } from '@angular/common/http';
 import { ToastrModule } from 'ngx-toastr';
-import { ToastAlertsService } from '../../services/toast-alerts.service';
+import { ToastAlertsService } from '../../../shared-components/services/toast-alerts.service';
 import { TermsConditionsComponent } from '../terms-conditions/terms-conditions.component';
 import * as iconos from '@fortawesome/free-solid-svg-icons';
 import * as AOS from 'aos';

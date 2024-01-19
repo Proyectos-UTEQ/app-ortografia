@@ -7,7 +7,7 @@ import * as iconos from '@fortawesome/free-solid-svg-icons';
 import * as AOS from 'aos';
 import { RegisterUserService } from '../../services/register-user.service';
 import { ApiResponseRegisterUserI } from '../../interfaces/register-user';
-import { ToastAlertsService } from '../../services/toast-alerts.service';
+import { ToastAlertsService } from '../../../shared-components/services/toast-alerts.service';
 import { HttpClientModule } from '@angular/common/http';
 import { ToastrModule } from 'ngx-toastr';
 import { TermsConditionsComponent } from '../terms-conditions/terms-conditions.component';
