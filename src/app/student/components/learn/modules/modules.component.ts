@@ -12,6 +12,8 @@ import { ApiResponseAllModulesI } from '../../../interfaces/modules';
 import { ApiResponseSubscribedModulesI } from '../../../interfaces/subscribed-modules';
 import { environment } from '../../../../../environments/environment';
 import * as iconos from '@fortawesome/free-solid-svg-icons';
+import { SubscribeToModuleComponent } from '../../modals/subscribe-to-module/subscribe-to-module.component';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
   selector: 'app-modules',
@@ -22,6 +24,7 @@ import * as iconos from '@fortawesome/free-solid-svg-icons';
     HttpClientModule,
     ToastrModule,
     SpinnerComponent,
+    SubscribeToModuleComponent
   ],
   providers: [
     ModulesService,
@@ -48,7 +51,8 @@ export class ModulesComponent {
     private allModulesService: ModulesService,
     private modulesSuscribedStudent: SubscribedModulesService,
     private toastr: ToastAlertsService,
-    private sweetAlerts: SweetAlertsConfirm
+    private sweetAlerts: SweetAlertsConfirm,
+    private modal: NgbModal
   ) { }
 
   //ngOnInit()
@@ -149,13 +153,17 @@ export class ModulesComponent {
   }
 
   //Método que muestra un alert para preguntar si desea suscribirse a un curso
-  showAlertSuscribe(nameModule: string) {
+  showAlertSuscribe(nameModule: string, subscribeToModule: any) {
     this.sweetAlerts.alertConfirmCancelInformation("Módulo disponible", "Actualmente no te encuestras suscrito en el módulo de \"" + nameModule + "\" ¿Deseas suscribirte ahora?").then(respuesta => {
       if (respuesta.value == true) {
-        this.spinnerStatus = false;
-        //Consurmir servicio para suscribirse al módulo
+        this.openModalSubscribeToModule(subscribeToModule);
       }
     });
+  }
+
+  // Método que abre un modal para suscribirse a un módulo
+  openModalSubscribeToModule(subscribeToModule: any) {
+    this.modal.open(subscribeToModule, { size: 'md', centered: true });
   }
 
   //Icons to use

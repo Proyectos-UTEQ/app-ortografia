@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { environment } from '../../../environments/environment';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { ApiResponseSubscribedModulesI } from '../interfaces/subscribed-modules';
+import { ApiResponseSubscribeToModuleI, ApiResponseSubscribedModulesI, SubscribeToModuleI } from '../interfaces/subscribed-modules';
 import { Observable } from 'rxjs';
 
 @Injectable({
@@ -25,9 +25,9 @@ export class SubscribedModulesService {
    ) { }
  
    //Método que consume el servicio para que un estudiante se suscriba a un módulo
-   subscribeToModuleStudent(headers: Map<string, any>, codeModule:string): Observable<ApiResponseSubscribedModulesI> {
+   subscribeToModule(headers: Map<string, any>, codeModule:SubscribeToModuleI): Observable<ApiResponseSubscribeToModuleI> {
     this.options = this.getHeaders(headers);
-    return this.http.post<ApiResponseSubscribedModulesI>(this.urlApi + `/api/module/subscribe`, codeModule, this.options);
+    return this.http.post<ApiResponseSubscribeToModuleI>(this.urlApi + `/api/module/subscribe`, codeModule, this.options);
   }
 
    //Método que consume el servicio que obtiene los módulos a los que un estudiante está suscrito

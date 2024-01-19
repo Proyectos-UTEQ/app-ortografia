@@ -16,6 +16,10 @@ body {
     border-radius: 7px 7px 0 0;
 }
 
+.card>img{
+    cursor: pointer;
+}
+
 .card-body {
     border-width: 0px 1px 1px 1px;
     /* top right bottom left */

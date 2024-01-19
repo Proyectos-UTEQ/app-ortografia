@@ -5,6 +5,7 @@
     --white: #FFFFFF;
     --black: #303030;
     --text-color: #888888;
+    --alert-color: #FC3B56;
 }
 
 
@@ -55,4 +56,8 @@
 
 .title-module>h4>fa-icon{
     color: var(--primary-color) !important;
+}
+
+.validators {
+    color: var(--alert-color) !important;
 }
