@@ -21,7 +21,7 @@
         @for(module of arrayModulesStudent.data; track module.id){
         <div class="card-col col-xs-12 col-sm-6 col-md-6 col-lg-4 mt-3 mb-3">
             <div class="card">
-                <img src="../../../../../assets/bg-module.svg" class="card-img-top" alt="background-module">
+                <img src="../../../../../assets/bg-module.svg" class="card-img-top" alt="background-module" (click)="module.is_subscribed ? showAlertPractice(module.title) : showAlertSuscribe(module.title)">
                 <div class="card-body">
                     <p class="mb-2"><b>{{module.title}}</b></p>
                     @if(statusFilter === "all"){

@@ -10,6 +10,7 @@ import { SpinnerComponent } from '../../../../shared-components/spinner/spinner.
 import { SubscribedModulesService } from '../../../services/subscribed-modules.service';
 import { ApiResponseSubscribedModulesI } from '../../../interfaces/subscribed-modules';
 import * as iconos from '@fortawesome/free-solid-svg-icons';
+import { SweetAlertsConfirm } from '../../../../shared-components/alerts/confirm-alerts.component';
 
 @Component({
   selector: 'app-modules',
@@ -19,11 +20,12 @@ import * as iconos from '@fortawesome/free-solid-svg-icons';
     FontAwesomeModule,
     HttpClientModule,
     ToastrModule,
-    SpinnerComponent
+    SpinnerComponent,
   ],
   providers: [
     ModulesService,
-    SubscribedModulesService
+    SubscribedModulesService,
+    SweetAlertsConfirm
   ],
   templateUrl: './modules.component.html',
   styleUrl: './modules.component.css'
@@ -42,7 +44,8 @@ export class ModulesComponent {
   constructor(
     private allModulesService: ModulesService,
     private modulesSuscribedStudent: SubscribedModulesService,
-    private toastr: ToastAlertsService
+    private toastr: ToastAlertsService,
+    private sweetAlerts: SweetAlertsConfirm
   ) { }
 
   //ngOnInit()
@@ -122,6 +125,26 @@ export class ModulesComponent {
   pageChanged(page: number) {
     this.currentPage = page;
     this.getAllModulesStudent(this.currentPage, 6, "title", "asc");
+  }
+
+  //Método que muestra un alert para preguntar si desea practiar en el módulo
+  showAlertPractice(nameModule: string){
+    this.sweetAlerts.alertConfirmCancelQuestion("Nueva práctica", "¿Deseas practicar ahora en el módulo \"" + nameModule + "\"?").then(respuesta => {
+      if (respuesta.value == true) {
+        this.spinnerStatus = false;
+        //Redirigir al componente de teoría
+      }
+    });
+  }
+
+  //Método que muestra un alert para preguntar si desea suscribirse a un curso
+  showAlertSuscribe(nameModule: string){
+    this.sweetAlerts.alertConfirmCancelInformation("Módulo disponible", "Actualmente no te encuestras suscrito en el módulo de \"" + nameModule + "\" ¿Deseas suscribirte ahora?").then(respuesta => {
+      if (respuesta.value == true) {
+        this.spinnerStatus = false;
+        //Consurmir servicio para suscribirse al módulo
+      }
+    });
   }
 
   //Icons to use
