@@ -18,7 +18,6 @@ import * as iconos from '@fortawesome/free-solid-svg-icons';
     FontAwesomeModule,
     ToastrModule,
     ReactiveFormsModule,
-    ModulesComponent,
     SpinnerComponent
   ],
   providers: [

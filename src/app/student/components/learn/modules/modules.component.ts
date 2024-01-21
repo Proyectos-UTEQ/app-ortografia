@@ -8,8 +8,8 @@ import { SweetAlertsConfirm } from '../../../../shared-components/alerts/confirm
 import { ToastAlertsService } from '../../../../shared-components/services/toast-alerts.service';
 import { ModulesService } from '../../../services/modules.service';
 import { SubscribedModulesService } from '../../../services/subscribed-modules.service';
-import { ApiResponseAllModulesI } from '../../../interfaces/modules';
-import { ApiResponseSubscribedModulesI } from '../../../interfaces/subscribed-modules';
+import { ApiResponseAllModulesI, DataAllModulesI } from '../../../interfaces/modules';
+import { ApiResponseSubscribeToModuleI, ApiResponseSubscribedModulesI, SubscribeToModuleI } from '../../../interfaces/subscribed-modules';
 import { environment } from '../../../../../environments/environment';
 import * as iconos from '@fortawesome/free-solid-svg-icons';
 import { SubscribeToModuleComponent } from '../../modals/subscribe-to-module/subscribe-to-module.component';
@@ -24,7 +24,7 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
     HttpClientModule,
     ToastrModule,
     SpinnerComponent,
-    SubscribeToModuleComponent
+    SubscribeToModuleComponent //Hacia donde voy
   ],
   providers: [
     ModulesService,
@@ -153,10 +153,30 @@ export class ModulesComponent {
   }
 
   //Método que muestra un alert para preguntar si desea suscribirse a un curso
-  showAlertSuscribe(nameModule: string, subscribeToModule: any) {
+  showAlertSuscribe(nameModule: string, codeModule: string) {
     this.sweetAlerts.alertConfirmCancelInformation("Módulo disponible", "Actualmente no te encuestras suscrito en el módulo de \"" + nameModule + "\" ¿Deseas suscribirte ahora?").then(respuesta => {
       if (respuesta.value == true) {
-        this.openModalSubscribeToModule(subscribeToModule);
+        this.sweetAlerts.alertConfirmCancelQuestion("Nueva suscripción", "Estás a punto de suscribirte al módulo \"" + nameModule + "\" ¿Deseas continuar?").then(respuesta => {
+          if (respuesta.value == true) {
+            let body: SubscribeToModuleI = {
+              code: codeModule
+            }
+            this.modulesSuscribedStudent.subscribeToModule(this.getHeaders(), body).subscribe({
+              next: (data: ApiResponseSubscribeToModuleI) => {
+                this.spinnerStatus = false;
+                if (data.status == 'success') {
+                  this.spinnerStatus = true;
+                  this.modal.dismissAll();
+                  this.toastr.showToastSuccess("Te has suscrito correctamente", "¡Éxito!");
+                }
+                else {
+                  this.spinnerStatus = true;
+                  this.toastr.showToastError("Error", "No se ha podido suscribir al módulo");
+                }
+              }
+            })
+          }
+        });
       }
     });
   }
