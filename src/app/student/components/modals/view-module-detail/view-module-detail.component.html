@@ -67,7 +67,12 @@
                         </div>
                     }
                     @else{
-                        <p>{{moduleDetail.code}}</p>
+                        @if(moduleDetail.code != ""){
+                            <p>{{moduleDetail.code}}</p>
+                        }
+                        @else {
+                            <p>Este módulo no contiene un código</p>
+                        }
                     }
                 </div>
             </div>
