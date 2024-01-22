@@ -14,6 +14,7 @@ import { ModulesService } from '../../../services/modules.service';
 import { SubscribedModulesService } from '../../../services/subscribed-modules.service';
 import { environment } from '../../../../../environments/environment';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { Router } from '@angular/router';
 import * as iconos from '@fortawesome/free-solid-svg-icons';
 
 @Component({
@@ -26,8 +27,7 @@ import * as iconos from '@fortawesome/free-solid-svg-icons';
     ToastrModule,
     SpinnerComponent,
     SubscribeToModuleComponent, //Hacia donde voy
-    ViewModuleDetailComponent 
-     
+    ViewModuleDetailComponent,     
   ],
   providers: [
     ModulesService,
@@ -55,7 +55,8 @@ export class ModulesComponent {
     private modulesSuscribedStudent: SubscribedModulesService,
     private toastr: ToastAlertsService,
     private sweetAlerts: SweetAlertsConfirm,
-    private modal: NgbModal
+    private modal: NgbModal,
+    private router: Router
   ) { }
 
   //ngOnInit()
@@ -149,8 +150,8 @@ export class ModulesComponent {
   showAlertPractice(nameModule: string) {
     this.sweetAlerts.alertConfirmCancelQuestion("Nueva práctica", "¿Deseas practicar ahora en el módulo \"" + nameModule + "\"?").then(respuesta => {
       if (respuesta.value == true) {
-        this.spinnerStatus = false;
-        //Redirigir al componente de teoría
+        //Animación de carga
+        this.router.navigateByUrl('student/home/theory');
       }
     });
   }
