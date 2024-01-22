@@ -1,19 +1,20 @@
 import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
 import { Component } from '@angular/core';
-import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ToastrModule } from 'ngx-toastr';
 import { SpinnerComponent } from '../../../../shared-components/spinner/spinner.component';
+import { SubscribeToModuleComponent } from '../../modals/subscribe-to-module/subscribe-to-module.component';
+import { ViewModuleDetailComponent } from '../../modals/view-module-detail/view-module-detail.component';
 import { SweetAlertsConfirm } from '../../../../shared-components/alerts/confirm-alerts.component';
+import { ApiResponseSubscribeToModuleI, ApiResponseSubscribedModulesI, SubscribeToModuleI } from '../../../interfaces/subscribed-modules';
+import { ApiResponseAllModulesI } from '../../../interfaces/modules';
 import { ToastAlertsService } from '../../../../shared-components/services/toast-alerts.service';
 import { ModulesService } from '../../../services/modules.service';
 import { SubscribedModulesService } from '../../../services/subscribed-modules.service';
-import { ApiResponseAllModulesI, DataAllModulesI } from '../../../interfaces/modules';
-import { ApiResponseSubscribeToModuleI, ApiResponseSubscribedModulesI, SubscribeToModuleI } from '../../../interfaces/subscribed-modules';
 import { environment } from '../../../../../environments/environment';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import * as iconos from '@fortawesome/free-solid-svg-icons';
-import { SubscribeToModuleComponent } from '../../modals/subscribe-to-module/subscribe-to-module.component';
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
   selector: 'app-modules',
@@ -24,7 +25,9 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
     HttpClientModule,
     ToastrModule,
     SpinnerComponent,
-    SubscribeToModuleComponent //Hacia donde voy
+    SubscribeToModuleComponent, //Hacia donde voy
+    ViewModuleDetailComponent 
+     
   ],
   providers: [
     ModulesService,
@@ -37,7 +40,6 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 export class ModulesComponent {
   //Variables
   arrayModules: ApiResponseAllModulesI = {} as ApiResponseAllModulesI;
-  spinnerStatus: boolean = false;
   arrayPaginator: number[] = [];
   totalPage: number = environment.TOTAL_PAGES;
   currentPage: number = 1;
@@ -45,6 +47,7 @@ export class ModulesComponent {
   orderBy: string = environment.ORDER_BY;
   modeOrder: string = environment.MODE_ORDER;
   statusFilter: string = "all";
+  spinnerStatus: boolean = false;
 
   //Constructor
   constructor(
@@ -186,10 +189,17 @@ export class ModulesComponent {
     this.modal.open(subscribeToModule, { size: 'md', centered: true });
   }
 
+  //Método que abre el modal para ver el detalle de un módulo
+  openModalViewDetailComponent(viewModuleDetail: any, moduleID:number){
+    this.modal.open(viewModuleDetail, { size: 'md', centered: true });
+    ViewModuleDetailComponent.moduleID = moduleID;
+  }
+
   //Icons to use
   iconModules = iconos.faCubes;
   iconAdd = iconos.faPlusCircle;
   iconTitle = iconos.faCube;
   iconBack = iconos.faArrowLeft;
   iconNext = iconos.faArrowRight;
+  iconViewDetails = iconos.faEye;
 }
