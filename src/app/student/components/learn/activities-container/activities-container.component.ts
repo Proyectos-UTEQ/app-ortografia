@@ -6,6 +6,7 @@ import { ModulesComponent } from '../modules/modules.component';
 import { SelectWithSentenceComponent } from '../select-with-sentence/select-with-sentence.component';
 import { SelectSeveralCorrectComponent } from '../select-several-correct/select-several-correct.component';
 import * as iconos from '@fortawesome/free-solid-svg-icons';
+import { CompleteParagraphComponent } from '../complete-paragraph/complete-paragraph.component';
 
 @Component({
   selector: 'app-activities-container',
@@ -14,7 +15,8 @@ import * as iconos from '@fortawesome/free-solid-svg-icons';
     FontAwesomeModule,
     ModulesComponent,
     SelectWithSentenceComponent,
-    SelectSeveralCorrectComponent
+    SelectSeveralCorrectComponent,
+    CompleteParagraphComponent
   ],
   providers: [
     SweetAlertsConfirm
