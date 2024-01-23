@@ -8,7 +8,7 @@ import { SubscribeToModuleComponent } from '../../modals/subscribe-to-module/sub
 import { ViewModuleDetailComponent } from '../../modals/view-module-detail/view-module-detail.component';
 import { SweetAlertsConfirm } from '../../../../shared-components/alerts/confirm-alerts.component';
 import { ApiResponseSubscribeToModuleI, ApiResponseSubscribedModulesI, SubscribeToModuleI } from '../../../interfaces/subscribed-modules';
-import { ApiResponseAllModulesI } from '../../../interfaces/modules';
+import { ApiResponseAllModulesI, DataAllModulesI } from '../../../interfaces/modules';
 import { ToastAlertsService } from '../../../../shared-components/services/toast-alerts.service';
 import { ModulesService } from '../../../services/modules.service';
 import { SubscribedModulesService } from '../../../services/subscribed-modules.service';
@@ -27,7 +27,7 @@ import * as iconos from '@fortawesome/free-solid-svg-icons';
     ToastrModule,
     SpinnerComponent,
     SubscribeToModuleComponent, //Hacia donde voy
-    ViewModuleDetailComponent,     
+    ViewModuleDetailComponent,
   ],
   providers: [
     ModulesService,
@@ -140,9 +140,9 @@ export class ModulesComponent {
   // Método para manejar el cambio de página
   pageChanged(page: number) {
     this.currentPage = page;
-    if (this.statusFilter === "subscribed") 
+    if (this.statusFilter === "subscribed")
       this.getModulesSubscribed(this.currentPage, this.itemsForPage, this.orderBy, this.modeOrder);
-    else if (this.statusFilter === "all") 
+    else if (this.statusFilter === "all")
       this.getAllModules(this.currentPage, this.itemsForPage, this.orderBy, this.modeOrder);
   }
 
@@ -191,9 +191,21 @@ export class ModulesComponent {
   }
 
   //Método que abre el modal para ver el detalle de un módulo
-  openModalViewDetailComponent(viewModuleDetail: any, moduleID:number){
+  openModalViewDetailComponent(viewModuleDetail: any, moduleID: number) {
     this.modal.open(viewModuleDetail, { size: 'md', centered: true });
     ViewModuleDetailComponent.moduleID = moduleID;
+  }
+
+  //Método que determina que modal se debe abrir (Practicar o suscribirse)
+  showAlertPracticeOrSubscribe(module: DataAllModulesI, statusFilter: string): void {
+    if (statusFilter === 'all') {
+      if (module.is_subscribed)
+        this.showAlertPractice(module.title);
+      else
+        this.showAlertSuscribe(module.title, module.code);
+    } 
+    else if (statusFilter === 'subscribed')
+      this.showAlertPractice(module.title);
   }
 
   //Icons to use

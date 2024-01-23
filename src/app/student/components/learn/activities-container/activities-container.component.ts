@@ -4,13 +4,15 @@ import { Router } from '@angular/router';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import * as iconos from '@fortawesome/free-solid-svg-icons';
 import { ModulesComponent } from '../modules/modules.component';
+import { SelectWithSentenceComponent } from '../select-with-sentence/select-with-sentence.component';
 
 @Component({
   selector: 'app-activities-container',
   standalone: true,
   imports: [
     FontAwesomeModule,
-    ModulesComponent
+    ModulesComponent,
+    SelectWithSentenceComponent
   ],
   providers: [
     SweetAlertsConfirm
