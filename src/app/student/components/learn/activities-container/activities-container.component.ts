@@ -2,9 +2,10 @@ import { Component } from '@angular/core';
 import { SweetAlertsConfirm } from '../../../../shared-components/alerts/confirm-alerts.component';
 import { Router } from '@angular/router';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import * as iconos from '@fortawesome/free-solid-svg-icons';
 import { ModulesComponent } from '../modules/modules.component';
 import { SelectWithSentenceComponent } from '../select-with-sentence/select-with-sentence.component';
+import { SelectSeveralCorrectComponent } from '../select-several-correct/select-several-correct.component';
+import * as iconos from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-activities-container',
@@ -12,7 +13,8 @@ import { SelectWithSentenceComponent } from '../select-with-sentence/select-with
   imports: [
     FontAwesomeModule,
     ModulesComponent,
-    SelectWithSentenceComponent
+    SelectWithSentenceComponent,
+    SelectSeveralCorrectComponent
   ],
   providers: [
     SweetAlertsConfirm
