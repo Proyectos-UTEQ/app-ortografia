@@ -10,6 +10,7 @@ import { PositionsTableComponent } from './student/components/positions/position
 import { MyClassComponent } from './student/components/classes/my-class/my-class.component';
 import { ChatIaComponent } from './student/components/chat/chat-ia/chat-ia.component';
 import { TheoryComponent } from './student/components/learn/theory/theory.component';
+import { ActivitiesContainerComponent } from './student/components/learn/activities-container/activities-container.component';
 
 export const routes: Routes = [
     { path: '', redirectTo: 'auth', pathMatch: 'full' },
@@ -41,6 +42,7 @@ export const routes: Routes = [
           },
           { path: '', redirectTo: '/student/home/learn/modules', pathMatch: 'full' },
           { path: 'home/theory', component: TheoryComponent },
+          { path: 'home/activities', component: ActivitiesContainerComponent },
         ]
       },
       

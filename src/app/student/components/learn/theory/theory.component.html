@@ -1,5 +1,4 @@
 <div>
-    <!-- Contenido principal -->
     <div class="row d-flex justify-content-center">
         <div class="col-10 col-md-8 col-lg-8 container-theory mt-3">
             <h1 class="text-center">Título del módulo</h1>
@@ -64,7 +63,8 @@
                 <button class="btn btn-outline-primary btn-lg" (click)="leavePractice()">
                     <fa-icon [icon]="iconExit"></fa-icon> Abandonar
                 </button>
-                <button class="btn btn-primary btn-lg">Comenzar <fa-icon [icon]="iconNext"></fa-icon></button>
+                <button class="btn btn-primary btn-lg" (click)="goToActivities()">
+                    Comenzar <fa-icon [icon]="iconNext"></fa-icon></button>
             </div>
         </div>
     </div>

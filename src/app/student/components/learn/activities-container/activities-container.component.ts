@@ -1,23 +1,24 @@
 import { Component } from '@angular/core';
+import { SweetAlertsConfirm } from '../../../../shared-components/alerts/confirm-alerts.component';
 import { Router } from '@angular/router';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import { SweetAlertsConfirm } from '../../../../shared-components/alerts/confirm-alerts.component';
 import * as iconos from '@fortawesome/free-solid-svg-icons';
+import { ModulesComponent } from '../modules/modules.component';
 
 @Component({
-  selector: 'app-theory',
+  selector: 'app-activities-container',
   standalone: true,
   imports: [
-    FontAwesomeModule
+    FontAwesomeModule,
+    ModulesComponent
   ],
   providers: [
     SweetAlertsConfirm
   ],
-  templateUrl: './theory.component.html',
-  styleUrl: './theory.component.css'
+  templateUrl: './activities-container.component.html',
+  styleUrl: './activities-container.component.css'
 })
-export class TheoryComponent {
-
+export class ActivitiesContainerComponent {
   //constructor
   constructor(
     private router: Router,
@@ -37,12 +38,9 @@ export class TheoryComponent {
     });
   }
 
-  //Método que redirecciona a las actividades
-  goToActivities(){
-    this.router.navigateByUrl('student/home/activities');
-  }
-
   //Icons to use
   iconExit = iconos.faXmark;
   iconNext = iconos.faArrowRight;
+  iconLeave = iconos.faXmark;
+  iconLifes = iconos.faHeart;
 }
