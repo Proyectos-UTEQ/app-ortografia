@@ -1,3 +1,4 @@
+import { OrderWordsComponent } from './../order-words/order-words.component';
 import { Component } from '@angular/core';
 import { SweetAlertsConfirm } from '../../../../shared-components/alerts/confirm-alerts.component';
 import { Router } from '@angular/router';
@@ -16,7 +17,8 @@ import { CompleteParagraphComponent } from '../complete-paragraph/complete-parag
     ModulesComponent,
     SelectWithSentenceComponent,
     SelectSeveralCorrectComponent,
-    CompleteParagraphComponent
+    CompleteParagraphComponent,
+    OrderWordsComponent,
   ],
   providers: [
     SweetAlertsConfirm
