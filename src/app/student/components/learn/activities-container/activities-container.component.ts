@@ -6,8 +6,9 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { ModulesComponent } from '../modules/modules.component';
 import { SelectWithSentenceComponent } from '../select-with-sentence/select-with-sentence.component';
 import { SelectSeveralCorrectComponent } from '../select-several-correct/select-several-correct.component';
-import * as iconos from '@fortawesome/free-solid-svg-icons';
 import { CompleteParagraphComponent } from '../complete-paragraph/complete-paragraph.component';
+import * as iconos from '@fortawesome/free-solid-svg-icons';
+import { TrueOrFalseComponent } from '../true-or-false/true-or-false.component';
 
 @Component({
   selector: 'app-activities-container',
@@ -19,6 +20,7 @@ import { CompleteParagraphComponent } from '../complete-paragraph/complete-parag
     SelectSeveralCorrectComponent,
     CompleteParagraphComponent,
     OrderWordsComponent,
+    TrueOrFalseComponent
   ],
   providers: [
     SweetAlertsConfirm
