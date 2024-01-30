@@ -9,6 +9,7 @@ import { SelectSeveralCorrectComponent } from '../select-several-correct/select-
 import { CompleteParagraphComponent } from '../complete-paragraph/complete-paragraph.component';
 import * as iconos from '@fortawesome/free-solid-svg-icons';
 import { TrueOrFalseComponent } from '../true-or-false/true-or-false.component';
+import { ModulesService } from '../../../services/modules.service';
 
 @Component({
   selector: 'app-activities-container',
@@ -23,25 +24,33 @@ import { TrueOrFalseComponent } from '../true-or-false/true-or-false.component';
     TrueOrFalseComponent
   ],
   providers: [
-    SweetAlertsConfirm
+    SweetAlertsConfirm,
+    ModulesService
   ],
   templateUrl: './activities-container.component.html',
   styleUrl: './activities-container.component.css'
 })
 export class ActivitiesContainerComponent {
+  //Variables
+  selectedOption: string = '';
+
   //constructor
   constructor(
     private router: Router,
-    private sweetAlerts: SweetAlertsConfirm
-  ){}
+    private sweetAlerts: SweetAlertsConfirm,
+    private modulesService: ModulesService
+  ) { }
 
   //ngOnInit
-  ngOnInit(){
+  ngOnInit() {
+    this.modulesService.getSelectedOption().subscribe(option => {
+      this.selectedOption = option;
+    });
   }
 
   //Método que ejecuta un alert para confirmar si desea abandonar la práctica
-  leavePractice(){
-    this.sweetAlerts.alertConfirmCancelQuestion("Abandonar práctica", "¿Estás seguro de abandonar tu práctica del módulo \"" +  + "\"?").then(respuesta => {
+  leavePractice() {
+    this.sweetAlerts.alertConfirmCancelQuestion("Abandonar práctica", "¿Estás seguro de abandonar tu práctica del módulo \"" + + "\"?").then(respuesta => {
       if (respuesta.value == true) {
         this.router.navigateByUrl('student/home/learn/modules');
       }

@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { environment } from '../../../environments/environment';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { ApiResponseAllModulesI, DataAllModulesI } from '../interfaces/modules';
 
 @Injectable({
@@ -17,6 +17,7 @@ export class ModulesService {
     'Access-Control-Allow-Origin': '*'
   });
   options = {}
+  selectedOption = new BehaviorSubject<string>('');
 
   // Constructor
   constructor(
@@ -40,6 +41,16 @@ export class ModulesService {
     return this.http.get<DataAllModulesI>(this.urlApi + `/api/module/${idModule}`, this.options);
   }
 
+  
+  //Método que cambia el valor a la variable selected para determinar si existe una opción seleccionada
+  setSelectedOption(optionId: string) {
+    this.selectedOption.next(optionId);
+  }
+
+  //Método que obtiene el valor de la variable selected
+  getSelectedOption(): Observable<string> {
+    return this.selectedOption.asObservable();
+  }
   
   //Método que obtiene los headers
   public getHeaders(headers: Map<string, any> | undefined) {

@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import * as AOS from 'aos';
+import { ModulesService } from '../../../services/modules.service';
 
 @Component({
   selector: 'app-true-or-false',
@@ -12,6 +13,11 @@ export class TrueOrFalseComponent {
   //Variables
   selectedOption: string = '';
 
+  //Constructror
+  constructor(
+    private modulesService: ModulesService
+  ) { }
+
   //ngOnInit()
   ngOnInit() {
     AOS.init();
@@ -22,5 +28,6 @@ export class TrueOrFalseComponent {
     const inputElement = document.getElementById(optionId) as HTMLInputElement;
     inputElement.click();
     this.selectedOption = optionId;
+    this.modulesService.setSelectedOption(optionId);
   }
 }

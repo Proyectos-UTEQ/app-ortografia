@@ -23,9 +23,9 @@
             <div class="col-xs-12 col-sm-12 col-md-11 col-lg-9 col-xl-8">
                 <!-- <app-select-with-sentence></app-select-with-sentence> -->
                 <!-- <app-select-several-correct></app-select-several-correct> -->
-               <!-- <app-complete-paragraph></app-complete-paragraph> -->
-              <!--  <app-order-words></app-order-words> -->
-              <app-true-or-false></app-true-or-false>
+                <!--  <app-complete-paragraph></app-complete-paragraph> -->
+                <!--  <app-order-words></app-order-words> -->
+                <!-- <app-true-or-false></app-true-or-false> -->
             </div>
         </div>
     </div>
@@ -39,8 +39,14 @@
                 <button class="btn btn-outline-primary btn-lg" (click)="leavePractice()">
                     <fa-icon [icon]="iconExit"></fa-icon> Abandonar
                 </button>
-                <button class="btn btn-primary btn-lg">
-                    Comenzar <fa-icon [icon]="iconNext"></fa-icon></button>
+                @if(selectedOption != ''){
+                    <button class="btn btn-primary btn-lg" [disabled]="false">
+                        Comenzar <fa-icon [icon]="iconNext"></fa-icon></button>
+                }
+                @else {
+                    <button class="btn btn-primary btn-lg" [disabled]="true">
+                        Comenzar <fa-icon [icon]="iconNext"></fa-icon></button>
+                }
             </div>
         </div>
     </div>

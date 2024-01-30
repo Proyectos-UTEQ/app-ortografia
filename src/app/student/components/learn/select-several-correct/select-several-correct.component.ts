@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import * as AOS from 'aos';
+import { ModulesService } from '../../../services/modules.service';
 
 @Component({
   selector: 'app-select-several-correct',
@@ -14,6 +15,7 @@ import * as AOS from 'aos';
 export class SelectSeveralCorrectComponent {
 
   //Variables
+  selectedOption: string = '';
   selectedOptions: string[] = [];
   options = [
     { id: '1', idHTML: 'option1', label: 'Opción 1', optionNumber: 'a', selected: false },
@@ -23,6 +25,12 @@ export class SelectSeveralCorrectComponent {
     { id: '5', idHTML: 'option5', label: 'Opción 5', optionNumber: 'e', selected: false },
     { id: '6', idHTML: 'option6', label: 'Opción 6', optionNumber: 'f', selected: false },
   ];
+
+  //Constructror
+  constructor(
+    private modulesService: ModulesService
+  ) { }
+
 
   //ngOnInit()
   ngOnInit(){
@@ -38,6 +46,7 @@ export class SelectSeveralCorrectComponent {
       this.selectedOptions = this.options
         .filter(option => option.selected)
         .map(option => option.idHTML);
+        this.modulesService.setSelectedOption(optionId);
     }
   }
 }

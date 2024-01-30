@@ -13,10 +13,10 @@
 
     <!--Párrafo-->
     <div class="row d-flex mb-4">
-        <form class="col d-flex align-items-center">
+        <form [formGroup]="completeWordForm" class="col d-flex align-items-center">
             <p>"Lorem ipsum dolor sit amet consectetur adipisicing elit. Sunt delectus nostrum vel explicabo. Error
                 doloremque soluta dignissimos! orem ipsum dolor sit amet consectetur adipisicing elit. Sunt delectus
-                nostrum vel explicabo. Soluta dignissimos! <input type="text" class="fs-6"> ".</p>
+                nostrum vel explicabo. Soluta dignissimos! <input type="text" class="fs-6" formControlName="wordToComplete" (blur)="enableButton()"> ".</p>
         </form>
     </div>
 
