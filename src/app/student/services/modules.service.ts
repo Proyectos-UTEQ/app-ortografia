@@ -3,6 +3,7 @@ import { environment } from '../../../environments/environment';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { ApiResponseAllModulesI, DataAllModulesI } from '../interfaces/modules';
+import { ApiResponseGetActivitiesByLessonI } from '../interfaces/lessons';
 
 @Injectable({
   providedIn: 'root'
@@ -41,7 +42,19 @@ export class ModulesService {
     return this.http.get<DataAllModulesI>(this.urlApi + `/api/module/${idModule}`, this.options);
   }
 
-  
+  //Método que consume el servicio para generar una nueva lección según el ID del módulo
+  newLesson(headers: Map<string, any>, idModule: number): Observable<number> {
+    this.options = this.getHeaders(headers);
+    return this.http.post<number>(this.urlApi + `/api/module/${idModule}/test`, null, this.options);
+  }
+
+  //Obtener las actividades según la nueva lección generada para un módulo seleccionado
+  getActivitiesByLesson(headers: Map<string, any>, lessonId: number): Observable<ApiResponseGetActivitiesByLessonI> {
+    this.options = this.getHeaders(headers);
+    return this.http.get<ApiResponseGetActivitiesByLessonI>(this.urlApi + `/api/module/test/${lessonId}`, this.options);
+  }
+
+
   //Método que cambia el valor a la variable selected para determinar si existe una opción seleccionada
   setSelectedOption(optionId: string) {
     this.selectedOption.next(optionId);
@@ -51,12 +64,12 @@ export class ModulesService {
   getSelectedOption(): Observable<string> {
     return this.selectedOption.asObservable();
   }
-  
+
   //Método que obtiene los headers
   public getHeaders(headers: Map<string, any> | undefined) {
     if (headers != null) {
       headers.forEach((value, key) => {
-        if(this.headers.has(key))
+        if (this.headers.has(key))
           this.headers = this.headers.delete(key);
         this.headers = this.headers.append(key, value || '');
       });

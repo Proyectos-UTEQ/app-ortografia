@@ -1,7 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import * as AOS from 'aos';
 import { ModulesService } from '../../../services/modules.service';
+import { QuestionI } from '../../../interfaces/lessons';
 
 @Component({
   selector: 'app-select-several-correct',
@@ -13,6 +14,7 @@ import { ModulesService } from '../../../services/modules.service';
   styleUrls: ['./select-several-correct.component.css', './../select-with-sentence/select-with-sentence.component.css']
 })
 export class SelectSeveralCorrectComponent {
+  @Input() question: QuestionI = {} as QuestionI;
 
   //Variables
   selectedOption: string = '';
@@ -34,6 +36,13 @@ export class SelectSeveralCorrectComponent {
 
   //ngOnInit()
   ngOnInit(){
+    console.log("Pregunta recibida");
+    console.log(this.question);
+    if (this.question && this.question.options && this.question.options.text_options) {
+      this.options.forEach((option, index) => {
+        option.label = this.question.options.text_options[index];
+      });
+    }
     AOS.init();
   }
 

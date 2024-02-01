@@ -16,6 +16,7 @@ import { environment } from '../../../../../environments/environment';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { Router } from '@angular/router';
 import * as iconos from '@fortawesome/free-solid-svg-icons';
+import { ActivitiesContainerComponent } from '../activities-container/activities-container.component';
 
 @Component({
   selector: 'app-modules',
@@ -65,7 +66,7 @@ export class ModulesComponent {
     this.getAllModules(this.currentPage, this.itemsForPage, this.orderBy, this.modeOrder);
   }
 
-  /*Método que obtiene los headers*/
+  //Método que obtiene los headers
   getHeaders() {
     let headers = new Map();
     headers.set("token", sessionStorage.getItem("token"));
@@ -147,10 +148,12 @@ export class ModulesComponent {
   }
 
   //Método que muestra un alert para preguntar si desea practiar en el módulo
-  showAlertPractice(nameModule: string) {
+  showAlertPractice(nameModule: string, moduleID: number) {
     this.sweetAlerts.alertConfirmCancelQuestion("Nueva práctica", "¿Deseas practicar ahora en el módulo \"" + nameModule + "\"?").then(respuesta => {
       if (respuesta.value == true) {
-        //Animación de carga
+        /* this.spinnerStatus = false; */
+        ActivitiesContainerComponent.moduleID = moduleID;
+        this.toastr.showToastSuccess("Se ha generado una nueva práctica", "¡Éxito!");
         this.router.navigateByUrl('student/home/theory');
       }
     });
@@ -197,15 +200,15 @@ export class ModulesComponent {
   }
 
   //Método que determina que modal se debe abrir (Practicar o suscribirse)
-  showAlertPracticeOrSubscribe(module: DataAllModulesI, statusFilter: string): void {
+  showAlertPracticeOrSubscribe(module: DataAllModulesI, statusFilter: string, moduleID:number): void {
     if (statusFilter === 'all') {
       if (module.is_subscribed)
-        this.showAlertPractice(module.title);
+        this.showAlertPractice(module.title, moduleID);
       else
         this.showAlertSuscribe(module.title, module.code);
     } 
     else if (statusFilter === 'subscribed')
-      this.showAlertPractice(module.title);
+      this.showAlertPractice(module.title, moduleID);
   }
 
   //Icons to use

@@ -1,3 +1,7 @@
+@if(!spinnerStatus){
+    <app-spinner></app-spinner>
+}
+
 <div class="row justify-content-center container-general">
     <div class="col-11 col-md-8 col-lg-8 container-theory mt-3 justify-content-center">
         <!--Header-->
@@ -21,11 +25,25 @@
         <!--Body-->
         <div class="row container-activity justify-content-center align-items-center">
             <div class="col-xs-12 col-sm-12 col-md-11 col-lg-9 col-xl-8">
-                <!-- <app-select-with-sentence></app-select-with-sentence> -->
-                <!-- <app-select-several-correct></app-select-several-correct> -->
-                <!--  <app-complete-paragraph></app-complete-paragraph> -->
-                <!--  <app-order-words></app-order-words> -->
-                <!-- <app-true-or-false></app-true-or-false> -->
+                @for(activity of arrayActivities; track $index){
+                    @if(nextActivity == ($index+1)){
+                        @if(activity.question.type_question == "multi_choice_text" && activity.question.options.select_mode == "multiple"){
+                            <app-select-several-correct [question]="activity.question"></app-select-several-correct>
+                        }
+                        @if(activity.question.type_question == "multi_choice_text" && activity.question.options.select_mode == "single"){
+                            <app-select-with-sentence></app-select-with-sentence>
+                        }
+                        @if(activity.question.type_question == "order_word"){
+                            <app-order-words></app-order-words>
+                        }
+                        @if(activity.question.type_question == "true_or_false"){
+                            <app-true-or-false></app-true-or-false>
+                        }
+                        @if(activity.question.type_question == "complete_word"){
+                            <app-order-words></app-order-words>
+                        }
+                    }
+                }
             </div>
         </div>
     </div>
@@ -39,14 +57,16 @@
                 <button class="btn btn-outline-primary btn-lg" (click)="leavePractice()">
                     <fa-icon [icon]="iconExit"></fa-icon> Abandonar
                 </button>
-                @if(selectedOption != ''){
+               <!--  @if(selectedOption != ''){
                     <button class="btn btn-primary btn-lg" [disabled]="false">
-                        Comenzar <fa-icon [icon]="iconNext"></fa-icon></button>
+                        Siguiente <fa-icon [icon]="iconNext"></fa-icon></button>
                 }
                 @else {
                     <button class="btn btn-primary btn-lg" [disabled]="true">
-                        Comenzar <fa-icon [icon]="iconNext"></fa-icon></button>
-                }
+                        Siguiente <fa-icon [icon]="iconNext"></fa-icon></button>
+                } -->
+                <button class="btn btn-primary btn-lg" [disabled]="false" (click)="checkAnswer()">
+                    Siguiente <fa-icon [icon]="iconNext"></fa-icon></button>
             </div>
         </div>
     </div>
