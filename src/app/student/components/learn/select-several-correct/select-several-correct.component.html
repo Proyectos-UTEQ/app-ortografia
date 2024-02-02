@@ -13,10 +13,10 @@
     <div class="row" role="group" aria-label="Basic checkbox button group">
         <!--Columna izquierda-->
         <div class="col-6">
-            @for(option of options.slice(0,3); track option.id){
+            @for(option of arrayOptions.slice(0,3); track option.id){
             <div class="col-12 d-flex justify-content-start align-items-center mb-3 option"
-                [class.selected]="selectedOptions.includes(option.idHTML)" 
-                (click)="toggleOption(option.idHTML)">
+                [class.selected]="selectedOptionsForColor.includes(option.idHTML)" 
+                (click)="selectOption(option.idHTML)">
                 <div class="option-number">{{ option.optionNumber }}</div>
                 <input type="checkbox" class="btn-check" id="{{ option.idHTML }}" autocomplete="off" [(ngModel)]="option.selected">
                 <label class="btn btn-outline-secondary" [for]="option.idHTML">{{ option.label }}</label>
@@ -25,10 +25,10 @@
         </div>
         <!--Columna derecha-->
         <div class="col-6">
-            @for(option of options.slice(3,6); track option.id){
+            @for(option of arrayOptions.slice(3,6); track option.id){
             <div class="col-12 d-flex justify-content-start align-items-center mb-3 option"
-                [class.selected]="selectedOptions.includes(option.idHTML)" 
-                (click)="toggleOption(option.idHTML)">
+                [class.selected]="selectedOptionsForColor.includes(option.idHTML)" 
+                (click)="selectOption(option.idHTML)">
                 <div class="option-number">{{ option.optionNumber }}</div>
                 <input type="checkbox" class="btn-check" id="{{ option.idHTML }}" autocomplete="off" [(ngModel)]="option.selected">
                 <label class="btn btn-outline-secondary" [for]="option.idHTML">{{ option.label }}</label>

@@ -11,7 +11,7 @@
                 alt="img-activity">
         </div>
         <div class="col-12 col-md-9 col-lg-9 d-flex align-items-center justify-content-center">
-            <p>Reordena las palabras que se muestran a conitnuación para que la oración tome sentido</p>
+            <p>{{question.text_root}}</p>
         </div>
     </div>
 
@@ -19,7 +19,7 @@
     <div class="row d-flex mb-4">
         <div class="col d-flex align-items-center">
             <div cdkDropList cdkDropListOrientation="horizontal" class="example-list" (cdkDropListDropped)="drop($event)">
-                @for (timePeriod of timePeriods; track timePeriod) {
+                @for (timePeriod of arrayWords; track timePeriod) {
                   <div class="example-box" cdkDrag>{{timePeriod}}</div>
                 }
               </div>

@@ -1,8 +1,8 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import * as AOS from 'aos';
 import { ModulesService } from '../../../services/modules.service';
 import { QuestionI } from '../../../interfaces/lessons';
+import * as AOS from 'aos';
 
 @Component({
   selector: 'app-select-several-correct',
@@ -14,12 +14,11 @@ import { QuestionI } from '../../../interfaces/lessons';
   styleUrls: ['./select-several-correct.component.css', './../select-with-sentence/select-with-sentence.component.css']
 })
 export class SelectSeveralCorrectComponent {
-  @Input() question: QuestionI = {} as QuestionI;
-
   //Variables
-  selectedOption: string = '';
-  selectedOptions: string[] = [];
-  options = [
+  @Input() question: QuestionI = {} as QuestionI;
+  @Output() multiAnswers: EventEmitter<string[]> = new EventEmitter<string[]>();
+  selectedOptionsForColor: string[] = []; //Array para cambiar los colores de las opciones seleccionadas
+  arrayOptions = [
     { id: '1', idHTML: 'option1', label: 'Opción 1', optionNumber: 'a', selected: false },
     { id: '2', idHTML: 'option2', label: 'Opción 2', optionNumber: 'b', selected: false },
     { id: '3', idHTML: 'option3', label: 'Opción 3', optionNumber: 'c', selected: false },
@@ -33,13 +32,11 @@ export class SelectSeveralCorrectComponent {
     private modulesService: ModulesService
   ) { }
 
-
   //ngOnInit()
-  ngOnInit(){
-    console.log("Pregunta recibida");
-    console.log(this.question);
+  ngOnInit() {
+    //Agrega las preguntas al array options
     if (this.question && this.question.options && this.question.options.text_options) {
-      this.options.forEach((option, index) => {
+      this.arrayOptions.forEach((option, index) => {
         option.label = this.question.options.text_options[index];
       });
     }
@@ -47,15 +44,20 @@ export class SelectSeveralCorrectComponent {
   }
 
   //Método que agrega las opciones seleccionadas al array selectedOptions o las quita si ya existen
-  toggleOption(optionId: string): void {
-    const selectedOption = this.options.find(option => option.idHTML === optionId);
-    if (selectedOption) {
-      selectedOption.selected = !selectedOption.selected;
-      // Actualiza el estado de selectedOptions basado en options
-      this.selectedOptions = this.options
+  selectOption(optionId: string): void {
+    const selectedOptionID = this.arrayOptions.find(option => option.idHTML === optionId);
+    if (selectedOptionID) {
+      selectedOptionID.selected = !selectedOptionID.selected;
+      //Mapea las opciones seleccionadas para cambiar el color mediante el id
+      this.selectedOptionsForColor = this.arrayOptions
         .filter(option => option.selected)
         .map(option => option.idHTML);
-        this.modulesService.setSelectedOption(optionId);
+      this.modulesService.setAnsweredOption(optionId);
+      //Mapea las opciones con el label, para enviar el array con opciones seleccionadas
+      const selectedOptionsForAnswer = this.arrayOptions
+      .filter(option => option.selected)
+      .map(option => option.label);
+    this.multiAnswers.emit(selectedOptionsForAnswer);
     }
   }
 }

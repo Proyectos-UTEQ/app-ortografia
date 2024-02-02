@@ -3,9 +3,9 @@ img {
 }
 
 /*Hover y no hover para cuando se selecciona una opción*/
-.option:not(.selected):hover,
-.option:not(.selected):hover>.option-number {
-    background-color: rgb(247, 247, 247);
+.option:not(.selected) .option-number,
+.option:not(.selected) label {
+    color: #ccc; /* Color de texto original */
 }
 
 .option {

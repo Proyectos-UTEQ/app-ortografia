@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import * as AOS from 'aos';
 import { ModulesService } from '../../../services/modules.service';
+import * as AOS from 'aos';
 
 @Component({
   selector: 'app-complete-paragraph',
@@ -13,8 +13,8 @@ import { ModulesService } from '../../../services/modules.service';
   styleUrls: ['./complete-paragraph.component.css', './../select-with-sentence/select-with-sentence.component.css']
 })
 export class CompleteParagraphComponent {
+  
   //Variables
-  selectedOption: string = '';
   completeWordForm!: FormGroup;
 
   //Constructror
@@ -44,6 +44,6 @@ export class CompleteParagraphComponent {
   //Método que verifica si ya se escribió algo en el input
   enableButton(){
     if(this.completeWordForm.value.wordToComplete != '')
-      this.modulesService.setSelectedOption('option1');
+      this.modulesService.setAnsweredOption('option1');
   }
 }

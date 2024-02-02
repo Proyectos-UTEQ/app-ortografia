@@ -18,7 +18,7 @@ export class ModulesService {
     'Access-Control-Allow-Origin': '*'
   });
   options = {}
-  selectedOption = new BehaviorSubject<string>('');
+  questionAnswered = new BehaviorSubject<string>('');
 
   // Constructor
   constructor(
@@ -55,14 +55,14 @@ export class ModulesService {
   }
 
 
-  //Método que cambia el valor a la variable selected para determinar si existe una opción seleccionada
-  setSelectedOption(optionId: string) {
-    this.selectedOption.next(optionId);
+  //Método que cambia el valor a la variable selected para determinar si existe una opción seleccionada o completada
+  setAnsweredOption(answer: string) {
+    this.questionAnswered.next(answer);
   }
 
-  //Método que obtiene el valor de la variable selected
+  //Método que obtiene el valor para determinar si la pregunta ya fue respondida y proceder a validarla
   getSelectedOption(): Observable<string> {
-    return this.selectedOption.asObservable();
+    return this.questionAnswered.asObservable();
   }
 
   //Método que obtiene los headers

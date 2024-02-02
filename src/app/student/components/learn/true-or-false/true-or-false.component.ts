@@ -1,6 +1,7 @@
-import { Component } from '@angular/core';
-import * as AOS from 'aos';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { ModulesService } from '../../../services/modules.service';
+import { QuestionI } from '../../../interfaces/lessons';
+import * as AOS from 'aos';
 
 @Component({
   selector: 'app-true-or-false',
@@ -11,6 +12,8 @@ import { ModulesService } from '../../../services/modules.service';
 })
 export class TrueOrFalseComponent {
   //Variables
+  @Input() question: QuestionI = {} as QuestionI;
+  @Output() trueOrFalseAnswer: EventEmitter<boolean> = new EventEmitter<boolean>();
   selectedOption: string = '';
 
   //Constructror
@@ -24,10 +27,11 @@ export class TrueOrFalseComponent {
   }
 
   //Método que selecciona la opción al hacer click
-  selectOption(optionId: string) {
+  selectOption(optionId: string, option: boolean) {
     const inputElement = document.getElementById(optionId) as HTMLInputElement;
     inputElement.click();
     this.selectedOption = optionId;
-    this.modulesService.setSelectedOption(optionId);
+    this.modulesService.setAnsweredOption(optionId);
+    this.trueOrFalseAnswer.emit(option);
   }
 }
