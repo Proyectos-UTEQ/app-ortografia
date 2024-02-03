@@ -7,27 +7,22 @@
     <!--Orden-->
     <div class="row d-flex mb-4">
         <div class="col d-flex align-items-center">
-            <p>Escribe la palabra que hace falta en el párrafo que se presenta a continuacón:</p>
+            <p>{{activity.question.text_root}}</p>
         </div>
     </div>
 
     <!--Párrafo-->
     <div class="row d-flex mb-4">
         <form [formGroup]="completeWordForm" class="col d-flex align-items-center">
-            <p>"Lorem ipsum dolor sit amet consectetur adipisicing elit. Sunt delectus nostrum vel explicabo. Error
-                doloremque soluta dignissimos! orem ipsum dolor sit amet consectetur adipisicing elit. Sunt delectus
-                nostrum vel explicabo. Soluta dignissimos! <input type="text" class="fs-6" formControlName="wordToComplete" (blur)="enableButton()"> ".</p>
+            <p>L{{activity.question.options.text_to_complete}} <input type="text" class="fs-6" formControlName="wordToComplete"> ".</p>
         </form>
     </div>
 
-    <br/>
+    <br />
     <!--Pista-->
     <div class="row d-flex mb-4">
         <div class="col d-flex align-items-center">
-            <p><b class="help">Pista: </b>Lorem ipsum dolor sit amet consectetur adipisicing elit. Sunt delectus nostrum vel explicabo. Error
-                doloremque soluta dignissimos! orem ipsum dolor sit amet consectetur adipisicing elit. Sunt delectus
-                nostrum vel explicabo. Error
-                doloremque soluta dignissimos!</p>
+            <p><b class="help">Pista: </b>{{activity.question.options.hind}}</p>
         </div>
     </div>
 </body>

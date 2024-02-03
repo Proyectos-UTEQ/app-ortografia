@@ -1,6 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, EventEmitter, HostListener, Input, Output } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ModulesService } from '../../../services/modules.service';
+import { ActivitiesDetailI } from '../../../interfaces/lessons';
+import { Subject, debounceTime } from 'rxjs';
 import * as AOS from 'aos';
 
 @Component({
@@ -13,9 +15,14 @@ import * as AOS from 'aos';
   styleUrls: ['./complete-paragraph.component.css', './../select-with-sentence/select-with-sentence.component.css']
 })
 export class CompleteParagraphComponent {
-  
+
   //Variables
   completeWordForm!: FormGroup;
+  @Input() activity: ActivitiesDetailI = {} as ActivitiesDetailI;
+  @Output() textToComplete: EventEmitter<string[]> = new EventEmitter<string[]>();
+  @Output() answerUserId: EventEmitter<number> = new EventEmitter<number>();
+
+  private textComplete = new Subject<string>();
 
   //Constructror
   constructor(
@@ -26,6 +33,10 @@ export class CompleteParagraphComponent {
   //ngOnInit()
   ngOnInit() {
     this.createCompleteWordForm();
+    this.textComplete.pipe(debounceTime(500)).subscribe((searchTerm) => {
+      this.answerUserId.emit(this.activity.answer_user.answer_user_id);
+      this.modulesService.setAnsweredOption('option1');
+    });
     AOS.init();
   }
 
@@ -41,9 +52,13 @@ export class CompleteParagraphComponent {
     });
   }
 
-  //Método que verifica si ya se escribió algo en el input
-  enableButton(){
-    if(this.completeWordForm.value.wordToComplete != '')
-      this.modulesService.setAnsweredOption('option1');
+  //Método que escucha el evento de teclado para saber cuando dejó de escribir
+  @HostListener('document:keyup', ['$event'])
+  handleKeyboardEvent(event: KeyboardEvent) {
+    if (event.target instanceof HTMLInputElement) {
+      if (this.completeWordForm.get("wordToComplete")?.value !== null && this.completeWordForm.get("wordToComplete")?.value != '' && this.completeWordForm.get("wordToComplete")?.value != undefined) {
+        this.textComplete.next(this.completeWordForm.get("wordToComplete")?.value);
+      }
+    }
   }
 }

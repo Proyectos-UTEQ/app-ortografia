@@ -1,5 +1,5 @@
 import { OrderWordsComponent } from './../order-words/order-words.component';
-import { Component, Input } from '@angular/core';
+import { Component } from '@angular/core';
 import { SweetAlertsConfirm } from '../../../../shared-components/alerts/confirm-alerts.component';
 import { Router } from '@angular/router';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
@@ -11,9 +11,8 @@ import { ModulesService } from '../../../services/modules.service';
 import { ActivitiesDetailI, ApiResponseGetActivitiesByLessonI, ApiResponseValidateAnswerI, BodyValidateAnswerI } from '../../../interfaces/lessons';
 import { ToastAlertsService } from '../../../../shared-components/services/toast-alerts.service';
 import { SpinnerComponent } from '../../../../shared-components/spinner/spinner.component';
-import * as iconos from '@fortawesome/free-solid-svg-icons';
-import { ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import * as iconos from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-activities-container',
@@ -45,6 +44,7 @@ export class ActivitiesContainerComponent {
   nextActivity: number = 1;
 
   answersSelectOrOrderActivity: string[] = [];
+  answerTextToCompleteActivity: string[] = [];
   answerTrueOrFalseActivity: boolean = false;
 
   answerUserId: number = 0;
@@ -64,7 +64,7 @@ export class ActivitiesContainerComponent {
   //ngOnInit
   ngOnInit() {
     /* this.generateNewLesson(); */
-    this.getActivitiesByLessonID(60);
+    this.getActivitiesByLessonID(63);
     this.modulesService.getSelectedOption().subscribe(status => {
       this.isSelectedOption = status;
     });
@@ -130,6 +130,11 @@ export class ActivitiesContainerComponent {
     this.answerTrueOrFalseActivity = optionBoolean;
   }
 
+  //Método que obtiene el texto ingresado en la actividad de completar párrafo
+  getTextToComplete(textToComplete: string[]) {
+    this.answerTextToCompleteActivity = textToComplete;
+  }
+
   //Método que ejecuta un alert para confirmar si desea abandonar la práctica
   leavePractice() {
     this.sweetAlerts.alertConfirmCancelQuestion("Abandonar práctica", "¿Estás seguro de querer abandonar la práctica que tiene en curso?").then(respuesta => {
@@ -150,21 +155,15 @@ export class ActivitiesContainerComponent {
       let body: BodyValidateAnswerI = {
         true_or_false: this.answerTrueOrFalseActivity,
         text_options: this.answersSelectOrOrderActivity,
-        text_to_complete: [],
+        text_to_complete: this.answerTextToCompleteActivity,
       }
-      console.log("Body a enviar");
-      console.log(body);
       this.modulesService.validateResponseUser(this.getHeaders(), this.answerUserId, body)
         .subscribe({
           next: (data: ApiResponseValidateAnswerI) => {
-            console.log("answerUserId");
-            console.log(this.answerUserId);
-
             this.statusAnswer = data.is_correct ? 1 : 2;
             this.feedback = data.feedback;
             this.nameButton = "Siguiente";
 
-            console.log(this.statusAnswer);
             console.log("Respuesta de la API de la validación");
             console.log(data);
           }

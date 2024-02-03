@@ -26,36 +26,35 @@
         <div class="row container-activity justify-content-center align-items-center">
             <div class="col-xs-12 col-sm-12 col-md-11 col-lg-9 col-xl-8">
                 @for(activity of arrayActivities; track $index){
-                @if(nextActivity == ($index + 1)){
-                @if(activity.question.type_question == "multi_choice_text" && activity.question.options.select_mode ==
-                "multiple"){
-                <app-select-several-correct [activity]="activity" (multiAnswers)="getMultiOptionsSelected($event)"
-                    (answerUserId)="getAnswerUserId($event)"></app-select-several-correct>
-                }
-                @if(activity.question.type_question == "multi_choice_text" && activity.question.options.select_mode ==
-                "single"){
-                <app-select-with-sentence [activity]="activity" (singleAnswer)="getSingleOptionSelected($event)"
-                    (answerUserId)="getAnswerUserId($event)"></app-select-with-sentence>
-                }
-                @if(activity.question.type_question == "order_word"){
-                <app-order-words [activity]="activity" (orderedWords)="getWordsInOrder($event)"
-                    (answerUserId)="getAnswerUserId($event)"></app-order-words>
-                }
-                @if(activity.question.type_question == "true_or_false"){
-                <app-true-or-false [activity]="activity" (trueOrFalseAnswer)="getTrueOrFalse($event)"
-                    (answerUserId)="getAnswerUserId($event)"></app-true-or-false>
-                }
-                @if(activity.question.type_question == "complete_word"){
-                <app-complete-paragraph></app-complete-paragraph>
-                }
-                }
+                    @if(nextActivity == ($index + 1)){
+                        @if(activity.question.type_question == "multi_choice_text" && activity.question.options.select_mode == "multiple"){
+                            <app-select-several-correct [activity]="activity" (multiAnswers)="getMultiOptionsSelected($event)"
+                                (answerUserId)="getAnswerUserId($event)"></app-select-several-correct>
+                        }
+                        @if(activity.question.type_question == "multi_choice_text" && activity.question.options.select_mode == "single"){
+                            <app-select-with-sentence [activity]="activity" (singleAnswer)="getSingleOptionSelected($event)"
+                                (answerUserId)="getAnswerUserId($event)"></app-select-with-sentence>
+                        }
+                        @if(activity.question.type_question == "order_word"){
+                            <app-order-words [activity]="activity" (orderedWords)="getWordsInOrder($event)"
+                                (answerUserId)="getAnswerUserId($event)"></app-order-words>
+                        }
+                        @if(activity.question.type_question == "true_or_false"){
+                            <app-true-or-false [activity]="activity" (trueOrFalseAnswer)="getTrueOrFalse($event)"
+                                (answerUserId)="getAnswerUserId($event)"></app-true-or-false>
+                        }
+                        @if(activity.question.type_question == "complete_word"){
+                            <app-complete-paragraph [activity]="activity" (textToComplete)="getTextToComplete($event)"
+                            (answerUserId)="getAnswerUserId($event)"></app-complete-paragraph>
+                        }
+                    }
                 }
             </div>
         </div>
     </div>
 </div>
 
-
+<!--Footer-->
 <div class="row fixed-bottom">
     <div class="row footer d-flex justify-content-center align-items-center"
         [ngStyle]="{'background-color': statusAnswer == 1 ? '#E2E0F9' : statusAnswer == 2 ? '#FFCAC8' : '#FFF'}">
