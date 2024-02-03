@@ -12,11 +12,14 @@ import { ActivitiesDetailI, ApiResponseGetActivitiesByLessonI, ApiResponseValida
 import { ToastAlertsService } from '../../../../shared-components/services/toast-alerts.service';
 import { SpinnerComponent } from '../../../../shared-components/spinner/spinner.component';
 import * as iconos from '@fortawesome/free-solid-svg-icons';
+import { ReactiveFormsModule } from '@angular/forms';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-activities-container',
   standalone: true,
   imports: [
+    CommonModule,
     FontAwesomeModule,
     SelectWithSentenceComponent,
     SelectSeveralCorrectComponent,
@@ -46,6 +49,9 @@ export class ActivitiesContainerComponent {
 
   answerUserId: number = 0;
   statusAnswer: number = 0;
+
+  nameButton: string = "Comprobar";
+  feedback: string = "";
 
   //constructor
   constructor(
@@ -140,26 +146,36 @@ export class ActivitiesContainerComponent {
 
   //Método que valida la respuesta y avanza a la siguiente pregunta
   checkAnswer() {
-    let body: BodyValidateAnswerI = {
-      true_or_false: this.answerTrueOrFalseActivity,
-      text_options: this.answersSelectOrOrderActivity,
-      text_to_complete: [],
-    }
-    console.log("Body a enviar");
-    console.log(body);
-    this.modulesService.validateResponseUser(this.getHeaders(), this.answerUserId, body)
-      .subscribe({
-        next: (data: ApiResponseValidateAnswerI) => {
-          console.log("answerUserId");
-          console.log(this.answerUserId);
+    if(this.nameButton == "Comprobar"){
+      let body: BodyValidateAnswerI = {
+        true_or_false: this.answerTrueOrFalseActivity,
+        text_options: this.answersSelectOrOrderActivity,
+        text_to_complete: [],
+      }
+      console.log("Body a enviar");
+      console.log(body);
+      this.modulesService.validateResponseUser(this.getHeaders(), this.answerUserId, body)
+        .subscribe({
+          next: (data: ApiResponseValidateAnswerI) => {
+            console.log("answerUserId");
+            console.log(this.answerUserId);
 
-          this.statusAnswer = data.is_correct ? 1 : 0;
-          console.log("Respuesta de la API de la validación");
-          console.log(data);
-        }
-      })
+            this.statusAnswer = data.is_correct ? 1 : 2;
+            this.feedback = data.feedback;
+            this.nameButton = "Siguiente";
+
+            console.log(this.statusAnswer);
+            console.log("Respuesta de la API de la validación");
+            console.log(data);
+          }
+        })
+    }
+    else{
+      this.nameButton = "Comprobar";
+      this.statusAnswer = 0;
       this.nextActivity++;
       this.isSelectedOption = '';
+    }
   }
 
   //Icons to use
@@ -167,4 +183,6 @@ export class ActivitiesContainerComponent {
   iconNext = iconos.faArrowRight;
   iconLeave = iconos.faXmark;
   iconLifes = iconos.faHeart;
+  iconCheck = iconos.faCircleCheck;
+  iconError = iconos.faCircleXmark;
 }

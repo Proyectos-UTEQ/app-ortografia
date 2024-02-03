@@ -66,3 +66,23 @@
 .container-activity{
     height: 70vh;
 }
+
+.btn-info {
+    background-color: var(--primary-color);
+    color: var(--white) !important;
+    border-color: var(--primary-color);
+    padding: 5px 20px !important;
+    border-radius: 50px !important;
+    cursor: pointer !important;
+    font-size: 1rem !important;
+}
+
+.btn-outline-info {
+    background-color: var(--white);
+    color: var(--primary-color) !important;
+    border-color:var(--primary-color);
+    padding: 5px 20px !important;
+    border-radius: 50px !important;
+    cursor: pointer !important;
+    font-size: 1rem !important;
+}
