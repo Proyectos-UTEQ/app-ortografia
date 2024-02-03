@@ -1,5 +1,5 @@
 import { OrderWordsComponent } from './../order-words/order-words.component';
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { SweetAlertsConfirm } from '../../../../shared-components/alerts/confirm-alerts.component';
 import { Router } from '@angular/router';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
@@ -8,7 +8,7 @@ import { SelectSeveralCorrectComponent } from '../select-several-correct/select-
 import { CompleteParagraphComponent } from '../complete-paragraph/complete-paragraph.component';
 import { TrueOrFalseComponent } from '../true-or-false/true-or-false.component';
 import { ModulesService } from '../../../services/modules.service';
-import { ActivitiesDetailI, ApiResponseGetActivitiesByLessonI } from '../../../interfaces/lessons';
+import { ActivitiesDetailI, ApiResponseGetActivitiesByLessonI, ApiResponseValidateAnswerI, BodyValidateAnswerI } from '../../../interfaces/lessons';
 import { ToastAlertsService } from '../../../../shared-components/services/toast-alerts.service';
 import { SpinnerComponent } from '../../../../shared-components/spinner/spinner.component';
 import * as iconos from '@fortawesome/free-solid-svg-icons';
@@ -35,16 +35,17 @@ import * as iconos from '@fortawesome/free-solid-svg-icons';
 })
 export class ActivitiesContainerComponent {
   //Variables
-  selectedOption: string = '';
+  isSelectedOption: string = '';
   static moduleID: number = 0;
   spinnerStatus: boolean = false;
   arrayActivities: ActivitiesDetailI[] = [];
   nextActivity: number = 1;
 
-  answersMultiSelectActivity: string[] = [];
-  answerSingleSelectActivity: string[] = [];
-  answerOrderActivity: string[] = [];
+  answersSelectOrOrderActivity: string[] = [];
   answerTrueOrFalseActivity: boolean = false;
+
+  answerUserId: number = 0;
+  statusAnswer: number = 0;
 
   //constructor
   constructor(
@@ -58,8 +59,8 @@ export class ActivitiesContainerComponent {
   ngOnInit() {
     /* this.generateNewLesson(); */
     this.getActivitiesByLessonID(60);
-    this.modulesService.getSelectedOption().subscribe(option => {
-      this.selectedOption = option;
+    this.modulesService.getSelectedOption().subscribe(status => {
+      this.isSelectedOption = status;
     });
   }
 
@@ -105,17 +106,17 @@ export class ActivitiesContainerComponent {
 
   //Método que obtiene las opciones seleccionadas en la actividad de select-several-correct
   getMultiOptionsSelected(optionsSelected: string[]) {
-    this.answersMultiSelectActivity = optionsSelected;
+    this.answersSelectOrOrderActivity = optionsSelected;
   }
 
   //Método que obtiene la opción seleccionada en la actividad de select-with-sentence
   getSingleOptionSelected(optionSelected: string[]) {
-    this.answerSingleSelectActivity = optionSelected;
+    this.answersSelectOrOrderActivity = optionSelected;
   }
 
   //Método que obtiene el array con las palabras ordenadas en la actividad de ordenar palabras
   getWordsInOrder(orderedWords: string[]) {
-    this.answerOrderActivity = orderedWords;
+    this.answersSelectOrOrderActivity = orderedWords;
   }
 
   //Método que obtiene el array con las palabras ordenadas en la actividad de ordenar palabras
@@ -132,11 +133,34 @@ export class ActivitiesContainerComponent {
     });
   }
 
-  //Método que valida la respuesta y avanza a la siguiente pregunta
-  checkAnswer(){
-    this.nextActivity++;
+  //Método que obtiene el answerUserId
+  getAnswerUserId(answerUserId: number){
+    this.answerUserId = answerUserId;
   }
 
+  //Método que valida la respuesta y avanza a la siguiente pregunta
+  checkAnswer() {
+    let body: BodyValidateAnswerI = {
+      true_or_false: this.answerTrueOrFalseActivity,
+      text_options: this.answersSelectOrOrderActivity,
+      text_to_complete: [],
+    }
+    console.log("Body a enviar");
+    console.log(body);
+    this.modulesService.validateResponseUser(this.getHeaders(), this.answerUserId, body)
+      .subscribe({
+        next: (data: ApiResponseValidateAnswerI) => {
+          console.log("answerUserId");
+          console.log(this.answerUserId);
+
+          this.statusAnswer = data.is_correct ? 1 : 0;
+          console.log("Respuesta de la API de la validación");
+          console.log(data);
+        }
+      })
+      this.nextActivity++;
+      this.isSelectedOption = '';
+  }
 
   //Icons to use
   iconExit = iconos.faXmark;

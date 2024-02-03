@@ -38,15 +38,38 @@ export interface AnswerUserI {
     test_module_id: number;
     question_id: number;
     answer_id: number;
-    answer: {
-        id: number;
-        true_or_false: boolean;
-        text_options: [string],
-        text_to_complete: [string];
-    },
+    answer: AnswerI;
     responded: boolean;
     score: number;
     is_correct: boolean;
     feedback: string;
     chat_issue_id: number;
 }
+
+//Interfaz con el body requerido para validar una respuesta
+export interface BodyValidateAnswerI{
+    true_or_false: boolean;
+    text_options: string[];
+    text_to_complete: string[];
+}
+
+//Interfaz de respuesta de la API para cuando se valida una pregunta
+export interface ApiResponseValidateAnswerI {
+    answer_user_id: number;
+    test_module_id: number;
+    question_id: number;
+    answer_id: number;
+    answer: AnswerI;
+    responded: boolean;
+    score: number;
+    is_correct: boolean;
+    feedback: string;
+    chat_issue_id: number;
+  }
+
+  export interface AnswerI {
+    id: number
+    true_or_false: boolean
+    text_options: string[]
+    text_to_complete: string[]
+  }

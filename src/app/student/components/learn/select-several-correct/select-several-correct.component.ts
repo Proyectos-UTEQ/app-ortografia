@@ -1,7 +1,7 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ModulesService } from '../../../services/modules.service';
-import { QuestionI } from '../../../interfaces/lessons';
+import { ActivitiesDetailI, QuestionI } from '../../../interfaces/lessons';
 import * as AOS from 'aos';
 
 @Component({
@@ -15,8 +15,9 @@ import * as AOS from 'aos';
 })
 export class SelectSeveralCorrectComponent {
   //Variables
-  @Input() question: QuestionI = {} as QuestionI;
+  @Input() activity: ActivitiesDetailI = {} as ActivitiesDetailI;
   @Output() multiAnswers: EventEmitter<string[]> = new EventEmitter<string[]>();
+  @Output() answerUserId: EventEmitter<number> = new EventEmitter<number>();
   selectedOptionsForColor: string[] = []; //Array para cambiar los colores de las opciones seleccionadas
   arrayOptions = [
     { id: '1', idHTML: 'option1', label: 'Opción 1', optionNumber: 'a', selected: false },
@@ -35,9 +36,9 @@ export class SelectSeveralCorrectComponent {
   //ngOnInit()
   ngOnInit() {
     //Agrega las preguntas al array options
-    if (this.question && this.question.options && this.question.options.text_options) {
+    if (this.activity.question && this.activity.question.options && this.activity.question.options.text_options) {
       this.arrayOptions.forEach((option, index) => {
-        option.label = this.question.options.text_options[index];
+        option.label = this.activity.question.options.text_options[index];
       });
     }
     AOS.init();
@@ -58,6 +59,7 @@ export class SelectSeveralCorrectComponent {
       .filter(option => option.selected)
       .map(option => option.label);
     this.multiAnswers.emit(selectedOptionsForAnswer);
+    this.answerUserId.emit(this.activity.answer_user.answer_user_id);
     }
   }
 }

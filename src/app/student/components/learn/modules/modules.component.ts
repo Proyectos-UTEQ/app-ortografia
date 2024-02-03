@@ -153,10 +153,18 @@ export class ModulesComponent {
       if (respuesta.value == true) {
         /* this.spinnerStatus = false; */
         ActivitiesContainerComponent.moduleID = moduleID;
-        this.toastr.showToastSuccess("Se ha generado una nueva práctica", "¡Éxito!");
-        this.router.navigateByUrl('student/home/theory');
+        this.showSpinnerAndGoToTheory();
       }
     });
+  }
+
+  //Método que muestra el spinner por unos segundos y redirige a la teoría
+  showSpinnerAndGoToTheory() {
+    this.spinnerStatus = false;
+    setTimeout(() => {
+      this.spinnerStatus = true;
+      this.router.navigateByUrl('student/home/theory');
+    }, 1500);
   }
 
   //Método que muestra un alert para preguntar si desea suscribirse a un curso
@@ -200,13 +208,13 @@ export class ModulesComponent {
   }
 
   //Método que determina que modal se debe abrir (Practicar o suscribirse)
-  showAlertPracticeOrSubscribe(module: DataAllModulesI, statusFilter: string, moduleID:number): void {
+  showAlertPracticeOrSubscribe(module: DataAllModulesI, statusFilter: string, moduleID: number): void {
     if (statusFilter === 'all') {
       if (module.is_subscribed)
         this.showAlertPractice(module.title, moduleID);
       else
         this.showAlertSuscribe(module.title, module.code);
-    } 
+    }
     else if (statusFilter === 'subscribed')
       this.showAlertPractice(module.title, moduleID);
   }

@@ -1,3 +1,4 @@
+import { ActivitiesDetailI } from './../../../interfaces/lessons';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { ModulesService } from '../../../services/modules.service';
 import { QuestionI } from '../../../interfaces/lessons';
@@ -16,8 +17,9 @@ import * as AOS from 'aos';
 export class SelectWithSentenceComponent {
   //Variables
   selectedOptionForColor: string = '';
-  @Input() question: QuestionI = {} as QuestionI;
+  @Input() activity: ActivitiesDetailI = {} as ActivitiesDetailI;
   @Output() singleAnswer: EventEmitter<string[]> = new EventEmitter<string[]>();
+  @Output() answerUserId: EventEmitter<number> = new EventEmitter<number>();
   arrayOptions = [
     { id: '1', idHTML: 'option1', label: 'Opción 1', optionNumber: 'a', selected: false },
     { id: '2', idHTML: 'option2', label: 'Opción 2', optionNumber: 'b', selected: false },
@@ -32,9 +34,9 @@ export class SelectWithSentenceComponent {
   //ngOnInit()
   ngOnInit(){
     //Agrega las preguntas al array options
-    if (this.question && this.question.options && this.question.options.text_options) {
+    if (this.activity.question && this.activity.question.options && this.activity.question.options.text_options) {
       this.arrayOptions.forEach((option, index) => {
-        option.label = this.question.options.text_options[index];
+        option.label = this.activity.question.options.text_options[index];
       });
     }
     AOS.init();
@@ -47,6 +49,7 @@ export class SelectWithSentenceComponent {
     this.selectedOptionForColor = optionId;
     this.modulesService.setAnsweredOption(optionId);
     this.singleAnswer.emit(optionLabel);
+    this.answerUserId.emit(this.activity.answer_user.answer_user_id);
   }
 }
 

@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { ModulesService } from '../../../services/modules.service';
-import { QuestionI } from '../../../interfaces/lessons';
+import { ActivitiesDetailI, QuestionI } from '../../../interfaces/lessons';
 import * as AOS from 'aos';
 
 @Component({
@@ -12,8 +12,9 @@ import * as AOS from 'aos';
 })
 export class TrueOrFalseComponent {
   //Variables
-  @Input() question: QuestionI = {} as QuestionI;
+  @Input() activity: ActivitiesDetailI = {} as ActivitiesDetailI;
   @Output() trueOrFalseAnswer: EventEmitter<boolean> = new EventEmitter<boolean>();
+  @Output() answerUserId: EventEmitter<number> = new EventEmitter<number>();
   selectedOption: string = '';
 
   //Constructror
@@ -33,5 +34,6 @@ export class TrueOrFalseComponent {
     this.selectedOption = optionId;
     this.modulesService.setAnsweredOption(optionId);
     this.trueOrFalseAnswer.emit(option);
+    this.answerUserId.emit(this.activity.answer_user.answer_user_id);
   }
 }

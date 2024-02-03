@@ -3,7 +3,7 @@ import { environment } from '../../../environments/environment';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { ApiResponseAllModulesI, DataAllModulesI } from '../interfaces/modules';
-import { ApiResponseGetActivitiesByLessonI } from '../interfaces/lessons';
+import { ApiResponseGetActivitiesByLessonI, ApiResponseValidateAnswerI, BodyValidateAnswerI } from '../interfaces/lessons';
 
 @Injectable({
   providedIn: 'root'
@@ -63,6 +63,12 @@ export class ModulesService {
   //Método que obtiene el valor para determinar si la pregunta ya fue respondida y proceder a validarla
   getSelectedOption(): Observable<string> {
     return this.questionAnswered.asObservable();
+  }
+
+  //Método que consume el servicio para validar una pregunta
+  validateResponseUser(headers: Map<string, any>, answerUserID:number, body: BodyValidateAnswerI): Observable<ApiResponseValidateAnswerI> {
+    this.options = this.getHeaders(headers);
+    return this.http.put<ApiResponseValidateAnswerI>(this.urlApi + `/api/module/validate-answer/${answerUserID}`, body, this.options);
   }
 
   //Método que obtiene los headers
