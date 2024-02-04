@@ -3,12 +3,15 @@
     padding: 0;
 }
 
+.leave fa-icon{
+    cursor: pointer;
+}
+
 .container-general{
     overflow-y: auto;
     margin-right: 5px;
     margin-top: 5px;
 }
-
 
 .container-general::-webkit-scrollbar{
     width: 8px;
@@ -71,7 +74,7 @@
     background-color: var(--primary-color);
     color: var(--white) !important;
     border-color: var(--primary-color);
-    padding: 5px 20px !important;
+    padding: 10px 20px !important;
     border-radius: 50px !important;
     cursor: pointer !important;
     font-size: 1rem !important;
@@ -81,8 +84,12 @@
     background-color: var(--white);
     color: var(--primary-color) !important;
     border-color:var(--primary-color);
-    padding: 5px 20px !important;
+    padding: 10px 20px !important;
     border-radius: 50px !important;
     cursor: pointer !important;
     font-size: 1rem !important;
+}
+
+.feedback{
+    height: 2rem;
 }

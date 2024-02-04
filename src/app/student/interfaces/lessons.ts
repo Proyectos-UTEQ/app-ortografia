@@ -47,7 +47,7 @@ export interface AnswerUserI {
 }
 
 //Interfaz con el body requerido para validar una respuesta
-export interface BodyValidateAnswerI{
+export interface BodyValidateAnswerI {
     true_or_false: boolean;
     text_options: string[];
     text_to_complete: string[];
@@ -65,11 +65,18 @@ export interface ApiResponseValidateAnswerI {
     is_correct: boolean;
     feedback: string;
     chat_issue_id: number;
-  }
+}
 
-  export interface AnswerI {
+export interface AnswerI {
     id: number
     true_or_false: boolean
     text_options: string[]
     text_to_complete: string[]
-  }
+}
+
+//Interfaz de respuesta de la API para cuando se finaliza una lección
+export interface ApiResponseFinishLessonModuleI {
+    finish: string;
+    qualification: number;
+    test_id: number;
+}

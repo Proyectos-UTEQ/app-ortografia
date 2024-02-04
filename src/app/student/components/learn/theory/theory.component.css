@@ -38,3 +38,7 @@
     background-color: #fff;
     border-radius: 10px;
 }
+
+.btn{
+    padding: 10px 20px !important;
+}

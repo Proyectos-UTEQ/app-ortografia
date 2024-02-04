@@ -12,6 +12,7 @@ import { ActivitiesDetailI, ApiResponseGetActivitiesByLessonI, ApiResponseValida
 import { ToastAlertsService } from '../../../../shared-components/services/toast-alerts.service';
 import { SpinnerComponent } from '../../../../shared-components/spinner/spinner.component';
 import { CommonModule } from '@angular/common';
+import { FinishActivityComponent } from '../finish-activity/finish-activity.component';
 import * as iconos from '@fortawesome/free-solid-svg-icons';
 
 @Component({
@@ -26,7 +27,8 @@ import * as iconos from '@fortawesome/free-solid-svg-icons';
     OrderWordsComponent,
     TrueOrFalseComponent,
     SpinnerComponent,
-    CompleteParagraphComponent
+    CompleteParagraphComponent,
+    FinishActivityComponent
   ],
   providers: [
     SweetAlertsConfirm,
@@ -41,17 +43,20 @@ export class ActivitiesContainerComponent {
   static moduleID: number = 0;
   spinnerStatus: boolean = false;
   arrayActivities: ActivitiesDetailI[] = [];
-  nextActivity: number = 1;
-
+  lessonID: number = 0; //ID de la lección para luego enviar a finalizar prueba
+  nextActivity: number = 0; //Para avanzar a la siguiente actividad
+  //Variables para almacenar las respuestas que devuelven los componentes
   answersSelectOrOrderActivity: string[] = [];
   answerTextToCompleteActivity: string[] = [];
   answerTrueOrFalseActivity: boolean = false;
 
   answerUserId: number = 0;
-  statusAnswer: number = 0;
+  statusAnswer: number = 0; //1 para respuesta correcta, 2 para respuesta incorrecta, 0 para respuesta sin validar
 
   nameButton: string = "Comprobar";
-  feedback: string = "";
+  feedback: string = ""; //Mensaje para el feedback
+  totalProgressBar: number = 0; //Barra de progreso
+  loadingButton: boolean = false;
 
   //constructor
   constructor(
@@ -63,8 +68,7 @@ export class ActivitiesContainerComponent {
 
   //ngOnInit
   ngOnInit() {
-    /* this.generateNewLesson(); */
-    this.getActivitiesByLessonID(63);
+    this.generateNewLesson();
     this.modulesService.getSelectedOption().subscribe(status => {
       this.isSelectedOption = status;
     });
@@ -85,7 +89,6 @@ export class ActivitiesContainerComponent {
       next: (data: any) => {
         if (data != 0) {
           this.spinnerStatus = true;
-          this.toastr.showToastSuccess("Se ha generado una nueva práctica", "¡Éxito!");
           this.getActivitiesByLessonID(data.testId)
         }
         else {
@@ -98,13 +101,13 @@ export class ActivitiesContainerComponent {
 
   //Método que obtiene el listado de las actividades según el ID del módulo
   getActivitiesByLessonID(lessonID: number) {
+    this.lessonID = lessonID;
     this.spinnerStatus = false;
     this.modulesService.getActivitiesByLesson(this.getHeaders(), lessonID)
       .subscribe({
         next: (data: ApiResponseGetActivitiesByLessonI) => {
           this.spinnerStatus = true;
-          console.log("Listado de actividades")
-          console.log(data);
+          this.totalProgressBar = data.test_module_question_answers.length;
           this.arrayActivities = data.test_module_question_answers;
         }
       })
@@ -137,7 +140,7 @@ export class ActivitiesContainerComponent {
 
   //Método que ejecuta un alert para confirmar si desea abandonar la práctica
   leavePractice() {
-    this.sweetAlerts.alertConfirmCancelQuestion("Abandonar práctica", "¿Estás seguro de querer abandonar la práctica que tiene en curso?").then(respuesta => {
+    this.sweetAlerts.alertConfirmCancelQuestion("Abandonar práctica", "¿Estás seguro de querer abandonar la práctica que tienes en curso?").then(respuesta => {
       if (respuesta.value == true) {
         this.router.navigateByUrl('student/home/learn/modules');
       }
@@ -145,13 +148,14 @@ export class ActivitiesContainerComponent {
   }
 
   //Método que obtiene el answerUserId
-  getAnswerUserId(answerUserId: number){
+  getAnswerUserId(answerUserId: number) {
     this.answerUserId = answerUserId;
   }
 
   //Método que valida la respuesta y avanza a la siguiente pregunta
   checkAnswer() {
-    if(this.nameButton == "Comprobar"){
+    this.loadingButton = true;
+    if (this.nameButton == "Comprobar") {
       let body: BodyValidateAnswerI = {
         true_or_false: this.answerTrueOrFalseActivity,
         text_options: this.answersSelectOrOrderActivity,
@@ -163,17 +167,17 @@ export class ActivitiesContainerComponent {
             this.statusAnswer = data.is_correct ? 1 : 2;
             this.feedback = data.feedback;
             this.nameButton = "Siguiente";
-
-            console.log("Respuesta de la API de la validación");
-            console.log(data);
+          },
+          complete: () => {
+            this.loadingButton = false; // Ocultar el spinner de carga cuando se complete la llamada
           }
-        })
-    }
-    else{
+        });
+    } else {
       this.nameButton = "Comprobar";
       this.statusAnswer = 0;
       this.nextActivity++;
       this.isSelectedOption = '';
+      this.loadingButton = false; // Ocultar el spinner de carga cuando se complete la acción
     }
   }
 

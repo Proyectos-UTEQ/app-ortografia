@@ -3,7 +3,7 @@ import { environment } from '../../../environments/environment';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { ApiResponseAllModulesI, DataAllModulesI } from '../interfaces/modules';
-import { ApiResponseGetActivitiesByLessonI, ApiResponseValidateAnswerI, BodyValidateAnswerI } from '../interfaces/lessons';
+import { ApiResponseFinishLessonModuleI, ApiResponseGetActivitiesByLessonI, ApiResponseValidateAnswerI, BodyValidateAnswerI } from '../interfaces/lessons';
 
 @Injectable({
   providedIn: 'root'
@@ -69,6 +69,12 @@ export class ModulesService {
   validateResponseUser(headers: Map<string, any>, answerUserID:number, body: BodyValidateAnswerI): Observable<ApiResponseValidateAnswerI> {
     this.options = this.getHeaders(headers);
     return this.http.put<ApiResponseValidateAnswerI>(this.urlApi + `/api/module/validate-answer/${answerUserID}`, body, this.options);
+  }
+
+  //Método que finaliza una lección de actividades en un módulo, por medio del ID de la lección
+  finishLesson(headers: Map<string, any>, lessonID: number): Observable<ApiResponseFinishLessonModuleI> {
+    this.options = this.getHeaders(headers);
+    return this.http.put<ApiResponseFinishLessonModuleI>(this.urlApi + `/api/module/test/${lessonID}/finish`, null, this.options);
   }
 
   //Método que obtiene los headers
