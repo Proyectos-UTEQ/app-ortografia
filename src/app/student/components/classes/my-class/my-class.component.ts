@@ -5,6 +5,8 @@ import { JoinToClassComponent } from '../../modals/join-to-class/join-to-class.c
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
+import { ClassesService } from '../../../services/classes.service';
+import { ApiResponseListClassesI } from '../../../interfaces/classes';
 import * as iconos from '@fortawesome/free-solid-svg-icons';
 
 @Component({
@@ -15,7 +17,10 @@ import * as iconos from '@fortawesome/free-solid-svg-icons';
     SpinnerComponent,
     FontAwesomeModule,
     JoinToClassComponent,
-    HttpClientModule
+    HttpClientModule,
+  ],
+  providers: [
+    ClassesService
   ],
   templateUrl: './my-class.component.html',
   styleUrls: ['./my-class.component.css', '../../learn/modules/modules.component.css']
@@ -24,19 +29,45 @@ export class MyClassComponent {
 
   //Variables
   spinnerStatus: boolean = false;
+  arrayClasses: ApiResponseListClassesI[] = [];
 
   //constructor
   constructor(
-    private modal: NgbModal
-  ){}
+    private modal: NgbModal,
+    private classesService: ClassesService,
+  ) { }
 
   //ngOnInit
-  ngOnInit(){
+  ngOnInit() {
     this.spinnerStatus = true;
+    this.getListClassesStudent();
+  }
+
+  //Método que obtiene los headers
+  getHeaders() {
+    let headers = new Map();
+    headers.set("token", sessionStorage.getItem("token"));
+    headers.set("typeUser", sessionStorage.getItem("typeUser"));
+    return headers;
+  }
+
+  //Método que consume el servicio para obtener el listado de clases
+  getListClassesStudent() {
+    this.spinnerStatus = false;
+    this.classesService.getListClassesStudent(this.getHeaders())
+      .subscribe({
+        next: (data: ApiResponseListClassesI[]) => {
+          this.arrayClasses = data;
+          this.spinnerStatus = true;
+        },
+        error: error => {
+          this.spinnerStatus = true;
+        }
+      })
   }
 
   //Método que abre el listado de evaluaciones
-  goToEvaluations(){
+  goToEvaluations() {
     //Redirigir a la ruta de evaluaciones y mostrar el componente
   }
 
@@ -51,5 +82,5 @@ export class MyClassComponent {
   iconAdd = iconos.faCirclePlus;
   iconStudents = iconos.faUsers;
   iconViewDetails = iconos.faEye;
-  iconLeaveClass= iconos.faSignOutAlt
+  iconLeaveClass = iconos.faSignOutAlt
 }

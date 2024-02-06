@@ -14,8 +14,12 @@ body{
     justify-content: center;
 }
 
+.content-image img {
+    width: 20%;
+}
+
 .container-table{
-    padding: 0 10%;
+    padding: 0 15%;
 }
 
 .profile-image>img {
@@ -39,4 +43,42 @@ tr{
 
 .text-num{
     color: var(--primary-color);
+}
+
+.iconvIewProfileUser{
+    color: var(--primary-color);
+    cursor: pointer;
+}
+
+/*For small screens*/
+@media (max-width: 768px) {
+    h4{
+        font-size: 1rem;
+    }
+
+    .content-image img {
+        width: 40%;
+    }
+
+    .container-table{
+        padding: 0 2%;
+    }
+
+    .profile-image {
+        width: min-content; 
+    }
+
+    .profile-image>img {
+        width: 20px; 
+        height: 20px;
+    }
+
+    tr{
+        font-size: 10px;
+        font-weight: 600;
+    }
+
+    .iconvIewProfileUser{
+        font-size: 10px !important;
+    }
 }
