@@ -83,4 +83,7 @@ export class MyClassComponent {
   iconStudents = iconos.faUsers;
   iconViewDetails = iconos.faEye;
   iconLeaveClass = iconos.faSignOutAlt
+  iconProfessor = iconos.faUserGraduate;
+  iconCourse = iconos.faCube;
+  iconCalendar = iconos.faCalendarAlt;
 }

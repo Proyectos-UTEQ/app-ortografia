@@ -6,6 +6,9 @@ import { CommonModule } from '@angular/common';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { SpinnerComponent } from '../../../../shared-components/spinner/spinner.component';
 import * as iconos from '@fortawesome/free-solid-svg-icons';
+import { ClassesService } from '../../../services/classes.service';
+import { ApiResponseJoinToClassI, JoinToClassI } from '../../../interfaces/classes';
+import { MyClassComponent } from '../../classes/my-class/my-class.component';
 
 @Component({
   selector: 'app-join-to-class',
@@ -28,16 +31,24 @@ export class JoinToClassComponent {
   /*Constructor*/
   constructor(
     public modal: NgbModal,
-    // private toastr: ToastrService,
+    private toastr: ToastrService,
     private formBuilder: FormBuilder,
-    // private modules: ModulesComponent,
-    // private joinToClassService: JoinToClassService
+    private classService: ClassesService,
+    private classesComponent: MyClassComponent
   ) { }
 
   //ngOnInit()
   ngOnInit() {
     this.spinnerStatus = true;
     this.createCodeForm();
+  }
+
+  //Método que obtiene los headers
+  getHeaders() {
+    let headers = new Map();
+    headers.set("token", sessionStorage.getItem("token"));
+    headers.set("typeUser", sessionStorage.getItem("typeUser"));
+    return headers;
   }
 
   //Método que crea el formulario con el campo de código
@@ -49,29 +60,29 @@ export class JoinToClassComponent {
 
   //Método que consume el servicio para que el estudiante se suscriba a un módulo{
   joinToClass() {
-    //   this.spinnerStatus = false;
-    //   let body: JoinToClassI = {
-    //     code: this.codeForm.get('codeClass')?.value
-    //   }
-    //   this.joinToClassService.joinToClass(this.modules.getHeaders(), body).subscribe(
-    //     (data: ApiResponseJoinToClass) => {
-    //       this.spinnerStatus = false;
-    //       if(data.status == 'success'){
-    //         this.spinnerStatus = true;
-    //         this.modal.dismissAll();
-    //         this.toastr.success("Se ha unido correctamente a su clase", "¡Éxito!");
-    //       }
-    //       else{
-    //         this.spinnerStatus = true;
-    //         this.toastr.error("Código incorrecto o la clase no existe", "¡Error!");
-    //       }
-    //     },
-    //     (error: any) => {
-    //       this.spinnerStatus = true;
-    //       this.modal.dismissAll();
-    //       this.toastr.error(error.error.message, "¡Error!");
-    //     }
-    //   );
+    this.spinnerStatus = false;
+    let body: JoinToClassI = {
+      code: this.codeForm.get('codeClass')?.value
+    }
+    this.classService.joinToNewClass(this.getHeaders(), body).subscribe(
+      (data: ApiResponseJoinToClassI) => {
+        if (data.id != 0) {
+          this.spinnerStatus = true;
+          this.toastr.success("Se ha unido correctamente a su clase", "¡Éxito!");
+          this.modal.dismissAll();
+          this.classesComponent.getListClassesStudent();
+        }
+        else {
+          this.spinnerStatus = true;
+          this.toastr.error("Código incorrecto o la clase no existe", "¡Error!");
+        }
+      },
+      (error: any) => {
+        this.spinnerStatus = true;
+        this.toastr.error("Ocurrió un error al procesar su código", "¡Error!");
+        this.modal.dismissAll();
+      }
+    );
   }
 
   //Icons to use

@@ -41,7 +41,7 @@ export class DashboardComponent {
     this.showHideSidebar();
     this.detectedScreen();
     this.optionSelectedOnMenu();
-    this.router.navigate(['positions/positions-table'], { relativeTo: this.routerActivated })
+    this.router.navigate(['classes/my-class'], { relativeTo: this.routerActivated })
 
     if(sessionStorage.getItem("typeUser")==environment.STUDENT){
       this.optionsMenu.push({icon: this.iconPositions, optionName: 'Posiciones', link: 'positions/positions-table', status: true});

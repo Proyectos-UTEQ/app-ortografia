@@ -22,10 +22,10 @@
                         (click)="goToEvaluations()">
                     <div class="card-body">
                         <div class="title-module">
-                            <p class="mb-1"><fa-icon [icon]="iconTitle" class="icon-module"></fa-icon><b> {{class.name}}</b></p>
-                            <p class="info-body-card mb-0">{{class.teacher.first_name + class.teacher.last_name}} - {{class.paralelo}}</p>
-                            <p class="info-body-card mb-0">{{class.course}} - {{class.paralelo}}</p>
-                            <p class="info-body-card">Período {{class.academic_period}}</p>
+                            <h6 class="mb-1"><b> {{class.name}}</b></h6>
+                            <p class="info-body-card mb-0"><fa-icon [icon]="iconProfessor" class="icon-module"></fa-icon>&nbsp;&nbsp;{{class.teacher.first_name + class.teacher.last_name}} - {{class.paralelo}}</p>
+                            <p class="info-body-card mb-0"><fa-icon [icon]="iconCourse" class="icon-module"></fa-icon>&nbsp;&nbsp;{{class.course}} - {{class.paralelo}}</p>
+                            <p class="info-body-card"><fa-icon [icon]="iconCalendar" class="icon-module"></fa-icon>&nbsp;&nbsp;Período {{class.academic_period}}</p>
                         </div>
 
                         <div class="row d-flex justify-content-between mx-0 mt-2">

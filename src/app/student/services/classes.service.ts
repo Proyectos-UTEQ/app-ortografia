@@ -1,7 +1,7 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { environment } from '../../../environments/environment';
-import { ApiResponseListClassesI } from '../interfaces/classes';
+import { ApiResponseJoinToClassI, ApiResponseListClassesI, JoinToClassI } from '../interfaces/classes';
 import { Observable } from 'rxjs';
 
 @Injectable({
@@ -28,6 +28,12 @@ export class ClassesService {
   getListClassesStudent(headers: Map<string, any>): Observable<ApiResponseListClassesI[]> {
     this.options = this.getHeaders(headers);
     return this.http.get<ApiResponseListClassesI[]>(this.urlApi + `/api/classes/subscribed`, this.options);
+  }
+
+  //Método que consume el servicio para inscribirse a una clase
+  joinToNewClass(headers: Map<string, any>, body: JoinToClassI): Observable<ApiResponseJoinToClassI> {
+    this.options = this.getHeaders(headers);
+    return this.http.post<ApiResponseJoinToClassI>(this.urlApi + `/api/classes/subscribe`, body, this.options);
   }
 
   //Método que obtiene los headers

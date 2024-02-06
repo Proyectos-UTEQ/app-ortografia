@@ -7,7 +7,7 @@ export interface JoinToClassI{
 
 //Interfaz de respuesta de la API para cuando un usuario se une a una clase
 export interface ApiResponseJoinToClassI{
-    message: string;
+    id: number;
 }
 
 //Interfaz con respuesta de la API que devuelve el listado de clases
