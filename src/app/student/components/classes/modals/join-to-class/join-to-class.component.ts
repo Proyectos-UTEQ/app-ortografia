@@ -4,11 +4,11 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ToastrModule, ToastrService } from 'ngx-toastr';
 import { CommonModule } from '@angular/common';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import { SpinnerComponent } from '../../../../shared-components/spinner/spinner.component';
+import { SpinnerComponent } from '../../../../../shared-components/spinner/spinner.component';
 import * as iconos from '@fortawesome/free-solid-svg-icons';
-import { ClassesService } from '../../../services/classes.service';
-import { ApiResponseJoinToClassI, JoinToClassI } from '../../../interfaces/classes';
-import { MyClassComponent } from '../../classes/my-class/my-class.component';
+import { ClassesService } from '../../../../services/classes.service';
+import { ApiResponseJoinToClassI, JoinToClassI } from '../../../../interfaces/classes';
+import { MyClassComponent } from '../../my-class/my-class.component';
 
 @Component({
   selector: 'app-join-to-class',
@@ -21,7 +21,7 @@ import { MyClassComponent } from '../../classes/my-class/my-class.component';
     SpinnerComponent
   ],
   templateUrl: './join-to-class.component.html',
-  styleUrls: ['./join-to-class.component.css', '../subscribe-to-module/subscribe-to-module.component.css']
+  styleUrls: ['./join-to-class.component.css', '../../../modals/subscribe-to-module/subscribe-to-module.component.css']
 })
 export class JoinToClassComponent {
   //Variables

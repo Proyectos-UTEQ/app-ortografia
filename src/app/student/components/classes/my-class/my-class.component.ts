@@ -1,13 +1,14 @@
 import { Component } from '@angular/core';
 import { SpinnerComponent } from '../../../../shared-components/spinner/spinner.component';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import { JoinToClassComponent } from '../../modals/join-to-class/join-to-class.component';
+import { JoinToClassComponent } from '../modals/join-to-class/join-to-class.component';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
 import { ClassesService } from '../../../services/classes.service';
 import { ApiResponseListClassesI } from '../../../interfaces/classes';
 import * as iconos from '@fortawesome/free-solid-svg-icons';
+import { ViewClassDetailComponent } from '../modals/view-class-detail/view-class-detail.component';
 
 @Component({
   selector: 'app-my-class',
@@ -18,6 +19,7 @@ import * as iconos from '@fortawesome/free-solid-svg-icons';
     FontAwesomeModule,
     JoinToClassComponent,
     HttpClientModule,
+    ViewClassDetailComponent
   ],
   providers: [
     ClassesService
@@ -74,6 +76,17 @@ export class MyClassComponent {
   //Método que abre el modal para unirse a una clase
   openModalJoinToClass(joinToClass: any) {
     this.modal.open(joinToClass, { size: 'md', centered: true });
+  }
+
+  //Método que abre el modal para ver los detalles de una clase
+  openModalViewClassDetail(viewClassDetail: any, classinfo: ApiResponseListClassesI) {
+    this.modal.open(viewClassDetail, { size: 'md', centered: true });
+    ViewClassDetailComponent.classDetail = classinfo;
+  }
+
+  //Método que abre el modal para ver los estudiantes de una clase
+  openModalViewStudents(viewStudents: any) {
+    this.modal.open(viewStudents, { size: 'lg', centered: true });
   }
 
   //Icons to use
