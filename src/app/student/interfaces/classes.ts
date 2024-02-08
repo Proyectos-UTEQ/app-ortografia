@@ -1,12 +1,12 @@
 import { CreatedByI } from "./modules";
 
 //Interfaz con el body requerido para unirse a una clase
-export interface JoinToClassI{
+export interface JoinToClassI {
     code: string;
 }
 
 //Interfaz de respuesta de la API para cuando un usuario se une a una clase
-export interface ApiResponseJoinToClassI{
+export interface ApiResponseJoinToClassI {
     id: number;
 }
 
@@ -25,4 +25,9 @@ export interface ApiResponseListClassesI {
     description: string
     img_back_url: string
     archived: boolean
-  }
+}
+
+//Interfaz de respuesta de la api para obtener el array de estudiantes que están en una clase
+export interface ApiResponseListsStudentsI {
+    students: CreatedByI[];
+}

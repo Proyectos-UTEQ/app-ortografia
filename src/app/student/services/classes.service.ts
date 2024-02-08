@@ -1,7 +1,7 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { environment } from '../../../environments/environment';
-import { ApiResponseJoinToClassI, ApiResponseListClassesI, JoinToClassI } from '../interfaces/classes';
+import { ApiResponseJoinToClassI, ApiResponseListClassesI, ApiResponseListsStudentsI, JoinToClassI } from '../interfaces/classes';
 import { Observable } from 'rxjs';
 
 @Injectable({
@@ -34,6 +34,18 @@ export class ClassesService {
   joinToNewClass(headers: Map<string, any>, body: JoinToClassI): Observable<ApiResponseJoinToClassI> {
     this.options = this.getHeaders(headers);
     return this.http.post<ApiResponseJoinToClassI>(this.urlApi + `/api/classes/subscribe`, body, this.options);
+  }
+
+  //Método que consume el servicio para obtener el listado de estudiantes de una clase
+  getStudents(headers: Map<string, any>, classID: number): Observable<ApiResponseListsStudentsI> {
+    this.options = this.getHeaders(headers);
+    return this.http.get<ApiResponseListsStudentsI>(this.urlApi + `/api/classes/${classID}/students`, this.options);
+  }
+
+  //Método que consume el servicio para que un estudiante abandone la clase
+  leaveClass(headers: Map<string, any>, classID: number): Observable<any> {
+    this.options = this.getHeaders(headers);
+    return this.http.delete<any>(this.urlApi + `/api/classes/${classID}/unsubscribe`, this.options);
   }
 
   //Método que obtiene los headers

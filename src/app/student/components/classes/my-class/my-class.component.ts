@@ -7,8 +7,11 @@ import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
 import { ClassesService } from '../../../services/classes.service';
 import { ApiResponseListClassesI } from '../../../interfaces/classes';
-import * as iconos from '@fortawesome/free-solid-svg-icons';
 import { ViewClassDetailComponent } from '../modals/view-class-detail/view-class-detail.component';
+import { ViewStudentsComponent } from '../modals/view-students/view-students.component';
+import { SweetAlertsConfirm } from '../../../../shared-components/alerts/confirm-alerts.component';
+import { ToastAlertsService } from '../../../../shared-components/services/toast-alerts.service';
+import * as iconos from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-my-class',
@@ -19,10 +22,12 @@ import { ViewClassDetailComponent } from '../modals/view-class-detail/view-class
     FontAwesomeModule,
     JoinToClassComponent,
     HttpClientModule,
-    ViewClassDetailComponent
+    ViewClassDetailComponent,
+    ViewStudentsComponent
   ],
   providers: [
-    ClassesService
+    ClassesService,
+    SweetAlertsConfirm
   ],
   templateUrl: './my-class.component.html',
   styleUrls: ['./my-class.component.css', '../../learn/modules/modules.component.css']
@@ -37,6 +42,8 @@ export class MyClassComponent {
   constructor(
     private modal: NgbModal,
     private classesService: ClassesService,
+    private sweetAlerts: SweetAlertsConfirm,
+    private toastr: ToastAlertsService
   ) { }
 
   //ngOnInit
@@ -85,8 +92,32 @@ export class MyClassComponent {
   }
 
   //Método que abre el modal para ver los estudiantes de una clase
-  openModalViewStudents(viewStudents: any) {
+  openModalViewStudents(viewStudents: any, classID: number) {
     this.modal.open(viewStudents, { size: 'lg', centered: true });
+    ViewStudentsComponent.classID = classID;
+  }
+
+  //Método que muestra un alert para confirmar si el estudiante desea abandonar la clase
+  showAlertLeaveClass(classID: number) {
+    this.sweetAlerts.alertConfirmCancelQuestion("Abandonar clase", "¿Estás seguro de querer abandonar la clase?").then(respuesta => {
+      if (respuesta.value == true) {
+        this.spinnerStatus = false;
+        this.classesService.leaveClass(this.getHeaders(), classID)
+        .subscribe({
+          next: (data: any) => {
+            if(data == "OK"){
+              this.spinnerStatus = true;
+              this.toastr.showToastSuccess("Ya no perteneces a la clase seleccionada", "¡Éxito!");
+              this.getListClassesStudent();
+            }
+          },
+          error: error => {
+            this.spinnerStatus = true;
+            this.toastr.showToastError("Error", "No se ha podido abandonar la clase seleccionada");
+          }
+        });
+      }
+    });
   }
 
   //Icons to use

@@ -29,13 +29,13 @@
                         </div>
 
                         <div class="row d-flex justify-content-between mx-0 mt-2">
-                            <div class="col-3 students text-center" (click)="openModalViewStudents(viewStudents)">
+                            <div class="col-3 students text-center" (click)="openModalViewStudents(viewStudents, class.id)">
                                 <fa-icon [icon]="iconStudents" class="fs-6"></fa-icon>
                             </div>
                             <div class="col-3 view-details text-center" (click)="openModalViewClassDetail(viewClassDetail, class)">
                                 <fa-icon [icon]="iconViewDetails" class="fs-6"></fa-icon>
                             </div>
-                            <div class="col-3 leave-class text-center">
+                            <div class="col-3 leave-class text-center" (click)="showAlertLeaveClass(class.id)">
                                 <fa-icon [icon]="iconLeaveClass" class="fs-6"></fa-icon>
                             </div>
                         </div>
@@ -54,7 +54,7 @@
 
 <!--Modal para ver los estudiantes de una clase-->
 <ng-template #viewStudents>
-   <!--  <app-view-class-detail></app-view-class-detail> -->
+    <app-view-students></app-view-students>
 </ng-template>
 
 <!--Modal para ver detalles de una clase-->
