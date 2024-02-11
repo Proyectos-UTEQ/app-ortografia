@@ -12,6 +12,8 @@ import { ViewStudentsComponent } from '../modals/view-students/view-students.com
 import { SweetAlertsConfirm } from '../../../../shared-components/alerts/confirm-alerts.component';
 import { ToastAlertsService } from '../../../../shared-components/services/toast-alerts.service';
 import * as iconos from '@fortawesome/free-solid-svg-icons';
+import { Router } from '@angular/router';
+import { MyEvaluationsComponent } from '../my-evaluations/my-evaluations.component';
 
 @Component({
   selector: 'app-my-class',
@@ -23,7 +25,8 @@ import * as iconos from '@fortawesome/free-solid-svg-icons';
     JoinToClassComponent,
     HttpClientModule,
     ViewClassDetailComponent,
-    ViewStudentsComponent
+    ViewStudentsComponent,
+    MyEvaluationsComponent
   ],
   providers: [
     ClassesService,
@@ -43,7 +46,8 @@ export class MyClassComponent {
     private modal: NgbModal,
     private classesService: ClassesService,
     private sweetAlerts: SweetAlertsConfirm,
-    private toastr: ToastAlertsService
+    private toastr: ToastAlertsService,
+    private router: Router
   ) { }
 
   //ngOnInit
@@ -77,7 +81,7 @@ export class MyClassComponent {
 
   //Método que abre el listado de evaluaciones
   goToEvaluations() {
-    //Redirigir a la ruta de evaluaciones y mostrar el componente
+    this.router.navigateByUrl('/student/home/classes/my-evaluations');
   }
 
   //Método que abre el modal para unirse a una clase
