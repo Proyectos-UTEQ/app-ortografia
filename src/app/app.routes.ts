@@ -12,6 +12,11 @@ import { ChatIaComponent } from './student/components/chat/chat-ia/chat-ia.compo
 import { TheoryComponent } from './student/components/learn/theory/theory.component';
 import { ActivitiesContainerComponent } from './student/components/learn/activities-container/activities-container.component';
 import { MyEvaluationsComponent } from './student/components/classes/my-evaluations/my-evaluations.component';
+import { OptionsHomeComponent } from './teacher/components/options-home/options-home.component';
+
+import { ListActivitiesComponent } from './teacher/components/activities/list-activities/list-activities.component';
+import { ListClassComponent } from './teacher/components/classes/list-class/list-class.component';
+import { ListModulesComponent } from './teacher/components/modules/list-modules/list-modules.component';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'auth', pathMatch: 'full' },
@@ -50,5 +55,19 @@ export const routes: Routes = [
       { path: 'home/activities', component: ActivitiesContainerComponent },
     ]
   },
+  {
+    path: 'teacher',
+    children: [
+      {
+        path: 'home', component: DashboardComponent,
+        children: [
+          { path: 'dashboard/options', component: OptionsHomeComponent },
+          { path: 'modules/list-modules', component:  ListModulesComponent},
+          { path: 'activities/list-activities', component:  ListActivitiesComponent},
+          { path: 'classes/list-classes', component:  ListClassComponent},
+        ]
+      }
+    ]
+  }
 
 ];
