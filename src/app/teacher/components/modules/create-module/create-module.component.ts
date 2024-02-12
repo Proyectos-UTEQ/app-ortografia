@@ -5,7 +5,7 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { ToastAlertsService } from '../../../../shared-components/services/toast-alerts.service';
 import { Router } from '@angular/router';
 import { ModulesService } from '../../../services/modules.service';
-import { BodyCreateModuleIT, DataAllodulesIT } from '../../../interfaces/modules.interface';
+import { BodyCreateModuleIT, DataAllModulesIT } from '../../../interfaces/modules.interface';
 import { SpinnerComponent } from '../../../../shared-components/spinner/spinner.component';
 import * as AOS from 'aos';
 import * as iconos from '@fortawesome/free-solid-svg-icons';
@@ -91,7 +91,7 @@ export class CreateModuleComponent {
     }
     this.moduleService.createNewModule(this.getHeaders(), body)
     .subscribe({
-      next: (data: DataAllodulesIT) => {
+      next: (data: DataAllModulesIT) => {
         if(data != null){
           this.spinnerStatus = true;
           this.toastr.showToastSuccess("Módulo creado con éxito", "Éxito");

@@ -3,7 +3,7 @@ import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } 
 import { ToastAlertsService } from '../../../../shared-components/services/toast-alerts.service';
 import { ModulesService } from '../../../services/modules.service';
 import { Router } from '@angular/router';
-import { BodyCreateModuleIT, DataAllodulesIT } from '../../../interfaces/modules.interface';
+import { BodyCreateModuleIT, DataAllModulesIT } from '../../../interfaces/modules.interface';
 import { CommonModule } from '@angular/common';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { SpinnerComponent } from '../../../../shared-components/spinner/spinner.component';
@@ -112,7 +112,7 @@ export class EditModuleComponent {
     }
     this.moduleService.editModule(this.getHeaders(), body, EditModuleComponent.moduleID)
       .subscribe({
-        next: (data: DataAllodulesIT) => {
+        next: (data: DataAllModulesIT) => {
           if (data != null) {
             this.spinnerStatus = true;
             this.toastr.showToastSuccess("Módulo actualizado con éxito", "Éxito");

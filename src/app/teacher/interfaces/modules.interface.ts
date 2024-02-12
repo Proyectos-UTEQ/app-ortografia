@@ -3,7 +3,7 @@ import { CreatedByI } from "../../student/interfaces/modules"
 //Interfaz de respuesta de la API al obtener todo el listado de módulos desde el perfil profesor
 export interface ApiResponseAllModulesIT {
     data: [
-        DataAllodulesIT
+        DataAllModulesIT
     ],
     details: {
         page: number;
@@ -14,7 +14,7 @@ export interface ApiResponseAllModulesIT {
 }
 
 //Interfaz de respuesta de la API al obtener el listado de módulos y cuando se crea un módulo
-export interface DataAllodulesIT {
+export interface DataAllModulesIT {
     id: number
     created_at: string
     updated_at: string

@@ -3,7 +3,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { ModulesService } from '../../../services/modules.service';
-import { ApiResponseAllModulesIT, BodyCreateModuleIT, DataAllodulesIT } from '../../../interfaces/modules.interface';
+import { ApiResponseAllModulesIT, BodyCreateModuleIT, DataAllModulesIT } from '../../../interfaces/modules.interface';
 import { environment } from '../../../../../environments/environment';
 import { SpinnerComponent } from '../../../../shared-components/spinner/spinner.component';
 import { SearchRegistersPipe } from '../../../../shared-components/pipes/search-registers.pipe';
@@ -12,6 +12,8 @@ import { Router } from '@angular/router';
 import * as iconos from '@fortawesome/free-solid-svg-icons';
 import * as XLSX from 'xlsx';
 import { EditModuleComponent } from '../edit-module/edit-module.component';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { ViewDetailsComponent } from '../modals/view-details/view-details.component';
 
 @Component({
   selector: 'app-list-modules',
@@ -22,7 +24,8 @@ import { EditModuleComponent } from '../edit-module/edit-module.component';
     FormsModule,
     MatPaginatorModule,
     SpinnerComponent,
-    SearchRegistersPipe
+    SearchRegistersPipe,
+    ViewDetailsComponent
   ],
   providers: [
     ModulesService,
@@ -33,8 +36,8 @@ import { EditModuleComponent } from '../edit-module/edit-module.component';
 export class ListModulesComponent {
 
   //Variables
-  arrayModules: DataAllodulesIT[] = [];
-  modulesToSearch: DataAllodulesIT[] = [];
+  arrayModules: DataAllModulesIT[] = [];
+  modulesToSearch: DataAllModulesIT[] = [];
   arrayPaginator: number[] = [];
   itemsForPage: number = environment.ITEMS_FOR_PAGE_TABLES;
   totalPage: number = environment.TOTAL_PAGES;
@@ -48,7 +51,8 @@ export class ListModulesComponent {
   constructor(
     private modulesServiceP: ModulesService,
     private toastr: ToastAlertsService,
-    private router: Router
+    private router: Router,
+    private modal: NgbModal
   ) { }
 
 
@@ -162,15 +166,21 @@ export class ListModulesComponent {
   }
 
   //Método que redigire al componente de crear un nuevo módulo
-  goToListModules(){
+  goToListModules() {
     this.router.navigateByUrl("teacher/home/modules/create-module");
   }
 
   //Método que redirige al componente de editar pasando toda la data del módulo seleccionada
-  editModule(module: BodyCreateModuleIT, moduleID: number){
+  editModule(module: BodyCreateModuleIT, moduleID: number) {
     EditModuleComponent.module = module;
     EditModuleComponent.moduleID = moduleID;
     this.router.navigateByUrl("teacher/home/modules/edit-module");
+  }
+
+  //Método que abre el modal para mostrar más información del módulo seleccionado
+  openModalViewModuleDetails(viewModuleDetail: any, moduleID: number) {
+    ViewDetailsComponent.moduleID = moduleID;
+    this.modal.open(viewModuleDetail, { size: 'lg', centered: true });
   }
 
   //Icons to use

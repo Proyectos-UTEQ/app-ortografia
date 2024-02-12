@@ -71,7 +71,7 @@
                                         <td>{{module.updated_at}}</td>
                                         <td class="actions">
                                             <fa-icon data-bs-toggle="mensaje" title="Ver detalles" id="iconViewDetails"
-                                                [icon]="iconViewDetails"></fa-icon>
+                                                [icon]="iconViewDetails" (click)="openModalViewModuleDetails(viewModuleDetail, module.id)"></fa-icon>
                                             <fa-icon data-bs-toggle="mensaje" title="Editar" id="iconEdit"
                                                 [icon]="iconEdit" (click)="editModule(module, module.id)"></fa-icon>
                                         </td>
@@ -112,3 +112,8 @@
         </div>
     </div>
 </body>
+
+<!--Modal para ver información detallada de un módulo-->
+<ng-template #viewModuleDetail>
+    <app-view-details></app-view-details>
+ </ng-template>

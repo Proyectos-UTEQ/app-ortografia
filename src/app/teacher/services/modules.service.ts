@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { environment } from '../../../environments/environment';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { ApiResponseAllModulesIT, BodyCreateModuleIT, DataAllodulesIT } from '../interfaces/modules.interface';
+import { ApiResponseAllModulesIT, BodyCreateModuleIT, DataAllModulesIT } from '../interfaces/modules.interface';
 
 @Injectable({
   providedIn: 'root'
@@ -46,15 +46,21 @@ export class ModulesService {
   }
 
   //Método que consume el servicio para crear un nuevo módulo
-  createNewModule(headers: Map<string, any>, body:BodyCreateModuleIT): Observable<DataAllodulesIT> {
+  createNewModule(headers: Map<string, any>, body: BodyCreateModuleIT): Observable<DataAllModulesIT> {
     this.options = this.getHeaders(headers);
-    return this.http.post<DataAllodulesIT>(this.urlApi + `/api/module`, body, this.options);
+    return this.http.post<DataAllModulesIT>(this.urlApi + `/api/module`, body, this.options);
   }
 
   //Método que consume el servicio para editar (Actualizar) un módulo
-  editModule(headers: Map<string, any>, body:BodyCreateModuleIT, moduleID: number): Observable<DataAllodulesIT> {
+  editModule(headers: Map<string, any>, body: BodyCreateModuleIT, moduleID: number): Observable<DataAllModulesIT> {
     this.options = this.getHeaders(headers);
-    return this.http.put<DataAllodulesIT>(this.urlApi + `/api/module/${moduleID}`, body, this.options);
+    return this.http.put<DataAllModulesIT>(this.urlApi + `/api/module/${moduleID}`, body, this.options);
+  }
+
+  //Método que obtiene la información de un módulo por su ID
+  getModuleById(headers: Map<string, any>, idModule: number): Observable<DataAllModulesIT> {
+    this.options = this.getHeaders(headers);
+    return this.http.get<DataAllModulesIT>(this.urlApi + `/api/module/${idModule}`, this.options);
   }
 
   //Método que obtiene los headers
