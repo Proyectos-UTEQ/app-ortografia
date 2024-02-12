@@ -17,6 +17,7 @@ import { OptionsHomeComponent } from './teacher/components/options-home/options-
 import { ListActivitiesComponent } from './teacher/components/activities/list-activities/list-activities.component';
 import { ListClassComponent } from './teacher/components/classes/list-class/list-class.component';
 import { ListModulesComponent } from './teacher/components/modules/list-modules/list-modules.component';
+import { CreateModuleComponent } from './teacher/components/modules/create-module/create-module.component';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'auth', pathMatch: 'full' },
@@ -62,7 +63,12 @@ export const routes: Routes = [
         path: 'home', component: DashboardComponent,
         children: [
           { path: 'dashboard/options', component: OptionsHomeComponent },
-          { path: 'modules/list-modules', component:  ListModulesComponent},
+          { path: 'modules', 
+            children: [
+              { path: 'list-modules', component: ListModulesComponent },
+              { path: 'create-module', component: CreateModuleComponent }
+            ]
+          },
           { path: 'activities/list-activities', component:  ListActivitiesComponent},
           { path: 'classes/list-classes', component:  ListClassComponent},
         ]

@@ -13,6 +13,7 @@ export interface ApiResponseAllModulesIT {
     }
 }
 
+//Interfaz de respuesta de la API al obtener el listado de módulos y cuando se crea un módulo
 export interface DataAllodulesIT {
     id: number
     created_at: string
@@ -27,4 +28,16 @@ export interface DataAllodulesIT {
     points_to_earn: number
     index: number
     is_public: boolean
+}
+
+//Interfaz con el body requerido para crear un nuevo módulo
+export interface BodyCreateModuleIT{
+    title: string;
+    short_description: string;
+    text_root: string;
+    img_back_url: string;
+    difficulty: string;
+    points_to_earn: number;
+    index: number;
+    is_public: boolean;
 }

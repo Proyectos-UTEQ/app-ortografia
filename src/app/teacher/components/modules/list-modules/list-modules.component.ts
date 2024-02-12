@@ -7,9 +7,10 @@ import { ApiResponseAllModulesIT, DataAllodulesIT } from '../../../interfaces/mo
 import { environment } from '../../../../../environments/environment';
 import { SpinnerComponent } from '../../../../shared-components/spinner/spinner.component';
 import { SearchRegistersPipe } from '../../../../shared-components/pipes/search-registers.pipe';
+import { ToastAlertsService } from '../../../../shared-components/services/toast-alerts.service';
+import { Router } from '@angular/router';
 import * as iconos from '@fortawesome/free-solid-svg-icons';
 import * as XLSX from 'xlsx';
-import { ToastAlertsService } from '../../../../shared-components/services/toast-alerts.service';
 
 @Component({
   selector: 'app-list-modules',
@@ -45,7 +46,8 @@ export class ListModulesComponent {
   //constructor
   constructor(
     private modulesServiceP: ModulesService,
-    private toastr: ToastAlertsService
+    private toastr: ToastAlertsService,
+    private router: Router
   ) { }
 
 
@@ -156,6 +158,11 @@ export class ListModulesComponent {
   getCurrentDate(): string {
     const fechaActual = new Date();
     return `${fechaActual.getDate()}/${fechaActual.getMonth() + 1}/${fechaActual.getFullYear()}`;
+  }
+
+  //Método que redigire al componente de crear un nuevo módulo
+  goToListModules(){
+    this.router.navigateByUrl("teacher/home/modules/create-module");
   }
 
   //Icons to use
