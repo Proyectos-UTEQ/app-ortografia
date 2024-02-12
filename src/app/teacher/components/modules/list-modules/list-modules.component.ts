@@ -42,7 +42,7 @@ export class ListModulesComponent {
   itemsForPage: number = environment.ITEMS_FOR_PAGE_TABLES;
   totalPage: number = environment.TOTAL_PAGES;
   currentPage: number = 1;
-  statusFilter: string = "all-modules";
+  statusFilter: string = "for-me";
   spinnerStatus: boolean = false;
   searchBy: string = environment.SEARCH_BY;
 
@@ -59,6 +59,7 @@ export class ListModulesComponent {
   //ngOnInit
   ngOnInit() {
     this.spinnerStatus = true;
+    console.log(this.statusFilter);
     this.getListModulesCreatedForMe(this.currentPage, this.itemsForPage);
   }
 
@@ -76,12 +77,14 @@ export class ListModulesComponent {
       this.arrayModules = [];
       this.totalPage = 0;
       this.currentPage = 1;
+      this.statusFilter = "for-me";
       this.getListModulesCreatedForMe(this.currentPage, this.itemsForPage);
     }
     else if (event.target.value === "all-modules") {
       this.arrayModules = [];
       this.totalPage = 0;
       this.currentPage = 1;
+      this.statusFilter = "all-modules";
       this.getListAllModules(this.currentPage, this.itemsForPage);
     }
   }
