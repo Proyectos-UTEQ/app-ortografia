@@ -45,12 +45,17 @@ export class ModulesService {
     return this.http.get<ApiResponseAllModulesIT>(this.urlApi + `/api/module${queryParams}`, this.options);
   }
 
-  //Método que consume el servicio para obtener el listado de módulos generales
+  //Método que consume el servicio para crear un nuevo módulo
   createNewModule(headers: Map<string, any>, body:BodyCreateModuleIT): Observable<DataAllodulesIT> {
     this.options = this.getHeaders(headers);
     return this.http.post<DataAllodulesIT>(this.urlApi + `/api/module`, body, this.options);
   }
 
+  //Método que consume el servicio para editar (Actualizar) un módulo
+  editModule(headers: Map<string, any>, body:BodyCreateModuleIT, moduleID: number): Observable<DataAllodulesIT> {
+    this.options = this.getHeaders(headers);
+    return this.http.put<DataAllodulesIT>(this.urlApi + `/api/module/${moduleID}`, body, this.options);
+  }
 
   //Método que obtiene los headers
   public getHeaders(headers: Map<string, any> | undefined) {

@@ -6,28 +6,28 @@
     <div class="row justify-content-center">
         <div class="col-12 container-info">
             <div class="div mt-3 mx-1">
-                <h4 id="titulo"><fa-icon [icon]="iconModule" class="icon-title"></fa-icon> Crear módulo</h4>
+                <h4 id="titulo"><fa-icon [icon]="iconEdit" class="icon-title"></fa-icon> Editar módulo</h4>
                 <button type="button" class="btn btn-secondary btn-xs" (click)="goToListModules()">
                     <fa-icon [icon]="iconBack" class="icon-button"></fa-icon></button>
             </div>
             <br />
 
-            <form class="mt-2" [formGroup]="createNewModule">
+            <form class="mt-2" [formGroup]="editForm">
                 <!--Titulo-->
                 <div class="row">
                     <div class="mb-3">
                         <label class="mb-1"><b>Título</b></label>
                         <input type="text" class="form-control form-control-lg bg-light fs-6" formControlName="title"
-                            placeholder="Título*" [ngClass]="{
-                                'is-invalid': createNewModule.get('title')?.hasError('required') && createNewModule.get('title')?.touched || createNewModule.get('title')?.hasError('pattern'),
-                                'is-valid': createNewModule.get('title')?.value?.length >= 4 && createNewModule.get('title')?.hasError('pattern') == false
-                              }" [maxlength]="22">
-                        @if(createNewModule.get('title')?.hasError('required') && createNewModule.get('title')?.touched){
+                            placeholder="Título*"
+                            [ngClass]="{
+                                    'is-invalid': editForm.get('title')?.hasError('required') && editForm.get('title')?.touched || editForm.get('title')?.hasError('pattern') }"
+                            [maxlength]="22">
+                        @if(editForm.get('title')?.hasError('required') && editForm.get('title')?.touched){
                             <div class="validators">
                                 <small>¡Este campo es requerido!</small>
                             </div>
                         }
-                        @if(createNewModule.get('title')?.hasError('pattern')){
+                        @if(editForm.get('title')?.hasError('pattern')){
                             <div class="validators">
                                 <small>¡Solo se permiten letras!</small>
                             </div>
@@ -40,16 +40,15 @@
                     <div class="mb-3">
                         <label class="mb-1"><b>Descripción corta</b></label>
                         <input type="text" class="form-control form-control-lg bg-light fs-6"
-                            formControlName="shortDescription" placeholder="Descripción corta*" [ngClass]="{
-                                'is-invalid': createNewModule.get('shortDescription')?.hasError('required') && createNewModule.get('shortDescription')?.touched || createNewModule.get('shortDescription')?.hasError('pattern'),
-                                'is-valid': createNewModule.get('shortDescription')?.value?.length >= 4 && createNewModule.get('shortDescription')?.hasError('pattern') == false
-                              }" [maxlength]="50">
-                        @if(createNewModule.get('shortDescription')?.hasError('required') && createNewModule.get('shortDescription')?.touched){
+                            formControlName="shortDescription" placeholder="Descripción corta*"
+                            [ngClass]="{
+                                    'is-invalid': editForm.get('shortDescription')?.hasError('required') && editForm.get('shortDescription')?.touched || editForm.get('shortDescription')?.hasError('pattern') }"
+                            [maxlength]="50">
+                        @if(editForm.get('shortDescription')?.hasError('required') && editForm.get('shortDescription')?.touched){
                             <div class="validators">
                                 <small>¡Este campo es requerido!</small>
                             </div>
                         }
-
                     </div>
                 </div>
 
@@ -59,11 +58,11 @@
                         <div class="mb-3">
                             <label class="mb-1"><b>Descripción</b></label>
                             <textarea class="form-control form-control-lg bg-light fs-6" formControlName="textRoot"
-                                placeholder="Descripción*" rows="5" [ngClass]="{
-                                    'is-invalid': createNewModule.get('textRoot')?.hasError('required') && createNewModule.get('textRoot')?.touched,
-                                    'is-valid': createNewModule.get('textRoot')?.value?.length >= 4
-                                  }" [maxlength]="500"></textarea>
-                            @if(createNewModule.get('textRoot')?.hasError('required') && createNewModule.get('textRoot')?.touched){
+                                placeholder="Descripción*" rows="5"
+                                [ngClass]="{
+                                        'is-invalid': editForm.get('textRoot')?.hasError('required') && editForm.get('textRoot')?.touched }"
+                                [maxlength]="500"></textarea>
+                            @if(editForm.get('textRoot')?.hasError('required') && editForm.get('textRoot')?.touched){
                                 <div class="validators">
                                     <small>¡Este campo es requerido!</small>
                                 </div>
@@ -77,11 +76,10 @@
                         <div class="mb-3">
                             <label class="mb-1"><b>URL portada</b></label>
                             <input type="text" class="form-control form-control-lg bg-light fs-6"
-                                formControlName="imgBackURL" placeholder="URL portada" [ngClass]="{
-                                    'is-invalid': createNewModule.get('imgBackURL')?.hasError('required') && createNewModule.get('imgBackURL')?.touched || createNewModule.get('imgBackURL')?.hasError('pattern'),
-                                    'is-valid': createNewModule.get('imgBackURL')?.value?.length >= 4 && createNewModule.get('imgBackURL')?.hasError('pattern') == false
-                                  }">
-                            @if(createNewModule.get('imgBackURL')?.hasError('required') && createNewModule.get('imgBackURL')?.touched){
+                                formControlName="imgBackURL" placeholder="URL portada"
+                                [ngClass]="{
+                                        'is-invalid': editForm.get('imgBackURL')?.hasError('required') && editForm.get('imgBackURL')?.touched || editForm.get('imgBackURL')?.hasError('pattern') }">
+                            @if(editForm.get('imgBackURL')?.hasError('required') && editForm.get('imgBackURL')?.touched){
                                 <div class="validators">
                                     <small>¡Este campo es requerido!</small>
                                 </div>
@@ -93,15 +91,14 @@
                                 <div class="mb-3">
                                     <label class="mb-1"><b>Visibilidad</b></label>
                                     <select class="form-select form-select-md" aria-label=".form-select-lg example"
-                                        [(ngModel)]="optionVisibility" formControlName="isPublic" [ngClass]="{
-                                    'is-invalid': createNewModule.get('isPublic')?.hasError('required') && createNewModule.get('isPublic')?.touched,
-                                    'is-valid': optionVisibility === 'true' || optionVisibility === 'false'
-                                  }">
+                                        [(ngModel)]="optionVisibility" formControlName="isPublic"
+                                        [ngClass]="{
+                                        'is-invalid': editForm.get('isPublic')?.hasError('required') && editForm.get('isPublic')?.touched }">
                                         <option value="" selected>Seleccione una opción</option>
                                         <option value="true">Público</option>
                                         <option value="false">Privado</option>
                                     </select>
-                                    @if(createNewModule.get('isPublic')?.hasError('required') && createNewModule.get('isPublic')?.touched){
+                                    @if(editForm.get('isPublic')?.hasError('required') && editForm.get('isPublic')?.touched){
                                         <div class="validators">
                                             <small>¡Este campo es requerido!</small>
                                         </div>
@@ -113,16 +110,15 @@
                                 <div class="mb-3">
                                     <label class="mb-1"><b>Dificultad</b></label>
                                     <select class="form-select form-select-md" aria-label=".form-select-lg example"
-                                        [(ngModel)]="optionDifficulty" formControlName="difficulty" [ngClass]="{
-                                        'is-invalid': createNewModule.get('difficulty')?.hasError('required') && createNewModule.get('difficulty')?.touched,
-                                        'is-valid': optionDifficulty === 'difficult' || optionDifficulty === 'medium' ||  optionDifficulty === 'easy'
-                                      }">
+                                        [(ngModel)]="optionDifficulty" formControlName="difficulty"
+                                        [ngClass]="{
+                                            'is-invalid': editForm.get('difficulty')?.hasError('required') && editForm.get('difficulty')?.touched }">
                                         <option value="" selected>Seleccione una opción</option>
                                         <option value="hard">Difícil</option>
                                         <option value="medium">Medio</option>
                                         <option value="easy">Fácil</option>
                                     </select>
-                                    @if(createNewModule.get('difficulty')?.hasError('required') && createNewModule.get('difficulty')?.touched){
+                                    @if(editForm.get('difficulty')?.hasError('required') && editForm.get('difficulty')?.touched){
                                         <div class="validators">
                                             <small>¡Este campo es requerido!</small>
                                         </div>
@@ -134,11 +130,9 @@
                 </div>
             </form>
             <div class="action-buttons d-flex justify-content-end mb-3">
-                <button type="button" class="btn btn-primary btn-md" [disabled]="createNewModule.invalid"
-                    (click)="createModule()">Guardar</button>
+                <button type="button" class="btn btn-primary btn-md" [disabled]="editForm.invalid"
+                    (click)="editModule()">Actualizar</button>
             </div>
         </div>
     </div>
-
-
 </body>

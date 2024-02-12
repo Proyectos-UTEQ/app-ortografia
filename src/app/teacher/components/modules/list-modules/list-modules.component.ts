@@ -3,7 +3,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { ModulesService } from '../../../services/modules.service';
-import { ApiResponseAllModulesIT, DataAllodulesIT } from '../../../interfaces/modules.interface';
+import { ApiResponseAllModulesIT, BodyCreateModuleIT, DataAllodulesIT } from '../../../interfaces/modules.interface';
 import { environment } from '../../../../../environments/environment';
 import { SpinnerComponent } from '../../../../shared-components/spinner/spinner.component';
 import { SearchRegistersPipe } from '../../../../shared-components/pipes/search-registers.pipe';
@@ -11,6 +11,7 @@ import { ToastAlertsService } from '../../../../shared-components/services/toast
 import { Router } from '@angular/router';
 import * as iconos from '@fortawesome/free-solid-svg-icons';
 import * as XLSX from 'xlsx';
+import { EditModuleComponent } from '../edit-module/edit-module.component';
 
 @Component({
   selector: 'app-list-modules',
@@ -163,6 +164,13 @@ export class ListModulesComponent {
   //Método que redigire al componente de crear un nuevo módulo
   goToListModules(){
     this.router.navigateByUrl("teacher/home/modules/create-module");
+  }
+
+  //Método que redirige al componente de editar pasando toda la data del módulo seleccionada
+  editModule(module: BodyCreateModuleIT, moduleID: number){
+    EditModuleComponent.module = module;
+    EditModuleComponent.moduleID = moduleID;
+    this.router.navigateByUrl("teacher/home/modules/edit-module");
   }
 
   //Icons to use

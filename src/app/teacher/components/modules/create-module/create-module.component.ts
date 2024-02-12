@@ -46,7 +46,7 @@ export class CreateModuleComponent {
   ngOnInit() {
     this.spinnerStatus = true;
     AOS.init();
-    this.createUploadVideoForm();
+    this.createNewModuleForm();
   }
 
   //Método que obtiene los headers
@@ -58,7 +58,7 @@ export class CreateModuleComponent {
   }
 
   //Método que crea el formulario para crear un módulo
-  createUploadVideoForm() {
+  createNewModuleForm() {
     this.createNewModule = this.formBuilder.group({
       title: ['',
         [Validators.required, Validators.pattern("^[a-zA-ZáéíóúÁÉÍÓÚñÑ!@#$%^&*(),.: ]*$")],
@@ -87,7 +87,7 @@ export class CreateModuleComponent {
       difficulty: this.createNewModule.get('difficulty')?.value,
       points_to_earn: 100,
       index: 0,
-      is_public: Boolean(this.createNewModule.get('isPublic')?.value)
+      is_public: this.createNewModule.value.isPublic == "true" ? true : false
     }
     this.moduleService.createNewModule(this.getHeaders(), body)
     .subscribe({

@@ -73,7 +73,7 @@
                                             <fa-icon data-bs-toggle="mensaje" title="Ver detalles" id="iconViewDetails"
                                                 [icon]="iconViewDetails"></fa-icon>
                                             <fa-icon data-bs-toggle="mensaje" title="Editar" id="iconEdit"
-                                                [icon]="iconEdit"></fa-icon>
+                                                [icon]="iconEdit" (click)="editModule(module, module.id)"></fa-icon>
                                         </td>
                                     </tr>
                                 }
