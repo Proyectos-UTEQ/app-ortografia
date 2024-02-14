@@ -1,5 +1,5 @@
 @if(!spinnerStatus){
-<app-spinner></app-spinner>
+    <app-spinner></app-spinner>
 }
 
 <body>
@@ -78,22 +78,20 @@
 
     <!--Actividades que cambian según el tipo de pregunta seleccionada-->
     @switch (optionActivity) {
-    @case("single_choice_text"){
-    <app-single-select [moduleId]="moduleID"></app-single-select>
+        @case("single_choice_text"){
+            <app-single-select [moduleId]="moduleID"></app-single-select>
+        }
+        @case("multi_choice_text"){
+            <app-multiple-select [moduleId]="moduleID"></app-multiple-select>
+        }
+        @case("order_word"){
+            
+        }
+        @case("complete_word"){
+            <app-complete-word [moduleId]="moduleID"></app-complete-word>
+        }
+        @case("true_or_false"){
 
-    }
-    @case("multi_choice_text"){
-        <app-multiple-select [moduleId]="moduleID"></app-multiple-select>
-    }
-    @case("order_word"){
-
-    }
-    @case("complete_word"){
-
-    }
-    @case("true_or_false"){
-
-    }
-    }
-    
+        }
+    }    
 </body>
