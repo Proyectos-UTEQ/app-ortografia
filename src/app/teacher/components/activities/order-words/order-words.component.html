@@ -1,0 +1,42 @@
+@if(!spinnerStatus){
+<app-spinner></app-spinner>
+}
+
+<div class="row justify-content-center">
+    <div class="col-12">
+        <div class="div mt-3 mx-1">
+            <h4 id="titulo"><fa-icon [icon]="iconCube" class="icon-title"></fa-icon> Ordenar palabras</h4>
+            <button type="button" class="btn btn-secondary btn-xs"> Generar con IA
+                <fa-icon [icon]="iconIA" class="icon-button"></fa-icon></button>
+        </div>
+
+        <!--Formulario para registrar las opciones a ordenar-->
+        <div class="col-12 col-md-6 col-lg-6 col-xl-6">
+            <label class="mb-1"><b>Opciones</b></label>
+            <form nz-form [formGroup]="validateForm">
+                @for (control of listOfControl; track control; let i = $index) {
+                    <nz-form-item>
+                        <nz-form-control>
+                            <div class="input-group">
+                                <input class="form-control form-control-lg bg-light fs-6 option" nz-input
+                                    placeholder="Palabra*" [attr.id]="control.id" [formControlName]="control.controlInstance"/>
+                                <span class="input-group-text" (click)="removeField(control, $event)">
+                                    <fa-icon [icon]="iconDelete"></fa-icon>
+                                </span>
+                            </div>
+                        </nz-form-control>
+                    </nz-form-item>
+                }
+                <!--Botón para agregar un nuevo campo-->
+                <div class="action-buttons d-flex justify-content-start">
+                    <button class="btn btn-primary btn-md mb-5" (click)="addField($event)"><fa-icon [icon]="iconAdd"></fa-icon> Nuevo campo</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!--Botón para registrar la pregunta-->
+    <div class="action-buttons d-flex justify-content-end">
+        <button type="button" class="btn btn-primary btn-md mb-3" (click)="registerQuestion()">Guardar</button>
+    </div>
+</div>

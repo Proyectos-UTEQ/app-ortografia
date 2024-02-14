@@ -13,6 +13,7 @@ import * as iconos from '@fortawesome/free-solid-svg-icons';
 import { SingleSelectComponent } from '../single-select/single-select.component';
 import { MultipleSelectComponent } from '../multiple-select/multiple-select.component';
 import { CompleteWordComponent } from '../complete-word/complete-word.component';
+import { OrderWordsComponent } from '../order-words/order-words.component';
 
 @Component({
   selector: 'app-new-activity-container',
@@ -27,7 +28,8 @@ import { CompleteWordComponent } from '../complete-word/complete-word.component'
     SpinnerComponent,
     SingleSelectComponent,
     MultipleSelectComponent,
-    CompleteWordComponent
+    CompleteWordComponent,
+    OrderWordsComponent
   ],
   providers: [
     ModulesService
