@@ -11,6 +11,7 @@ import { SpinnerComponent } from '../../../../shared-components/spinner/spinner.
 import { Router } from '@angular/router';
 import * as iconos from '@fortawesome/free-solid-svg-icons';
 import { SingleSelectComponent } from '../single-select/single-select.component';
+import { MultipleSelectComponent } from '../multiple-select/multiple-select.component';
 
 @Component({
   selector: 'app-new-activity-container',
@@ -23,7 +24,8 @@ import { SingleSelectComponent } from '../single-select/single-select.component'
     FormsModule,
     CommonModule,
     SpinnerComponent,
-    SingleSelectComponent
+    SingleSelectComponent,
+    MultipleSelectComponent
   ],
   providers: [
     ModulesService

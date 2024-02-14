@@ -1,0 +1,13 @@
+.text-hide{
+    color: #FFF;
+}
+
+@media screen and (max-width: 760px) {
+    .text-hide{
+        display: none;
+    }
+
+    .side-right{
+        margin-top: 15px;
+    }
+}
