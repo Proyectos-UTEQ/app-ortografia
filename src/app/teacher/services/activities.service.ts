@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { environment } from '../../../environments/environment';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { ApiResponseListActivitiesIT } from '../interfaces/activities.interface';
+import { ApiResponseListActivitiesIT, ApiResponseRegisterQuestionIT, BodyRegisterQuestionIT } from '../interfaces/activities.interface';
 
 @Injectable({
   providedIn: 'root'
@@ -32,6 +32,12 @@ export class ActivitiesService {
     queryParams += `sort=${sort}&`;
     queryParams += `order=${order}`;
     return this.http.get<ApiResponseListActivitiesIT>(this.urlApi + `/api/module/${idModule}/question/activities`, this.options);
+  }
+
+  //Método que consume el servicio para registrar una pregunta manualmente o con IA
+  registerQuestion(headers: Map<string, any>, body: BodyRegisterQuestionIT, moduleID: number): Observable<ApiResponseRegisterQuestionIT> {
+    this.options = this.getHeaders(headers);
+    return this.http.post<ApiResponseRegisterQuestionIT>(this.urlApi + `/api/module/${moduleID}/question`, body, this.options);
   }
   
 

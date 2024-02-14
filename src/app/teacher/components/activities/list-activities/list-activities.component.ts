@@ -1,7 +1,6 @@
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { Component } from '@angular/core';
 import { SpinnerComponent } from '../../../../shared-components/spinner/spinner.component';
-import * as iconos from '@fortawesome/free-solid-svg-icons';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { SearchRegistersPipe } from '../../../../shared-components/pipes/search-registers.pipe';
@@ -12,9 +11,10 @@ import { ModulesService } from '../../../services/modules.service';
 import { ApiResponseAllModulesIT, DataAllModulesIT } from '../../../interfaces/modules.interface';
 import { Router } from '@angular/router';
 import { ToastAlertsService } from '../../../../shared-components/services/toast-alerts.service';
-import * as XLSX from 'xlsx';
 import { ActivitiesService } from '../../../services/activities.service';
 import { ApiResponseListActivitiesIT, DetailActivityByModuleIT } from '../../../interfaces/activities.interface';
+import * as XLSX from 'xlsx';
+import * as iconos from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-list-activities',
@@ -76,7 +76,7 @@ export class ListActivitiesComponent {
 
   //Método que redirige al componente de crear una nueva actividad
   goToAddActivity() {
-
+    this.router.navigateByUrl('/teacher/home/activities/new-activity');
   }
 
   //Método que descarga un archivo de Excel con los datos de la tabla

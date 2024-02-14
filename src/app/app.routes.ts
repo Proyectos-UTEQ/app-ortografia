@@ -19,6 +19,7 @@ import { ListClassComponent } from './teacher/components/classes/list-class/list
 import { ListModulesComponent } from './teacher/components/modules/list-modules/list-modules.component';
 import { CreateModuleComponent } from './teacher/components/modules/create-module/create-module.component';
 import { EditModuleComponent } from './teacher/components/modules/edit-module/edit-module.component';
+import { NewActivityContainerComponent } from './teacher/components/activities/new-activity-container/new-activity-container.component';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'auth', pathMatch: 'full' },
@@ -72,7 +73,12 @@ export const routes: Routes = [
               { path: 'edit-module', component: EditModuleComponent }
             ]
           },
-          { path: 'activities/list-activities', component: ListActivitiesComponent },
+          { path: 'activities',
+            children: [
+              { path: 'list-activities', component: ListActivitiesComponent },
+              { path: 'new-activity', component: NewActivityContainerComponent },
+            ]
+          },
           { path: 'classes/list-classes', component: ListClassComponent },
         ]
       }
