@@ -1,12 +1,188 @@
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { Component } from '@angular/core';
+import { SpinnerComponent } from '../../../../shared-components/spinner/spinner.component';
+import * as iconos from '@fortawesome/free-solid-svg-icons';
+import { CommonModule } from '@angular/common';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { SearchRegistersPipe } from '../../../../shared-components/pipes/search-registers.pipe';
+import { environment } from '../../../../../environments/environment';
+import { MatInputModule } from '@angular/material/input';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { ModulesService } from '../../../services/modules.service';
+import { ApiResponseAllModulesIT, DataAllModulesIT } from '../../../interfaces/modules.interface';
+import { Router } from '@angular/router';
+import { ToastAlertsService } from '../../../../shared-components/services/toast-alerts.service';
+import * as XLSX from 'xlsx';
+import { ActivitiesService } from '../../../services/activities.service';
+import { ApiResponseListActivitiesIT, DetailActivityByModuleIT } from '../../../interfaces/activities.interface';
 
 @Component({
   selector: 'app-list-activities',
   standalone: true,
-  imports: [],
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    FormsModule,
+    FontAwesomeModule,
+    SpinnerComponent,
+    SearchRegistersPipe,
+    MatAutocompleteModule,
+    MatInputModule
+  ],
+  providers: [
+    ModulesService,
+    ActivitiesService
+  ],
   templateUrl: './list-activities.component.html',
-  styleUrl: './list-activities.component.css'
+  styleUrls: ['./list-activities.component.css', '../../modules/list-modules/list-modules.component.css']
 })
 export class ListActivitiesComponent {
 
+  //Variables
+  spinnerStatus: boolean = false;
+  arrayActivities: DetailActivityByModuleIT[] = [];
+  activitiesToSearch: DetailActivityByModuleIT[] = [];
+  arrayPaginator: number[] = [];
+  itemsForPage: number = environment.ITEMS_FOR_PAGE_TABLES;
+  totalPage: number = environment.TOTAL_PAGES;
+  currentPage: number = 1;
+  searchBy: string = "type_question";
+
+  filteredModulesTitle: DataAllModulesIT[] = [];
+  arrayModules: DataAllModulesIT[] = [];
+  moduleID: number = 0;
+
+  //Constructor
+  constructor(
+    private modulesServiceP: ModulesService,
+    private toastr: ToastAlertsService,
+    private router: Router,
+    private activitiesService: ActivitiesService
+  ) { }
+
+  //ngOnInit
+  ngOnInit() {
+    this.spinnerStatus = true;
+    this.getListAllModules();
+  }
+
+  //Método que obtiene los headers
+  getHeaders() {
+    let headers = new Map();
+    headers.set("token", sessionStorage.getItem("token"));
+    headers.set("typeUser", sessionStorage.getItem("typeUser"));
+    return headers;
+  }
+
+  //Método que redirige al componente de crear una nueva actividad
+  goToAddActivity() {
+
+  }
+
+  //Método que descarga un archivo de Excel con los datos de la tabla
+  downloadXLSX() {
+    if(this.moduleID == 0){
+      this.toastr.showToastInformation("Información", "Primero debe seleccionar un módulo");
+      return;
+    }
+    const table = document.getElementById('htmlExcelTable') as HTMLElement;
+    const rows: any = [];
+    const tableRows = table.querySelectorAll('tr');
+    tableRows.forEach((row) => {
+      const cells = row.querySelectorAll('td, th');
+      const rowData: any = [];
+      cells.forEach((cell) => {
+        rowData.push((cell as HTMLElement).innerText);
+      });
+      rows.push(rowData);
+    });
+
+    const worksheet = XLSX.utils.aoa_to_sheet(rows);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'Actividades');
+    XLSX.writeFile(workbook, `${this.getCurrentDate()}_actividades_modulo_${this.moduleID}.xlsx`);
+  }
+
+  //Método que obtiene la fecha actual para mostrarla en el archivo de Excel
+  getCurrentDate(): string {
+    const fechaActual = new Date();
+    return `${fechaActual.getDate()}/${fechaActual.getMonth() + 1}/${fechaActual.getFullYear()}`;
+  }
+
+  //Método que consume el servicio para obtener el listado de tódos los módulos disponibles
+  getListAllModules() {
+    this.spinnerStatus = false;
+    this.modulesServiceP.getAllListModules(this.getHeaders(), 1, 999, "id", "desc")
+      .subscribe({
+        next: (data: ApiResponseAllModulesIT) => {
+          this.arrayModules = data.data;
+          this.spinnerStatus = true;
+        },
+        error: (error) => {
+          this.spinnerStatus = true;
+          this.toastr.showToastError("Error", "No se pudo obtener el listado de módulos");
+        }
+      });
+  }
+
+  //Para la paginación
+  setPaginator() {
+    this.arrayPaginator = [];
+    for (let i = 0; i < this.totalPage; i++) {
+      this.arrayPaginator.push(i + 1);
+    }
+  }
+
+  //Método para manejar el cambio de página
+  pageChanged(page: number) {
+    this.currentPage = page;
+    //this.getActivitiesByModule();
+  }
+
+  //Método para buscar el modulo, entre las opciones del select
+  onSearchModule(event: any) {
+    const value = event.target.value;
+    const searchTerm = value.trim().toLowerCase();
+    this.filteredModulesTitle = this.arrayModules.filter(
+      module => (module.title).toLowerCase().includes(searchTerm)
+    );
+  }
+
+  //Método para mostrar por defecto todos los módulos y que no se muestre de primero el "Sin resultados..."
+  onFocus() {
+    this.filteredModulesTitle = this.arrayModules;
+  }
+
+  //Método que obtiene el listado de actividades de un módulo según el ID
+  getActivitiesByModule(moduleID: number) {
+    this.spinnerStatus = false;
+    this.moduleID = moduleID;
+    this.activitiesService.getActivitiesByModule(this.getHeaders(), 1, this.itemsForPage, "id", "asc", moduleID)
+    .subscribe({
+      next: (data: ApiResponseListActivitiesIT) => {
+        this.arrayActivities = data.data;
+        this.totalPage = data.details.total_page;
+        this.setPaginator();
+        this.spinnerStatus = true;
+        if(this.arrayActivities.length == 0){
+          this.toastr.showToastInformation("Información", "Este módulo no contiene actividades registradas");
+        }
+      },
+      error: (error) => {
+        this.spinnerStatus = true;
+        this.toastr.showToastError("Error", "No se pudo obtener el listado de actividades");
+      }
+    });
+  }
+
+  //Icons to use
+  iconActivities = iconos.faIcons;
+  iconAdd = iconos.faCirclePlus;
+  iconXlsx = iconos.faFileExcel;
+  //Icons for table
+  iconEdit = iconos.faEdit;
+  iconDelete = iconos.faTrashAlt;
+  //Icons for paginator
+  iconBack = iconos.faArrowLeft;
+  iconNext = iconos.faArrowRight;
 }

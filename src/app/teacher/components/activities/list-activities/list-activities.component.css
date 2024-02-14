@@ -1,0 +1,6 @@
+#iconDelete {
+    font-size: 1rem !important;
+    margin-right: 12px;
+    cursor: pointer;
+    color: var(--alert-color);
+}
