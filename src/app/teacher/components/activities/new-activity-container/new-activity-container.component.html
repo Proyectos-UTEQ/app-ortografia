@@ -54,7 +54,7 @@
                                 [(ngModel)]="optionActivity" formControlName="typeQuestion" [ngClass]="{
                             'is-invalid': newActivityForm.get('typeQuestion')?.hasError('required') && newActivityForm.get('typeQuestion')?.touched,
                             'is-valid': optionActivity != ''}" (change)="updateOptionActivity($event)">
-                                <option value="" selected>Seleccione una opción</option>
+                                <option value="" selected disabled>Seleccione una opción</option>
                                 <option value="single_choice_text">Selección única</option>
                                 <option value="multi_choice_text">Selección múltiple</option>
                                 <option value="order_word">Ordenar</option>
@@ -85,7 +85,7 @@
             <app-multiple-select [moduleId]="moduleID"></app-multiple-select>
         }
         @case("order_word"){
-            
+            <app-order-words [moduleId]="moduleID"></app-order-words>
         }
         @case("complete_word"){
             <app-complete-word [moduleId]="moduleID"></app-complete-word>
@@ -94,5 +94,4 @@
 
         }
     }    
-    <app-order-words></app-order-words>
 </body>

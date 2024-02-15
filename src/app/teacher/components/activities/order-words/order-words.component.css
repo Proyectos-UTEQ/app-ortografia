@@ -7,3 +7,8 @@
   color: var(--alert-color) !important;
 }
 
+.text-info{
+  margin-top: -1rem !important;
+  margin-bottom: 10px !important;
+  color: var(--primary-color) !important;
+}
