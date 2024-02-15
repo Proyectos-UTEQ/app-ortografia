@@ -1,13 +1,13 @@
-import { CommonModule } from '@angular/common';
 import { Component, Input } from '@angular/core';
+import { Router } from '@angular/router';
+import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
-import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { SpinnerComponent } from '../../../../shared-components/spinner/spinner.component';
+import { SweetAlertsConfirm } from '../../../../shared-components/alerts/confirm-alerts.component';
+import { ApiResponseRegisterQuestionIT, BodyRegisterQuestionIT, BodyUpdateQuestionIT } from '../../../interfaces/activities.interface';
 import { ActivitiesService } from '../../../services/activities.service';
 import { ToastAlertsService } from '../../../../shared-components/services/toast-alerts.service';
-import { Router } from '@angular/router';
-import { ApiResponseRegisterQuestionIT, BodyRegisterQuestionIT } from '../../../interfaces/activities.interface';
-import { SweetAlertsConfirm } from '../../../../shared-components/alerts/confirm-alerts.component';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import * as iconos from '@fortawesome/free-solid-svg-icons';
 
 @Component({
@@ -30,9 +30,11 @@ import * as iconos from '@fortawesome/free-solid-svg-icons';
 export class TrueOrFalseComponent {
 
   //Variables
-  @Input() moduleId: number = 0;
+  @Input() moduleId: number = 0; //Este moduleId servirá para registrar
   @Input() newQuestion!: boolean;
   static activityID: number = 0;
+  static moduleID: number = 0; //Este moduleID servirá para editar
+  static correctAnswerID: number = 0;
   questionForm!: FormGroup;
   spinnerStatus: boolean = false;
   selectedOption: string | null = null;
@@ -52,9 +54,7 @@ export class TrueOrFalseComponent {
   ngOnInit() {
     this.spinnerStatus = true;
     this.createQuestionForm();
-    console.log(TrueOrFalseComponent.activityID);
     if (!this.newQuestion) {
-      console.log(TrueOrFalseComponent.activityID);
       this.getQuestionById(TrueOrFalseComponent.activityID);
     }
   }
@@ -110,9 +110,8 @@ export class TrueOrFalseComponent {
     this.answer = option;
   }
 
-  //Método que consume el servicio para registrar una pregunta manualmente o con IA
-  registerQuestion() {
-    this.spinnerStatus = false;
+  //Método que llena el body para registrar la pregunta
+  fillBodyToRegister(): BodyRegisterQuestionIT {
     let body: BodyRegisterQuestionIT = {
       text_root: this.questionForm.get('textRoot')?.value,
       difficulty: this.questionForm.get('difficulty')?.value,
@@ -129,7 +128,13 @@ export class TrueOrFalseComponent {
         text_to_complete: []
       }
     }
-    this.activitiesService.registerQuestion(this.getHeaders(), body, this.moduleId)
+    return body;
+  }
+
+  //Método que consume el servicio para registrar una pregunta manualmente o con IA
+  registerQuestion() {
+    this.spinnerStatus = false;
+    this.activitiesService.registerQuestion(this.getHeaders(), this.fillBodyToRegister(), this.moduleId)
       .subscribe({
         next: (data: ApiResponseRegisterQuestionIT) => {
           if (data.id != 0) {
@@ -168,12 +173,55 @@ export class TrueOrFalseComponent {
     this.questionForm.get('textRoot')?.setValue(this.questionData.text_root);
     this.questionForm.get('difficulty')?.setValue(this.questionData.difficulty);
     this.selectedOption = this.questionData.correct_answer.true_or_false ? "option1" : "option2";
+    this.answer = this.questionData.correct_answer.true_or_false;
+  }
+
+  //Método que llena el body para editar la pregunta
+  fillBodyToUpdate(): BodyUpdateQuestionIT {
+    let body: BodyUpdateQuestionIT = {
+      id: TrueOrFalseComponent.activityID,
+      module_id: TrueOrFalseComponent.moduleID,
+      text_root: this.questionForm.get('textRoot')?.value,
+      difficulty: this.questionForm.get('difficulty')?.value,
+      type_question: "true_or_false",
+      options: {
+        select_mode: "",
+        text_options: [],
+        text_to_complete: "",
+        hind: ""
+      },
+      correct_answer_id: TrueOrFalseComponent.correctAnswerID,
+      correct_answer: {
+        true_or_false: this.answer,
+        text_options: [],
+        text_to_complete: []
+      }
+    }
+    return body;
   }
 
   //Método que consume el servicio para actualizar una pregunta
   updateActivity() {
-    console.log(this.answer);
+    this.spinnerStatus = false;
+    this.activitiesService.updateQuestion(this.getHeaders(), this.fillBodyToUpdate(), TrueOrFalseComponent.moduleID, TrueOrFalseComponent.activityID,)
+      .subscribe({
+        next: () => {
+          this.spinnerStatus = true;
+          this.toastr.showToastSuccess("Pregunta actualizada correctamente", "Éxito");
+          this.router.navigateByUrl("/teacher/home/activities/list-activities");
+        },
+        error: (error: any) => {
+          this.spinnerStatus = true;
+          if (error.status === 200 && error.statusText === "OK") {
+            this.toastr.showToastSuccess("Pregunta actualizada correctamente", "Éxito");
+            this.router.navigateByUrl("/teacher/home/activities/list-activities");
+          } else {
+            this.toastr.showToastError("Error", "Ocurrió un error al actualizar la pregunta");
+          }
+        }
+      })
   }
+
 
   //Icons to use
   iconCube = iconos.faCube;

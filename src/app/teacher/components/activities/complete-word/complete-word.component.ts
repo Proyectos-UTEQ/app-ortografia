@@ -1,14 +1,14 @@
 import { Component, Input } from '@angular/core';
-import { ApiResponseRegisterQuestionIT, BodyRegisterQuestionIT } from '../../../interfaces/activities.interface';
-import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { CommonModule } from '@angular/common';
+import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { SpinnerComponent } from '../../../../shared-components/spinner/spinner.component';
+import { SweetAlertsConfirm } from '../../../../shared-components/alerts/confirm-alerts.component';
+import { ApiResponseRegisterQuestionIT, BodyRegisterQuestionIT, BodyUpdateQuestionIT } from '../../../interfaces/activities.interface';
 import { ToastAlertsService } from '../../../../shared-components/services/toast-alerts.service';
 import { ActivitiesService } from '../../../services/activities.service';
-import { CommonModule } from '@angular/common';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import { SpinnerComponent } from '../../../../shared-components/spinner/spinner.component';
 import * as iconos from '@fortawesome/free-solid-svg-icons';
-import { SweetAlertsConfirm } from '../../../../shared-components/alerts/confirm-alerts.component';
 
 @Component({
   selector: 'app-complete-word',
@@ -30,9 +30,11 @@ import { SweetAlertsConfirm } from '../../../../shared-components/alerts/confirm
 export class CompleteWordComponent {
 
   //Variables
-  @Input() moduleId: number = 0;
+  @Input() moduleId: number = 0; //Este moduleId servirá para registrar
   @Input() newQuestion!: boolean;
   static activityID: number = 0;
+  static moduleID: number = 0; //Este moduleID servirá para editar
+  static correctAnswerID: number;
   questionForm!: FormGroup;
   spinnerStatus: boolean = false;
   questionData: ApiResponseRegisterQuestionIT = {} as ApiResponseRegisterQuestionIT;
@@ -50,11 +52,8 @@ export class CompleteWordComponent {
   ngOnInit() {
     this.spinnerStatus = true;
     this.createQuestionForm();
-    console.log(CompleteWordComponent.activityID);
-    if (!this.newQuestion) {
-      console.log(CompleteWordComponent.activityID);
+    if (!this.newQuestion)
       this.getQuestionById(CompleteWordComponent.activityID);
-    }
   }
 
   //Método que obtiene los headers
@@ -107,9 +106,8 @@ export class CompleteWordComponent {
     });
   }
 
-  //Método que consume el servicio para registrar una pregunta manualmente o con IA
-  registerQuestion() {
-    this.spinnerStatus = false;
+  //Método que llena el body para registrar la pregunta
+  fillBodyToRegister(): BodyRegisterQuestionIT {
     let body: BodyRegisterQuestionIT = {
       text_root: this.questionForm.get('textRoot')?.value,
       difficulty: this.questionForm.get('difficulty')?.value,
@@ -126,7 +124,13 @@ export class CompleteWordComponent {
         text_to_complete: [this.questionForm.get('wordToComplete')?.value.toLowerCase()]
       }
     }
-    this.activitiesService.registerQuestion(this.getHeaders(), body, this.moduleId)
+    return body;
+  }
+
+  //Método que consume el servicio para registrar una pregunta manualmente o con IA
+  registerQuestion() {
+    this.spinnerStatus = false;
+    this.activitiesService.registerQuestion(this.getHeaders(), this.fillBodyToRegister(), this.moduleId)
       .subscribe({
         next: (data: ApiResponseRegisterQuestionIT) => {
           if (data.id != 0) {
@@ -163,14 +167,55 @@ export class CompleteWordComponent {
   //Método que rellena los campos con la data de la pregunta
   fillQuestionForm() {
     this.questionForm.get('textRoot')?.setValue(this.questionData.text_root);
-    this.questionForm.get('wordToComplete')?.setValue(this.questionData.options.text_to_complete[0]);
+    this.questionForm.get('wordToComplete')?.setValue(this.questionData.options.text_to_complete);
     this.questionForm.get('hind')?.setValue(this.questionData.options.hind);
     this.questionForm.get('difficulty')?.setValue(this.questionData.difficulty);
   }
 
-  //Método que manda a actualiza la pregunta
-  updateActivity(){
+  //Método que llena el body para editar la pregunta
+  fillBodyToUpdate(): BodyUpdateQuestionIT {
+    let body: BodyUpdateQuestionIT = {
+      id: CompleteWordComponent.activityID,
+      module_id: CompleteWordComponent.moduleID,
+      text_root: this.questionForm.get('textRoot')?.value,
+      difficulty: this.questionForm.get('difficulty')?.value,
+      type_question: "complete_word",
+      options: {
+        select_mode: "",
+        text_options: [],
+        text_to_complete: this.questionForm.get('wordToComplete')?.value.toLowerCase(),
+        hind: this.questionForm.get('hind')?.value,
+      },
+      correct_answer_id: CompleteWordComponent.correctAnswerID,
+      correct_answer: {
+        true_or_false: false,
+        text_options: [],
+        text_to_complete: [this.questionForm.get('wordToComplete')?.value.toLowerCase()]
+      }
+    }
+    return body;
+  }
 
+  //Método que manda a actualiza la pregunta
+  updateActivity() {
+    this.spinnerStatus = false;
+    this.activitiesService.updateQuestion(this.getHeaders(), this.fillBodyToUpdate(), CompleteWordComponent.moduleID, CompleteWordComponent.activityID,)
+      .subscribe({
+        next: () => {
+          this.spinnerStatus = true;
+          this.toastr.showToastSuccess("Pregunta actualizada correctamente", "Éxito");
+          this.router.navigateByUrl("/teacher/home/activities/list-activities");
+        },
+        error: (error: any) => {
+          this.spinnerStatus = true;
+          if (error.status === 200 && error.statusText === "OK") {
+            this.toastr.showToastSuccess("Pregunta actualizada correctamente", "Éxito");
+            this.router.navigateByUrl("/teacher/home/activities/list-activities");
+          } else {
+            this.toastr.showToastError("Error", "Ocurrió un error al actualizar la pregunta");
+          }
+        }
+      })
   }
 
   //Icons to use

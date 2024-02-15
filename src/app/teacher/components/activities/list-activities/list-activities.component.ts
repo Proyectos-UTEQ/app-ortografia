@@ -51,7 +51,7 @@ export class ListActivitiesComponent {
   itemsForPage: number = environment.ITEMS_FOR_PAGE_TABLES;
   totalPage: number = environment.TOTAL_PAGES;
   currentPage: number = 1;
-  searchBy: string = "type_question";
+  searchBy: string = "text_root";
 
   filteredModulesTitle: DataAllModulesIT[] = [];
   arrayModules: DataAllModulesIT[] = [];
@@ -124,7 +124,7 @@ export class ListActivitiesComponent {
           this.arrayModules = data.data;
           this.spinnerStatus = true;
         },
-        error: (error) => {
+        error: () => {
           this.spinnerStatus = true;
           this.toastr.showToastError("Error", "No se pudo obtener el listado de módulos");
         }
@@ -141,8 +141,12 @@ export class ListActivitiesComponent {
 
   //Método para manejar el cambio de página
   pageChanged(page: number) {
+    console.log("cambiar la pagina")
+    this.arrayActivities = [];
+    console.log(this.arrayActivities)
     this.currentPage = page;
-    //this.getActivitiesByModule();
+    console.log(this.moduleID, this.currentPage, this.itemsForPage)
+    this.getActivitiesByModule(this.moduleID, this.currentPage);
   }
 
   //Método para buscar el modulo, entre las opciones del select
@@ -160,13 +164,18 @@ export class ListActivitiesComponent {
   }
 
   //Método que obtiene el listado de actividades de un módulo según el ID
-  getActivitiesByModule(moduleID: number) {
+  getActivitiesByModule(moduleID: number, currentPage: number) {
     this.spinnerStatus = false;
     this.moduleID = moduleID;
-    this.activitiesService.getActivitiesByModule(this.getHeaders(), 1, this.itemsForPage, "id", "asc", moduleID)
+    this.currentPage = currentPage;
+    this.activitiesService.getActivitiesByModule(this.getHeaders(), this.currentPage, 10, "id", "asc", moduleID)
       .subscribe({
         next: (data: ApiResponseListActivitiesIT) => {
+          console.log("Antes de llenar")
+          console.log(this.arrayActivities)
           this.arrayActivities = data.data;
+          console.log("Después de llenar")
+          console.log(this.arrayActivities)
           this.totalPage = data.details.total_page;
           this.setPaginator();
           this.spinnerStatus = true;
@@ -174,7 +183,7 @@ export class ListActivitiesComponent {
             this.toastr.showToastInformation("Información", "Este módulo no contiene actividades registradas");
           }
         },
-        error: (error) => {
+        error: () => {
           this.spinnerStatus = true;
           this.toastr.showToastError("Error", "No se pudo obtener el listado de actividades");
         }
@@ -182,48 +191,53 @@ export class ListActivitiesComponent {
   }
 
   //Método que obtiene la data de una pregunta por su ID
-  getQuestionById(activityID: number) {
+  goToEditActivity(activityID: number) {
     this.spinnerStatus = false;
     this.activitiesService.getQuestionById(this.getHeaders(), activityID)
       .subscribe({
         next: (data: ApiResponseRegisterQuestionIT) => {
-          this.questionData = data;
+          /* this.questionData = data; */
           this.spinnerStatus = true;
-          if(this.questionData.options.select_mode == "single"){
-            this.router.navigateByUrl("/teacher/home/activities/edit-activity-single-selection")
-            SingleSelectComponent.activityID = activityID;
-          }
-          else{
-            this.router.navigateByUrl("/teacher/home/activities/edit-activity-multiple-selection")
-            MultipleSelectComponent.activityID = activityID;
+          switch (data.type_question) {
+            case ("multi_choice_text"):
+              if (data.options.select_mode == "single") {
+                this.router.navigateByUrl("/teacher/home/activities/edit-activity-single-selection")
+                SingleSelectComponent.activityID = activityID;
+                SingleSelectComponent.moduleID = this.moduleID;
+                SingleSelectComponent.correctAnswerID = data.correct_answer_id;
+              }
+              else {
+                this.router.navigateByUrl("/teacher/home/activities/edit-activity-multiple-selection")
+                MultipleSelectComponent.activityID = activityID;
+                MultipleSelectComponent.moduleID = this.moduleID;
+                MultipleSelectComponent.correctAnswerID = data.correct_answer_id;
+              }
+              break;
+            case ("order_word"):
+              this.router.navigateByUrl("/teacher/home/activities/edit-activity-order-word")
+              OrderWordsComponent.activityID = activityID;
+              OrderWordsComponent.moduleID = this.moduleID;
+              OrderWordsComponent.correctAnswerID = data.correct_answer_id;
+              break;
+            case ("true_or_false"):
+              this.router.navigateByUrl("/teacher/home/activities/edit-activity-true-or-false")
+              TrueOrFalseComponent.activityID = activityID;
+              TrueOrFalseComponent.moduleID = this.moduleID;
+              TrueOrFalseComponent.correctAnswerID = data.correct_answer_id;
+              break;
+            case ("complete_word"):
+              this.router.navigateByUrl("/teacher/home/activities/edit-activity-complete-word")
+              CompleteWordComponent.activityID = activityID;
+              CompleteWordComponent.moduleID = this.moduleID;
+              CompleteWordComponent.correctAnswerID = data.correct_answer_id;
+              break;
           }
         },
-        error: (error: any) => {
+        error: () => {
           this.spinnerStatus = true;
           this.toastr.showToastError("Error", "Ocurrió un error al obtener la pregunta");
         }
       })
-  }
-
-  //Método que redirige al componente de editar la actividad
-  editActivity(activityID: number, typeQuestion: string) {
-    switch (typeQuestion) {
-      case ("multi_choice_text"):
-        this.getQuestionById(activityID);
-        break;
-      case ("order_word"):
-        this.router.navigateByUrl("/teacher/home/activities/edit-activity-order-word")
-        OrderWordsComponent.activityID = activityID;
-        break;
-      case ("true_or_false"):
-        this.router.navigateByUrl("/teacher/home/activities/edit-activity-true-or-false")
-        TrueOrFalseComponent.activityID = activityID;
-        break;
-      case ("complete_word"):
-        this.router.navigateByUrl("/teacher/home/activities/edit-activity-complete-word")
-        CompleteWordComponent.activityID = activityID;
-        break;
-    }
   }
 
   //Icons to use

@@ -1,26 +1,26 @@
-import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { Component, Input } from '@angular/core';
-import { SpinnerComponent } from '../../../../shared-components/spinner/spinner.component';
-import { FormBuilder, FormControl, FormGroup, FormRecord, FormsModule, NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { NzFormModule } from 'ng-zorro-antd/form';
-import { ApiResponseRegisterQuestionIT, BodyRegisterQuestionIT } from '../../../interfaces/activities.interface';
-import { CommonModule } from '@angular/common';
-import { ActivitiesService } from '../../../services/activities.service';
 import { Router } from '@angular/router';
-import { ToastAlertsService } from '../../../../shared-components/services/toast-alerts.service';
-import * as iconos from '@fortawesome/free-solid-svg-icons';
+import { CommonModule } from '@angular/common';
+import { NzFormModule } from 'ng-zorro-antd/form';
+import { FormBuilder, FormControl, FormGroup, FormRecord, FormsModule, NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { SpinnerComponent } from '../../../../shared-components/spinner/spinner.component';
 import { SweetAlertsConfirm } from '../../../../shared-components/alerts/confirm-alerts.component';
+import { ApiResponseRegisterQuestionIT, BodyRegisterQuestionIT, BodyUpdateQuestionIT } from '../../../interfaces/activities.interface';
+import { ActivitiesService } from '../../../services/activities.service';
+import { ToastAlertsService } from '../../../../shared-components/services/toast-alerts.service';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import * as iconos from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-order-words',
   standalone: true,
   imports: [
-    FontAwesomeModule,
-    SpinnerComponent,
+    CommonModule,
+    FormsModule,
     ReactiveFormsModule,
     NzFormModule,
-    FormsModule,
-    CommonModule
+    SpinnerComponent,
+    FontAwesomeModule
   ],
   providers: [
     ActivitiesService,
@@ -32,9 +32,11 @@ import { SweetAlertsConfirm } from '../../../../shared-components/alerts/confirm
 export class OrderWordsComponent {
 
   //Variables
-  @Input() moduleId: number = 0;
+  @Input() moduleId: number = 0; //Este moduleID servirá para crear
   @Input() newQuestion!: boolean;
   static activityID: number = 0;
+  static moduleID: number = 0; //Este moduleID servirá para editar
+  static correctAnswerID: number = 0;
   spinnerStatus: boolean = false;
   questionForm!: FormGroup;
   validateForm: FormRecord<FormControl<string>> = this.fb.record({});
@@ -59,9 +61,7 @@ export class OrderWordsComponent {
     this.spinnerStatus = true;
     this.createQuestionForm();
     this.addField();
-    console.log(OrderWordsComponent.activityID);
     if (!this.newQuestion) {
-      console.log(OrderWordsComponent.activityID);
       this.getQuestionById(OrderWordsComponent.activityID);
     }
   }
@@ -136,12 +136,8 @@ export class OrderWordsComponent {
     return newArray;
   }
 
-  //Método que manda a registrar la pregunta
-  registerQuestion() {
-    this.tidyOptions = this.listOfControl.map(control => this.validateForm.get(control.controlInstance)?.value);
-    this.messyOptions = this.shuffleArray(this.tidyOptions);
-
-    this.spinnerStatus = false;
+  //Método que llena el body para editar la pregunta
+  fillBodyToRegister(): BodyRegisterQuestionIT {
     let body: BodyRegisterQuestionIT = {
       text_root: "Ordena las siguientes palabras para formar una oración que tenga sentido:",
       difficulty: this.questionForm.get('difficulty')?.value,
@@ -158,7 +154,16 @@ export class OrderWordsComponent {
         text_to_complete: []
       }
     }
-    this.activitiesService.registerQuestion(this.getHeaders(), body, this.moduleId)
+    return body;
+  }
+
+  //Método que manda a registrar la pregunta
+  registerQuestion() {
+    this.tidyOptions = this.listOfControl.map(control => this.validateForm.get(control.controlInstance)?.value);
+    this.messyOptions = this.shuffleArray(this.tidyOptions);
+
+    this.spinnerStatus = false;
+    this.activitiesService.registerQuestion(this.getHeaders(), this.fillBodyToRegister(), this.moduleId)
       .subscribe({
         next: (data: ApiResponseRegisterQuestionIT) => {
           if (data.id != 0) {
@@ -210,10 +215,50 @@ export class OrderWordsComponent {
     });
   }
 
+  //Método que llena el body para editar la pregunta
+  fillBodyToUpdate(): BodyUpdateQuestionIT {
+    let body: BodyUpdateQuestionIT = {
+      id: OrderWordsComponent.activityID,
+      module_id: OrderWordsComponent.moduleID,
+      text_root: "Ordena las siguientes palabras para formar una oración que tenga sentido:",
+      difficulty: this.questionForm.get('difficulty')?.value,
+      type_question: "order_word",
+      options: {
+        select_mode: "",
+        text_options: this.shuffleArray(this.listOfControl.map(control => this.validateForm.get(control.controlInstance)?.value)),
+        text_to_complete: "",
+        hind: ""
+      },
+      correct_answer_id: OrderWordsComponent.correctAnswerID,
+      correct_answer: {
+        true_or_false: false,
+        text_options: this.listOfControl.map(control => this.validateForm.get(control.controlInstance)?.value),
+        text_to_complete: []
+      }
+    }
+    return body;
+  }
+
   //Método que manda a actualizar la pregunta
   updateActivity() {
-    //Array a enviar para editar
-    this.listOfControl.map(control => this.validateForm.get(control.controlInstance)?.value)
+    this.spinnerStatus = false;
+    this.activitiesService.updateQuestion(this.getHeaders(), this.fillBodyToUpdate(), OrderWordsComponent.moduleID, OrderWordsComponent.activityID,)
+      .subscribe({
+        next: () => {
+          this.spinnerStatus = true;
+          this.toastr.showToastSuccess("Pregunta actualizada correctamente", "Éxito");
+          this.router.navigateByUrl("/teacher/home/activities/list-activities");
+        },
+        error: (error: any) => {
+          this.spinnerStatus = true;
+          if (error.status === 200 && error.statusText === "OK") {
+            this.toastr.showToastSuccess("Pregunta actualizada correctamente", "Éxito");
+            this.router.navigateByUrl("/teacher/home/activities/list-activities");
+          } else {
+            this.toastr.showToastError("Error", "Ocurrió un error al actualizar la pregunta");
+          }
+        }
+      })
   }
 
   //Icons to use

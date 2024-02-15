@@ -5,7 +5,7 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { SpinnerComponent } from '../../../../shared-components/spinner/spinner.component';
 import { ActivitiesService } from '../../../services/activities.service';
 import { ToastAlertsService } from '../../../../shared-components/services/toast-alerts.service';
-import { ApiResponseRegisterQuestionIT, BodyRegisterQuestionIT } from '../../../interfaces/activities.interface';
+import { ApiResponseRegisterQuestionIT, BodyRegisterQuestionIT, BodyUpdateQuestionIT } from '../../../interfaces/activities.interface';
 import { Router } from '@angular/router';
 import * as iconos from '@fortawesome/free-solid-svg-icons';
 import { SweetAlertsConfirm } from '../../../../shared-components/alerts/confirm-alerts.component';
@@ -33,6 +33,8 @@ export class MultipleSelectComponent {
   @Input() moduleId: number = 0;
   @Input() newQuestion!: boolean;
   static activityID: number = 0;
+  static moduleID: number = 0;
+  static correctAnswerID: number = 0;
   spinnerStatus: boolean = false;
   questionForm!: FormGroup;
   questionData: ApiResponseRegisterQuestionIT = {} as ApiResponseRegisterQuestionIT;
@@ -131,9 +133,8 @@ export class MultipleSelectComponent {
     });
   }
 
-  //Método que consume el servicio para registrar una pregunta manualmente o con IA
-  registerQuestion() {
-    this.spinnerStatus = false;
+  //Método que llena el body para registrar la pregunta
+  fillBodyToRegister(): BodyRegisterQuestionIT {
     let body: BodyRegisterQuestionIT = {
       text_root: this.questionForm.get('textRoot')?.value,
       difficulty: this.questionForm.get('difficulty')?.value,
@@ -161,8 +162,13 @@ export class MultipleSelectComponent {
         text_to_complete: []
       }
     }
+    return body;
+  }
 
-    this.activitiesService.registerQuestion(this.getHeaders(), body, this.moduleId)
+  //Método que consume el servicio para registrar una pregunta manualmente o con IA
+  registerQuestion() {
+    this.spinnerStatus = false;
+    this.activitiesService.registerQuestion(this.getHeaders(), this.fillBodyToRegister(), this.moduleId)
       .subscribe({
         next: (data: ApiResponseRegisterQuestionIT) => {
           if (data.id != 0) {
@@ -208,9 +214,61 @@ export class MultipleSelectComponent {
     this.questionForm.get('difficulty')?.setValue(this.questionData.difficulty);
   }
 
+  //Método que llena el body para registrar la pregunta
+  fillBodyToUpdat(): BodyUpdateQuestionIT {
+    let body: BodyUpdateQuestionIT = {
+      id: MultipleSelectComponent.activityID,
+      module_id: MultipleSelectComponent.moduleID,
+      text_root: this.questionForm.get('textRoot')?.value,
+      difficulty: this.questionForm.get('difficulty')?.value,
+      type_question: "multi_choice_text",
+      options: {
+        select_mode: "multiple",
+        text_options: [
+          this.questionForm.get('optionOne')?.value,
+          this.questionForm.get('optionTwo')?.value,
+          this.questionForm.get('optionThree')?.value,
+          this.questionForm.get('optionFour')?.value,
+          this.questionForm.get('optionFive')?.value,
+          this.questionForm.get('optionSix')?.value
+        ],
+        text_to_complete: "",
+        hind: ""
+      },
+      correct_answer_id: MultipleSelectComponent.correctAnswerID,
+      correct_answer: {
+        true_or_false: false,
+        text_options: [
+          this.questionForm.get('optionOne')?.value,
+          this.questionForm.get('optionTwo')?.value,
+          this.questionForm.get('optionThree')?.value,
+        ],
+        text_to_complete: []
+      }
+    }
+    return body;
+  }
+
   //Método que actualiza una pregunta
   updateActivity() {
-
+    this.spinnerStatus = false;
+    this.activitiesService.updateQuestion(this.getHeaders(), this.fillBodyToUpdat(), MultipleSelectComponent.moduleID, MultipleSelectComponent.activityID,)
+      .subscribe({
+        next: () => {
+          this.spinnerStatus = true;
+          this.toastr.showToastSuccess("Pregunta actualizada correctamente", "Éxito");
+          this.router.navigateByUrl("/teacher/home/activities/list-activities");
+        },
+        error: (error: any) => {
+          this.spinnerStatus = true;
+          if (error.status === 200 && error.statusText === "OK") {
+            this.toastr.showToastSuccess("Pregunta actualizada correctamente", "Éxito");
+            this.router.navigateByUrl("/teacher/home/activities/list-activities");
+          } else {
+            this.toastr.showToastError("Error", "Ocurrió un error al actualizar la pregunta");
+          }
+        }
+      })
   }
 
   //Icons to use

@@ -21,6 +21,7 @@ export interface DetailActivityByModuleIT {
     created_at: string;
     updated_at: string;
     difficulty: string;
+    text_root: string;
 }
 
 
@@ -58,6 +59,27 @@ export interface ApiResponseRegisterQuestionIT {
     correct_answer_id: number;
     correct_answer: {
         id: number;
+        true_or_false: boolean;
+        text_options: string[];
+        text_to_complete: string[];
+    }
+}
+
+//Interfaz con el Body Requerido para actualizar una pregunta
+export interface BodyUpdateQuestionIT {
+    id: number;
+    module_id: number;
+    text_root: string;
+    difficulty: number;
+    type_question: string;
+    options: {
+        select_mode: string; //Single o multiple (cuando el type_question sea multi_choice_text)
+        text_options: string[];
+        text_to_complete: string;
+        hind: string;
+    },
+    correct_answer_id: number;
+    correct_answer: {
         true_or_false: boolean;
         text_options: string[];
         text_to_complete: string[];

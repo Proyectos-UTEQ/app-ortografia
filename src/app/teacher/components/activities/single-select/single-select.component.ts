@@ -1,15 +1,15 @@
-import { ApiResponseRegisterQuestionIT } from './../../../interfaces/activities.interface';
-import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Component, Input } from '@angular/core';
-import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import { CommonModule } from '@angular/common';
-import { ActivitiesService } from '../../../services/activities.service';
-import { BodyRegisterQuestionIT } from '../../../interfaces/activities.interface';
-import { SpinnerComponent } from '../../../../shared-components/spinner/spinner.component';
-import { ToastAlertsService } from '../../../../shared-components/services/toast-alerts.service';
 import { Router } from '@angular/router';
-import * as iconos from '@fortawesome/free-solid-svg-icons';
+import { CommonModule } from '@angular/common';
+import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { SpinnerComponent } from '../../../../shared-components/spinner/spinner.component';
 import { SweetAlertsConfirm } from '../../../../shared-components/alerts/confirm-alerts.component';
+import { ApiResponseRegisterQuestionIT, BodyUpdateQuestionIT } from './../../../interfaces/activities.interface';
+import { BodyRegisterQuestionIT } from '../../../interfaces/activities.interface';
+import { ActivitiesService } from '../../../services/activities.service';
+import { ToastAlertsService } from '../../../../shared-components/services/toast-alerts.service';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import * as iconos from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-single-select',
@@ -31,9 +31,11 @@ import { SweetAlertsConfirm } from '../../../../shared-components/alerts/confirm
 export class SingleSelectComponent {
 
   //Variables
-  @Input() moduleId: number = 0;
+  @Input() moduleId: number = 0; //Este moduleId servirá para crear
   @Input() newQuestion!: boolean;
   static activityID: number = 0;
+  static moduleID: number = 0; //Este moduleID servirá para editar
+  static correctAnswerID: number = 0;
   questionForm!: FormGroup;
   spinnerStatus: boolean = false;
   questionData: ApiResponseRegisterQuestionIT = {} as ApiResponseRegisterQuestionIT;
@@ -42,19 +44,17 @@ export class SingleSelectComponent {
   constructor(
     private formBuilder: FormBuilder,
     private activitiesService: ActivitiesService,
+    private sweetAlerts: SweetAlertsConfirm,
     private toastr: ToastAlertsService,
-    private router: Router,
-    private sweetAlerts: SweetAlertsConfirm
+    private router: Router
   ) { }
 
   //ngOnInit
   ngOnInit() {
     this.spinnerStatus = true;
     this.createQuestionForm();
-    if (!this.newQuestion) {
-      console.log(SingleSelectComponent.activityID);
+    if (!this.newQuestion)
       this.getQuestionById(SingleSelectComponent.activityID);
-    }
   }
 
   //Método que obtiene los headers
@@ -66,7 +66,7 @@ export class SingleSelectComponent {
   }
 
   //Método que redirige a la lista de actividades
-  goToListActivities(){
+  goToListActivities() {
     this.sweetAlerts.alertConfirmCancelQuestion("Abandonar", "¿Deseas abandonar esta página? Si lo haces y no has actualizado la información, es posible que los cambios no se guarden.").then(respuesta => {
       if (respuesta.value) {
         this.spinnerStatus = false;
@@ -113,9 +113,8 @@ export class SingleSelectComponent {
     });
   }
 
-  //Método que consume el servicio para registrar una pregunta manualmente o con IA
-  registerQuestion() {
-    this.spinnerStatus = false;
+  //Método que llena el body para registrar la pregunta
+  fillBodyToRegister(): BodyRegisterQuestionIT {
     let body: BodyRegisterQuestionIT = {
       text_root: this.questionForm.get('textRoot')?.value,
       difficulty: this.questionForm.get('difficulty')?.value,
@@ -138,8 +137,13 @@ export class SingleSelectComponent {
         text_to_complete: []
       }
     }
+    return body;
+  }
 
-    this.activitiesService.registerQuestion(this.getHeaders(), body, this.moduleId)
+  //Método que consume el servicio para registrar una pregunta manualmente o con IA
+  registerQuestion() {
+    this.spinnerStatus = false;
+    this.activitiesService.registerQuestion(this.getHeaders(), this.fillBodyToRegister(), this.moduleId)
       .subscribe({
         next: (data: ApiResponseRegisterQuestionIT) => {
           if (data.id != 0) {
@@ -149,7 +153,7 @@ export class SingleSelectComponent {
             this.router.navigateByUrl("/teacher/home/activities/list-activities");
           }
         },
-        error: (error: any) => {
+        error: () => {
           this.spinnerStatus = true;
           this.toastr.showToastError("Error", "No se pudo registrar su pregunta");
         }
@@ -166,14 +170,14 @@ export class SingleSelectComponent {
           this.fillQuestionForm();
           this.spinnerStatus = true;
         },
-        error: (error: any) => {
+        error: () => {
           this.spinnerStatus = true;
           this.toastr.showToastError("Error", "Ocurrió un error al obtener la pregunta");
         }
       })
   }
 
-  //Método que rellena los campos con la data de la pregunta
+  //Método que rellena los campos con la data de la pregunta para posteriormente editar
   fillQuestionForm() {
     this.questionForm.get('textRoot')?.setValue(this.questionData.text_root);
     this.questionForm.get('optionOne')?.setValue(this.questionData.options.text_options[0]);
@@ -182,9 +186,56 @@ export class SingleSelectComponent {
     this.questionForm.get('difficulty')?.setValue(this.questionData.difficulty);
   }
 
+  //Método que llena el body para editar la pregunta
+  fillBodyToUpdate(): BodyUpdateQuestionIT {
+    let body: BodyUpdateQuestionIT = {
+      id: SingleSelectComponent.activityID,
+      module_id: SingleSelectComponent.moduleID,
+      text_root: this.questionForm.get('textRoot')?.value,
+      difficulty: this.questionForm.get('difficulty')?.value,
+      type_question: "multi_choice_text",
+      options: {
+        select_mode: "single",
+        text_options: [
+          this.questionForm.get('optionOne')?.value,
+          this.questionForm.get('optionTwo')?.value,
+          this.questionForm.get('optionThree')?.value
+        ],
+        text_to_complete: "",
+        hind: ""
+      },
+      correct_answer_id: SingleSelectComponent.correctAnswerID,
+      correct_answer: {
+        true_or_false: false,
+        text_options: [
+          this.questionForm.get('optionOne')?.value
+        ],
+        text_to_complete: []
+      }
+    }
+    return body;
+  }
+
   //Método que consum el servicio para actualizar la pregunta
-  updateActivity(){
-    
+  updateActivity() {
+    this.spinnerStatus = false;
+    this.activitiesService.updateQuestion(this.getHeaders(), this.fillBodyToUpdate(), SingleSelectComponent.moduleID, SingleSelectComponent.activityID,)
+      .subscribe({
+        next: () => {
+          this.spinnerStatus = true;
+          this.toastr.showToastSuccess("Pregunta actualizada correctamente", "Éxito");
+          this.router.navigateByUrl("/teacher/home/activities/list-activities");
+        },
+        error: (error: any) => {
+          this.spinnerStatus = true;
+          if (error.status === 200 && error.statusText === "OK") {
+            this.toastr.showToastSuccess("Pregunta actualizada correctamente", "Éxito");
+            this.router.navigateByUrl("/teacher/home/activities/list-activities");
+          } else {
+            this.toastr.showToastError("Error", "Ocurrió un error al actualizar la pregunta");
+          }
+        }
+      })
   }
 
   //Icons to use

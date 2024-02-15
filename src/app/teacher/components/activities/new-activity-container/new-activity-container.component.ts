@@ -15,6 +15,7 @@ import { MultipleSelectComponent } from '../multiple-select/multiple-select.comp
 import { CompleteWordComponent } from '../complete-word/complete-word.component';
 import { OrderWordsComponent } from '../order-words/order-words.component';
 import { TrueOrFalseComponent } from '../true-or-false/true-or-false.component';
+import { SweetAlertsConfirm } from '../../../../shared-components/alerts/confirm-alerts.component';
 
 @Component({
   selector: 'app-new-activity-container',
@@ -34,7 +35,8 @@ import { TrueOrFalseComponent } from '../true-or-false/true-or-false.component';
     TrueOrFalseComponent
   ],
   providers: [
-    ModulesService
+    ModulesService,
+    SweetAlertsConfirm
   ],
   templateUrl: './new-activity-container.component.html',
   styleUrl: './new-activity-container.component.css'
@@ -52,6 +54,7 @@ export class NewActivityContainerComponent {
   //constructor
   constructor(
     private modulesServiceP: ModulesService,
+    private sweetAlerts: SweetAlertsConfirm,
     private toastr: ToastAlertsService,
     private formBuilder: FormBuilder,
     private router: Router
@@ -120,7 +123,13 @@ export class NewActivityContainerComponent {
 
   //Método que redirecciona al componente de listar las actividades por módulo
   goToListActivities() {
-    this.router.navigateByUrl("/teacher/home/activities/list-activities")
+   this.sweetAlerts.alertConfirmCancelQuestion("Abandonar", "¿Deseas abandonar esta página? Si lo haces y no has guardado la información, es posible que los cambios no se guarden.").then(respuesta => {
+      if (respuesta.value) {
+        this.spinnerStatus = false;
+        this.router.navigateByUrl("/teacher/home/activities/list-activities");
+        this.spinnerStatus = true;
+      }
+    });
   }
 
   //Método que captura el id del módulo seleccionado

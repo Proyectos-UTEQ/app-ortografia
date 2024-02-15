@@ -46,6 +46,12 @@ export class ActivitiesService {
     return this.http.get<ApiResponseRegisterQuestionIT>(this.urlApi + `/api/module/question/${questionID}`, this.options);
   }
 
+  //Método que consume el servicio para actualizar una pregunta
+  updateQuestion(headers: Map<string, any>, body: BodyRegisterQuestionIT, moduleID: number, activityID: number): Observable<any> {
+    this.options = this.getHeaders(headers);
+    return this.http.put<any>(this.urlApi + `/api/module/${moduleID}/question/${activityID}`, body, this.options);
+  }
+
   //Método que obtiene los headers
   public getHeaders(headers: Map<string, any> | undefined) {
     if (headers != null) {
