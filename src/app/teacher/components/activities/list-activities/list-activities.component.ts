@@ -20,6 +20,7 @@ import { OrderWordsComponent } from '../order-words/order-words.component';
 import { TrueOrFalseComponent } from '../true-or-false/true-or-false.component';
 import { CompleteWordComponent } from '../complete-word/complete-word.component';
 import { MultipleSelectComponent } from '../multiple-select/multiple-select.component';
+import { SweetAlertsConfirm } from '../../../../shared-components/alerts/confirm-alerts.component';
 
 @Component({
   selector: 'app-list-activities',
@@ -36,7 +37,8 @@ import { MultipleSelectComponent } from '../multiple-select/multiple-select.comp
   ],
   providers: [
     ModulesService,
-    ActivitiesService
+    ActivitiesService,
+    SweetAlertsConfirm
   ],
   templateUrl: './list-activities.component.html',
   styleUrls: ['./list-activities.component.css', '../../modules/list-modules/list-modules.component.css']
@@ -62,6 +64,7 @@ export class ListActivitiesComponent {
   constructor(
     private modulesServiceP: ModulesService,
     private toastr: ToastAlertsService,
+    private sweetAlerts: SweetAlertsConfirm,
     private router: Router,
     private activitiesService: ActivitiesService
   ) { }
@@ -238,6 +241,32 @@ export class ListActivitiesComponent {
           this.toastr.showToastError("Error", "Ocurrió un error al obtener la pregunta");
         }
       })
+  }
+
+  //Método que consume el servicio que elimina una pregunta
+  deleteQuestion(activityID: number){
+    this.sweetAlerts.alertConfirmCancelQuestion("Eliminar actividad", "¿Estás seguro de eliminar esta actividad? Esta acción es irreversible").then(respuesta => {
+      if (respuesta.value) {
+        this.spinnerStatus = false;
+        this.activitiesService.deleteQuestion(this.getHeaders(), this.moduleID, activityID)
+          .subscribe({
+            next: () => {
+              this.spinnerStatus = true;
+              this.toastr.showToastSuccess("Pregunta eliminada correctamente", "Éxito");
+              this.getActivitiesByModule(this.moduleID, this.currentPage);
+            },
+            error: (error: any) => {
+              this.spinnerStatus = true;
+              if (error.status === 200 && error.statusText === "OK") {
+                this.toastr.showToastSuccess("Pregunta eliminada correctamente", "Éxito");
+                this.getActivitiesByModule(this.moduleID, this.currentPage);
+              } else {
+                this.toastr.showToastError("Error", "Ocurrió un error al actualizar la pregunta");
+              }
+            }
+          })
+      }
+    });
   }
 
   //Icons to use

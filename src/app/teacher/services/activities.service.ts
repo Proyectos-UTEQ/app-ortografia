@@ -52,6 +52,12 @@ export class ActivitiesService {
     return this.http.put<any>(this.urlApi + `/api/module/${moduleID}/question/${activityID}`, body, this.options);
   }
 
+  //Método que consume el servicio para eliminar una pregunta
+  deleteQuestion(headers: Map<string, any>, moduleID: number, activityID: number): Observable<any> {
+    this.options = this.getHeaders(headers);
+    return this.http.delete<any>(this.urlApi + `/api/module/${moduleID}/question/${activityID}`, this.options);
+  }
+
   //Método que obtiene los headers
   public getHeaders(headers: Map<string, any> | undefined) {
     if (headers != null) {
