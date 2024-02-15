@@ -55,11 +55,11 @@
                             'is-invalid': newActivityForm.get('typeQuestion')?.hasError('required') && newActivityForm.get('typeQuestion')?.touched,
                             'is-valid': optionActivity != ''}" (change)="updateOptionActivity($event)">
                                 <option value="" selected disabled>Seleccione una opción</option>
-                                <option value="single_choice_text">Selección única</option>
-                                <option value="multi_choice_text">Selección múltiple</option>
-                                <option value="order_word">Ordenar</option>
-                                <option value="complete_word">Completar</option>
-                                <option value="true_or_false">Verdadero o falso</option>
+                                <option value="single_choice_text" [disabled]="moduleID==0">Selección única</option>
+                                <option value="multi_choice_text" [disabled]="moduleID==0">Selección múltiple</option>
+                                <option value="order_word" [disabled]="moduleID==0">Ordenar</option>
+                                <option value="complete_word" [disabled]="moduleID==0">Completar</option>
+                                <option value="true_or_false" [disabled]="moduleID==0">Verdadero o falso</option>
                             </select>
                             @if(newActivityForm.get('typeQuestion')?.hasError('required') && newActivityForm.get('typeQuestion')?.touched){
                                 <div class="validators">
@@ -91,7 +91,7 @@
             <app-complete-word [moduleId]="moduleID"></app-complete-word>
         }
         @case("true_or_false"){
-
+            <app-true-or-false [moduleId]="moduleID"></app-true-or-false>
         }
     }    
 </body>

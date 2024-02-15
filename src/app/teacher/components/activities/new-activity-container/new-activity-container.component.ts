@@ -14,6 +14,7 @@ import { SingleSelectComponent } from '../single-select/single-select.component'
 import { MultipleSelectComponent } from '../multiple-select/multiple-select.component';
 import { CompleteWordComponent } from '../complete-word/complete-word.component';
 import { OrderWordsComponent } from '../order-words/order-words.component';
+import { TrueOrFalseComponent } from '../true-or-false/true-or-false.component';
 
 @Component({
   selector: 'app-new-activity-container',
@@ -29,7 +30,8 @@ import { OrderWordsComponent } from '../order-words/order-words.component';
     SingleSelectComponent,
     MultipleSelectComponent,
     CompleteWordComponent,
-    OrderWordsComponent
+    OrderWordsComponent,
+    TrueOrFalseComponent
   ],
   providers: [
     ModulesService
@@ -57,6 +59,7 @@ export class NewActivityContainerComponent {
 
   //ngOnInit
   ngOnInit() {
+    this.moduleID = 0;
     this.getListAllModules();
     this.createNewModuleForm();
   }
