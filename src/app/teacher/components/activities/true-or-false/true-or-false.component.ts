@@ -7,6 +7,7 @@ import { ActivitiesService } from '../../../services/activities.service';
 import { ToastAlertsService } from '../../../../shared-components/services/toast-alerts.service';
 import { Router } from '@angular/router';
 import { ApiResponseRegisterQuestionIT, BodyRegisterQuestionIT } from '../../../interfaces/activities.interface';
+import { SweetAlertsConfirm } from '../../../../shared-components/alerts/confirm-alerts.component';
 import * as iconos from '@fortawesome/free-solid-svg-icons';
 
 @Component({
@@ -20,7 +21,8 @@ import * as iconos from '@fortawesome/free-solid-svg-icons';
     SpinnerComponent
   ],
   providers: [
-    ActivitiesService
+    ActivitiesService,
+    SweetAlertsConfirm
   ],
   templateUrl: './true-or-false.component.html',
   styleUrls: ['./true-or-false.component.css', '../single-select/single-select.component.css']
@@ -29,16 +31,19 @@ export class TrueOrFalseComponent {
 
   //Variables
   @Input() moduleId: number = 0;
+  @Input() newQuestion!: boolean;
   static activityID: number = 0;
   questionForm!: FormGroup;
   spinnerStatus: boolean = false;
   selectedOption: string | null = null;
   answer: boolean = false;
+  questionData: ApiResponseRegisterQuestionIT = {} as ApiResponseRegisterQuestionIT;
 
   //constructor
   constructor(
     private formBuilder: FormBuilder,
     private activitiesService: ActivitiesService,
+    private sweetAlerts: SweetAlertsConfirm,
     private toastr: ToastAlertsService,
     private router: Router
   ) { }
@@ -48,6 +53,10 @@ export class TrueOrFalseComponent {
     this.spinnerStatus = true;
     this.createQuestionForm();
     console.log(TrueOrFalseComponent.activityID);
+    if (!this.newQuestion) {
+      console.log(TrueOrFalseComponent.activityID);
+      this.getQuestionById(TrueOrFalseComponent.activityID);
+    }
   }
 
   //Método que obtiene los headers
@@ -56,6 +65,17 @@ export class TrueOrFalseComponent {
     headers.set("token", sessionStorage.getItem("token"));
     headers.set("typeUser", sessionStorage.getItem("typeUser"));
     return headers;
+  }
+
+  //Método que redirige a la lista de actividades
+  goToListActivities() {
+    this.sweetAlerts.alertConfirmCancelQuestion("Abandonar", "¿Deseas abandonar esta página? Si lo haces y no has actualizado la información, es posible que los cambios no se guarden.").then(respuesta => {
+      if (respuesta.value) {
+        this.spinnerStatus = false;
+        this.router.navigateByUrl("/teacher/home/activities/list-activities");
+        this.spinnerStatus = true;
+      }
+    });
   }
 
   //Método que crea el formulario para crear un módulo
@@ -126,8 +146,37 @@ export class TrueOrFalseComponent {
       })
   }
 
-  
+  //Método que obtiene la data de una pregunta por su ID
+  getQuestionById(questionID: number) {
+    this.spinnerStatus = false;
+    this.activitiesService.getQuestionById(this.getHeaders(), questionID)
+      .subscribe({
+        next: (data: ApiResponseRegisterQuestionIT) => {
+          this.questionData = data;
+          this.fillQuestionForm();
+          this.spinnerStatus = true;
+        },
+        error: (error: any) => {
+          this.spinnerStatus = true;
+          this.toastr.showToastError("Error", "Ocurrió un error al obtener la pregunta");
+        }
+      })
+  }
+
+  //Método que rellena los campos con la data de la pregunta
+  fillQuestionForm() {
+    this.questionForm.get('textRoot')?.setValue(this.questionData.text_root);
+    this.questionForm.get('difficulty')?.setValue(this.questionData.difficulty);
+    this.selectedOption = this.questionData.correct_answer.true_or_false ? "option1" : "option2";
+  }
+
+  //Método que consume el servicio para actualizar una pregunta
+  updateActivity() {
+    console.log(this.answer);
+  }
+
   //Icons to use
   iconCube = iconos.faCube;
   iconIA = iconos.faWandMagicSparkles;
+  iconBack = iconos.faArrowLeft;
 }

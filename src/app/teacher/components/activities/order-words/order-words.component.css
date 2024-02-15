@@ -3,12 +3,12 @@ body{
   padding: 0 15px;
 }
 
-.input-group-text {
+.option-delete {
   margin-left: 10px !important;
   cursor: pointer !important;
 }
 
-.input-group-text>fa-icon {
+.option-delete>fa-icon {
   color: var(--alert-color) !important;
 }
 

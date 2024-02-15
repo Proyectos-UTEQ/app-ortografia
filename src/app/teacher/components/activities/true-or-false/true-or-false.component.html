@@ -7,8 +7,15 @@
         <div class="col-12">
             <div class="div mt-3 mx-1">
                 <h4 id="titulo"><fa-icon [icon]="iconCube" class="icon-title"></fa-icon> Selección única</h4>
-                <button type="button" class="btn btn-secondary btn-xs"> Generar con IA
-                    <fa-icon [icon]="iconIA" class="icon-button"></fa-icon></button>
+                @if(!newQuestion){
+                    <button type="button" class="btn btn-secondary btn-xs" (click)="goToListActivities()"
+                    data-bs-toggle="mensaje" title="Volver al listado de actividades">
+                        <fa-icon [icon]="iconBack" class="icon-button"></fa-icon></button>
+                }
+                @else{
+                    <button type="button" class="btn btn-secondary btn-xs"> Generar con IA
+                        <fa-icon [icon]="iconIA" class="icon-button"></fa-icon></button>
+                }
             </div>
     
             <!--Formulario para registrar la pregunta-->
@@ -89,7 +96,7 @@
         <!--Botón para registrar la pregunta-->
         <div class="action-buttons d-flex justify-content-end">
             <button type="button" class="btn btn-primary btn-md mb-3" [disabled]="questionForm.invalid"
-                (click)="registerQuestion()">Guardar</button>
+            (click)="newQuestion? registerQuestion(): updateActivity()">{{newQuestion?"Guardar":"Actualizar"}}</button>
         </div>
     </div>
 </body>

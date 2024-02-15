@@ -124,7 +124,7 @@
                         <input type="number" class="form-control form-control-lg bg-light fs-6" formControlName="difficulty"
                             placeholder="1" min="1" max="10" [ngClass]="{
                                 'is-invalid': questionForm.get('difficulty')?.hasError('required') && questionForm.get('difficulty')?.touched || questionForm.get('difficulty')?.value > 10,
-                                'is-valid': questionForm.get('difficulty')?.hasError('required')==false && questionForm.get('difficulty')?.hasError('pattern') == false && questionForm.get('difficulty')?.value?.length >= 1
+                                'is-valid': questionForm.get('difficulty')?.hasError('required')==false && questionForm.get('difficulty')?.hasError('pattern') == false && questionForm.get('difficulty')?.value!=null
                                 }" [maxlength]="2"/>
                         @if (questionForm.get('difficulty')?.hasError('required') && questionForm.get('difficulty')?.touched) {
                             <div class="validators">

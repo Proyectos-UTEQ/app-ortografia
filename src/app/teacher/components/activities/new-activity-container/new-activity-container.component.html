@@ -81,16 +81,16 @@
             <app-single-select [moduleId]="moduleID" [newQuestion]="true"></app-single-select>
         }
         @case("multi_choice_text"){
-            <app-multiple-select [moduleId]="moduleID"></app-multiple-select>
+            <app-multiple-select [moduleId]="moduleID" [newQuestion]="true"></app-multiple-select>
         }
         @case("order_word"){
-            <app-order-words [moduleId]="moduleID"></app-order-words>
+            <app-order-words [moduleId]="moduleID" [newQuestion]="true"></app-order-words>
         }
         @case("complete_word"){
-            <app-complete-word [moduleId]="moduleID"></app-complete-word>
+            <app-complete-word [moduleId]="moduleID" [newQuestion]="true"></app-complete-word>
         }
         @case("true_or_false"){
-            <app-true-or-false [moduleId]="moduleID"></app-true-or-false>
+            <app-true-or-false [moduleId]="moduleID" [newQuestion]="true"></app-true-or-false>
         }
     }    
 </div>

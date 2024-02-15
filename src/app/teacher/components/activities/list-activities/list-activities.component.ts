@@ -12,13 +12,14 @@ import { ApiResponseAllModulesIT, DataAllModulesIT } from '../../../interfaces/m
 import { Router } from '@angular/router';
 import { ToastAlertsService } from '../../../../shared-components/services/toast-alerts.service';
 import { ActivitiesService } from '../../../services/activities.service';
-import { ApiResponseListActivitiesIT, DetailActivityByModuleIT } from '../../../interfaces/activities.interface';
+import { ApiResponseListActivitiesIT, ApiResponseRegisterQuestionIT, DetailActivityByModuleIT } from '../../../interfaces/activities.interface';
 import * as XLSX from 'xlsx';
 import * as iconos from '@fortawesome/free-solid-svg-icons';
 import { SingleSelectComponent } from '../single-select/single-select.component';
 import { OrderWordsComponent } from '../order-words/order-words.component';
 import { TrueOrFalseComponent } from '../true-or-false/true-or-false.component';
 import { CompleteWordComponent } from '../complete-word/complete-word.component';
+import { MultipleSelectComponent } from '../multiple-select/multiple-select.component';
 
 @Component({
   selector: 'app-list-activities',
@@ -55,6 +56,7 @@ export class ListActivitiesComponent {
   filteredModulesTitle: DataAllModulesIT[] = [];
   arrayModules: DataAllModulesIT[] = [];
   moduleID: number = 0;
+  questionData: ApiResponseRegisterQuestionIT = {} as ApiResponseRegisterQuestionIT;
 
   //Constructor
   constructor(
@@ -179,12 +181,35 @@ export class ListActivitiesComponent {
       });
   }
 
+  //Método que obtiene la data de una pregunta por su ID
+  getQuestionById(activityID: number) {
+    this.spinnerStatus = false;
+    this.activitiesService.getQuestionById(this.getHeaders(), activityID)
+      .subscribe({
+        next: (data: ApiResponseRegisterQuestionIT) => {
+          this.questionData = data;
+          this.spinnerStatus = true;
+          if(this.questionData.options.select_mode == "single"){
+            this.router.navigateByUrl("/teacher/home/activities/edit-activity-single-selection")
+            SingleSelectComponent.activityID = activityID;
+          }
+          else{
+            this.router.navigateByUrl("/teacher/home/activities/edit-activity-multiple-selection")
+            MultipleSelectComponent.activityID = activityID;
+          }
+        },
+        error: (error: any) => {
+          this.spinnerStatus = true;
+          this.toastr.showToastError("Error", "Ocurrió un error al obtener la pregunta");
+        }
+      })
+  }
+
   //Método que redirige al componente de editar la actividad
   editActivity(activityID: number, typeQuestion: string) {
     switch (typeQuestion) {
       case ("multi_choice_text"):
-        this.router.navigateByUrl("/teacher/home/activities/edit-activity-single-selection")
-        SingleSelectComponent.activityID = activityID;
+        this.getQuestionById(activityID);
         break;
       case ("order_word"):
         this.router.navigateByUrl("/teacher/home/activities/edit-activity-order-word")

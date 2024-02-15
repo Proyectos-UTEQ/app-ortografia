@@ -9,6 +9,7 @@ import { ActivitiesService } from '../../../services/activities.service';
 import { Router } from '@angular/router';
 import { ToastAlertsService } from '../../../../shared-components/services/toast-alerts.service';
 import * as iconos from '@fortawesome/free-solid-svg-icons';
+import { SweetAlertsConfirm } from '../../../../shared-components/alerts/confirm-alerts.component';
 
 @Component({
   selector: 'app-order-words',
@@ -22,7 +23,8 @@ import * as iconos from '@fortawesome/free-solid-svg-icons';
     CommonModule
   ],
   providers: [
-    ActivitiesService
+    ActivitiesService,
+    SweetAlertsConfirm
   ],
   templateUrl: './order-words.component.html',
   styleUrls: ['./order-words.component.css', '../single-select/single-select.component.css']
@@ -31,20 +33,23 @@ export class OrderWordsComponent {
 
   //Variables
   @Input() moduleId: number = 0;
+  @Input() newQuestion!: boolean;
   static activityID: number = 0;
   spinnerStatus: boolean = false;
+  questionForm!: FormGroup;
   validateForm: FormRecord<FormControl<string>> = this.fb.record({});
   listOfControl: Array<{ id: number; controlInstance: string }> = [];
-  questionForm!: FormGroup;
-  limit: number = 0;
+  limit: number = 0; //Determina el máximo de palabras a completar que se puede agregar
   tidyOptions: string[] = [];
   messyOptions: string[] = [];
+  questionData: ApiResponseRegisterQuestionIT = {} as ApiResponseRegisterQuestionIT;
 
   //constructor
   constructor(
     private fb: NonNullableFormBuilder,
     private formBuilder: FormBuilder,
     private activitiesService: ActivitiesService,
+    private sweetAlerts: SweetAlertsConfirm,
     private toastr: ToastAlertsService,
     private router: Router
   ) { }
@@ -55,6 +60,10 @@ export class OrderWordsComponent {
     this.createQuestionForm();
     this.addField();
     console.log(OrderWordsComponent.activityID);
+    if (!this.newQuestion) {
+      console.log(OrderWordsComponent.activityID);
+      this.getQuestionById(OrderWordsComponent.activityID);
+    }
   }
 
   //Método que obtiene los headers
@@ -63,6 +72,17 @@ export class OrderWordsComponent {
     headers.set("token", sessionStorage.getItem("token"));
     headers.set("typeUser", sessionStorage.getItem("typeUser"));
     return headers;
+  }
+
+  //Método que redirige a la lista de actividades
+  goToListActivities() {
+    this.sweetAlerts.alertConfirmCancelQuestion("Abandonar", "¿Deseas abandonar esta página? Si lo haces y no has actualizado la información, es posible que los cambios no se guarden.").then(respuesta => {
+      if (respuesta.value) {
+        this.spinnerStatus = false;
+        this.router.navigateByUrl("/teacher/home/activities/list-activities");
+        this.spinnerStatus = true;
+      }
+    });
   }
 
   //Método que crea el formulario para crear un módulo
@@ -110,7 +130,7 @@ export class OrderWordsComponent {
   shuffleArray<T>(array: T[]) {
     const newArray = [...array];
     for (let i = newArray.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1)); 
+      const j = Math.floor(Math.random() * (i + 1));
       [newArray[i], newArray[j]] = [newArray[j], newArray[i]];
     }
     return newArray;
@@ -155,9 +175,51 @@ export class OrderWordsComponent {
       })
   }
 
+  //Método que obtiene la data de una pregunta por su ID
+  getQuestionById(questionID: number) {
+    this.spinnerStatus = false;
+    this.activitiesService.getQuestionById(this.getHeaders(), questionID)
+      .subscribe({
+        next: (data: ApiResponseRegisterQuestionIT) => {
+          this.questionData = data;
+          this.fillQuestionForm();
+          this.spinnerStatus = true;
+        },
+        error: (error: any) => {
+          this.spinnerStatus = true;
+          this.toastr.showToastError("Error", "Ocurrió un error al obtener la pregunta");
+        }
+      })
+  }
+
+  //Método que rellena los campos con la data de la pregunta
+  fillQuestionForm() {
+    this.questionForm.get('difficulty')?.setValue(this.questionData.difficulty);
+    this.listOfControl = [];
+    this.questionData.correct_answer.text_options.forEach((element: string, index: number) => {
+      const controlInstance = `option ${index + 1}`;
+      const control = {
+        id: index,
+        controlInstance
+      };
+      this.listOfControl.push(control);
+      this.validateForm.addControl(
+        controlInstance,
+        this.fb.control(element, Validators.required)
+      );
+    });
+  }
+
+  //Método que manda a actualizar la pregunta
+  updateActivity() {
+    //Array a enviar para editar
+    this.listOfControl.map(control => this.validateForm.get(control.controlInstance)?.value)
+  }
+
   //Icons to use
   iconCube = iconos.faCube;
   iconIA = iconos.faWandMagicSparkles;
   iconDelete = iconos.faTrashAlt;
   iconAdd = iconos.faCirclePlus;
+  iconBack = iconos.faArrowLeft;
 }
