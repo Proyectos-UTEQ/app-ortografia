@@ -29,8 +29,10 @@ export class CompleteWordComponent {
 
   //Variables
   @Input() moduleId: number = 0;
+  static activityID: number = 0;
   questionForm!: FormGroup;
   spinnerStatus: boolean = false;
+
   //constructor
   constructor(
     private formBuilder: FormBuilder,
@@ -43,6 +45,7 @@ export class CompleteWordComponent {
   ngOnInit() {
     this.spinnerStatus = true;
     this.createQuestionForm();
+    console.log(CompleteWordComponent.activityID);
   }
 
   //Método que obtiene los headers

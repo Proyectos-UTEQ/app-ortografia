@@ -1,3 +1,8 @@
+body{
+    border-radius: 10px;
+    padding: 0 15px;
+}
+
 /*Hover y no hover para cuando se selecciona una opción*/
 .option:not(.selected) .option-number,
 .option:not(.selected) button {

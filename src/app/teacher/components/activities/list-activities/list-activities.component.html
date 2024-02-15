@@ -94,7 +94,7 @@
                                         <td>{{activity.updated_at}}</td>
                                         <td class="actions">
                                             <fa-icon data-bs-toggle="mensaje" title="Editar" id="iconEdit"
-                                                [icon]="iconEdit"></fa-icon>
+                                                [icon]="iconEdit" (click)="editActivity(activity.id, activity.type_question)"></fa-icon>
                                             <fa-icon data-bs-toggle="mensaje" title="Eliminar" id="iconDelete"
                                                 [icon]="iconDelete"></fa-icon>
                                         </td>

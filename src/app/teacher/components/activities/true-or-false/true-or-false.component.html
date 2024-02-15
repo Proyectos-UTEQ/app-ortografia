@@ -2,92 +2,94 @@
     <app-spinner></app-spinner>
 }
 
-<div class="row justify-content-center">
-    <div class="col-12">
-        <div class="div mt-3 mx-1">
-            <h4 id="titulo"><fa-icon [icon]="iconCube" class="icon-title"></fa-icon> Selección única</h4>
-            <button type="button" class="btn btn-secondary btn-xs"> Generar con IA
-                <fa-icon [icon]="iconIA" class="icon-button"></fa-icon></button>
-        </div>
-
-        <!--Formulario para registrar la pregunta-->
-        <form [formGroup]="questionForm" class="row mt-3 mb-2">
-            <div class="col-12">
-                <!--Enunciado-->
-                <div class="mb-3">
-                    <label class="mb-1"><b>Enunciado</b></label>
-                    <textarea type="text" class="form-control form-control-lg bg-light fs-6" formControlName="textRoot"
-                        placeholder="Enunciado*" rows="2" [ngClass]="{
-                            'is-invalid': questionForm.get('textRoot')?.hasError('required') && questionForm.get('textRoot')?.touched || questionForm.get('textRoot')?.hasError('pattern')==true,
-                            'is-valid': questionForm.get('textRoot')?.hasError('required')==false && questionForm.get('textRoot')?.hasError('pattern') == false && questionForm.get('textRoot')?.value?.length >= 4
-                            }"></textarea>
-                    @if (questionForm.get('textRoot')?.hasError('required') && questionForm.get('textRoot')?.touched) {
+<body>
+    <div class="row justify-content-center">
+        <div class="col-12">
+            <div class="div mt-3 mx-1">
+                <h4 id="titulo"><fa-icon [icon]="iconCube" class="icon-title"></fa-icon> Selección única</h4>
+                <button type="button" class="btn btn-secondary btn-xs"> Generar con IA
+                    <fa-icon [icon]="iconIA" class="icon-button"></fa-icon></button>
+            </div>
+    
+            <!--Formulario para registrar la pregunta-->
+            <form [formGroup]="questionForm" class="row mt-3 mb-2">
+                <div class="col-12">
+                    <!--Enunciado-->
+                    <div class="mb-3">
+                        <label class="mb-1"><b>Enunciado</b></label>
+                        <textarea type="text" class="form-control form-control-lg bg-light fs-6" formControlName="textRoot"
+                            placeholder="Enunciado*" rows="2" [ngClass]="{
+                                'is-invalid': questionForm.get('textRoot')?.hasError('required') && questionForm.get('textRoot')?.touched || questionForm.get('textRoot')?.hasError('pattern')==true,
+                                'is-valid': questionForm.get('textRoot')?.hasError('required')==false && questionForm.get('textRoot')?.hasError('pattern') == false && questionForm.get('textRoot')?.value?.length >= 4
+                                }"></textarea>
+                        @if (questionForm.get('textRoot')?.hasError('required') && questionForm.get('textRoot')?.touched) {
+                            <div class="validators">
+                                <small>¡Este campo es requerido!</small>
+                            </div>
+                        }
+                        @if (questionForm.get('textRoot')?.hasError('pattern')) {
+                            <div class="validators">
+                                <small>¡Solo se permiten letras!</small>
+                            </div>
+                        }
+                    </div>
+                </div>
+    
+                <div class="col-12 col-md-6 col-lg-6 col-xl-6">
+                    <!--Opciones-->
+                    <label class="mb-1"><b>Opciones</b></label>
+                    <div class="mb-3">
+                        <div class="input-group">
+                            <span class="input-group-text option-number" for="option1"
+                            [ngClass]="{'selected': selectedOption === 'option1'}">1</span>
+                            <button type="button" class="btn option" id="option1"
+                                [ngClass]="{'selected': selectedOption === 'option1'}"
+                                (click)="selectOption('option1', true)">
+                                Verdadero</button>
+                        </div>
+                    </div>
+    
+                    <div class="mb-3">
+                        <div class="input-group">
+                            <span class="input-group-text option-number" for="option2"
+                            [ngClass]="{'selected': selectedOption === 'option2'}">2</span>
+                            <button type="button" class="btn option" id="option2"
+                            [ngClass]="{'selected': selectedOption === 'option2'}" 
+                            (click)="selectOption('option2', false)">
+                            Falso</button>
+                        </div>
+                    </div>
+                </div>
+    
+                <div class="col-12 col-md-6 col-lg-6 col-xl-6">
+                    <!--Dificultad-->
+                    <div class="mb-3">
+                        <label class="mb-1"><b>Dificultad (1-10)</b></label>
+                        <input type="number" class="form-control form-control-lg bg-light fs-6" formControlName="difficulty"
+                            placeholder="1" min="1" max="10" [ngClass]="{
+                                'is-invalid': questionForm.get('difficulty')?.hasError('required') && questionForm.get('difficulty')?.touched || questionForm.get('difficulty')?.value > 10,
+                                'is-valid': questionForm.get('difficulty')?.hasError('required')==false && questionForm.get('difficulty')?.hasError('pattern') == false && questionForm.get('difficulty')?.value?.length >= 1
+                                }" [maxlength]="2" />
+                        @if (questionForm.get('difficulty')?.hasError('required') &&
+                        questionForm.get('difficulty')?.touched) {
                         <div class="validators">
                             <small>¡Este campo es requerido!</small>
                         </div>
-                    }
-                    @if (questionForm.get('textRoot')?.hasError('pattern')) {
+                        }
+                        @if (questionForm.get('difficulty')?.value > 10) {
                         <div class="validators">
-                            <small>¡Solo se permiten letras!</small>
+                            <small>¡La dificultad máxima es de 10!</small>
                         </div>
-                    }
-                </div>
-            </div>
-
-            <div class="col-12 col-md-6 col-lg-6 col-xl-6">
-                <!--Opciones-->
-                <label class="mb-1"><b>Opciones</b></label>
-                <div class="mb-3">
-                    <div class="input-group">
-                        <span class="input-group-text option-number" for="option1"
-                        [ngClass]="{'selected': selectedOption === 'option1'}">1</span>
-                        <button type="button" class="btn option" id="option1"
-                            [ngClass]="{'selected': selectedOption === 'option1'}"
-                            (click)="selectOption('option1', true)">
-                            Verdadero</button>
+                        }
                     </div>
                 </div>
-
-                <div class="mb-3">
-                    <div class="input-group">
-                        <span class="input-group-text option-number" for="option2"
-                        [ngClass]="{'selected': selectedOption === 'option2'}">2</span>
-                        <button type="button" class="btn option" id="option2"
-                        [ngClass]="{'selected': selectedOption === 'option2'}" 
-                        (click)="selectOption('option2', false)">
-                        Falso</button>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-12 col-md-6 col-lg-6 col-xl-6">
-                <!--Dificultad-->
-                <div class="mb-3">
-                    <label class="mb-1"><b>Dificultad (1-10)</b></label>
-                    <input type="number" class="form-control form-control-lg bg-light fs-6" formControlName="difficulty"
-                        placeholder="1" min="1" max="10" [ngClass]="{
-                            'is-invalid': questionForm.get('difficulty')?.hasError('required') && questionForm.get('difficulty')?.touched || questionForm.get('difficulty')?.value > 10,
-                            'is-valid': questionForm.get('difficulty')?.hasError('required')==false && questionForm.get('difficulty')?.hasError('pattern') == false && questionForm.get('difficulty')?.value?.length >= 1
-                            }" [maxlength]="2" />
-                    @if (questionForm.get('difficulty')?.hasError('required') &&
-                    questionForm.get('difficulty')?.touched) {
-                    <div class="validators">
-                        <small>¡Este campo es requerido!</small>
-                    </div>
-                    }
-                    @if (questionForm.get('difficulty')?.value > 10) {
-                    <div class="validators">
-                        <small>¡La dificultad máxima es de 10!</small>
-                    </div>
-                    }
-                </div>
-            </div>
-        </form>
+            </form>
+        </div>
+    
+        <!--Botón para registrar la pregunta-->
+        <div class="action-buttons d-flex justify-content-end">
+            <button type="button" class="btn btn-primary btn-md mb-3" [disabled]="questionForm.invalid"
+                (click)="registerQuestion()">Guardar</button>
+        </div>
     </div>
-
-    <!--Botón para registrar la pregunta-->
-    <div class="action-buttons d-flex justify-content-end">
-        <button type="button" class="btn btn-primary btn-md mb-3" [disabled]="questionForm.invalid"
-            (click)="registerQuestion()">Guardar</button>
-    </div>
-</div>
+</body>

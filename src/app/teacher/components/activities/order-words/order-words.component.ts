@@ -31,6 +31,7 @@ export class OrderWordsComponent {
 
   //Variables
   @Input() moduleId: number = 0;
+  static activityID: number = 0;
   spinnerStatus: boolean = false;
   validateForm: FormRecord<FormControl<string>> = this.fb.record({});
   listOfControl: Array<{ id: number; controlInstance: string }> = [];
@@ -53,6 +54,7 @@ export class OrderWordsComponent {
     this.spinnerStatus = true;
     this.createQuestionForm();
     this.addField();
+    console.log(OrderWordsComponent.activityID);
   }
 
   //Método que obtiene los headers

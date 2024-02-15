@@ -40,6 +40,11 @@ export class ActivitiesService {
     return this.http.post<ApiResponseRegisterQuestionIT>(this.urlApi + `/api/module/${moduleID}/question`, body, this.options);
   }
   
+  //Método que consume el servicio para obtener una pregunta por su ID
+  getQuestionById(headers: Map<string, any>, questionID: number): Observable<ApiResponseRegisterQuestionIT> {
+    this.options = this.getHeaders(headers);
+    return this.http.get<ApiResponseRegisterQuestionIT>(this.urlApi + `/api/module/question/${questionID}`, this.options);
+  }
 
   //Método que obtiene los headers
   public getHeaders(headers: Map<string, any> | undefined) {

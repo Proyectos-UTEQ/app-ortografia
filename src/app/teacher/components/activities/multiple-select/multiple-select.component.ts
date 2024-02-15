@@ -29,6 +29,7 @@ export class MultipleSelectComponent {
 
   //Variables
   @Input() moduleId: number = 0;
+  static activityID: number = 0;
   questionForm!: FormGroup;
   spinnerStatus: boolean = false;
   //constructor
@@ -43,6 +44,7 @@ export class MultipleSelectComponent {
   ngOnInit() {
     this.spinnerStatus = true;
     this.createQuestionForm();
+    console.log(MultipleSelectComponent.activityID);
   }
 
   //Método que obtiene los headers

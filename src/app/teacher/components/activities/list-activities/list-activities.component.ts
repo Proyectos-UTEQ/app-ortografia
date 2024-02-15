@@ -15,6 +15,10 @@ import { ActivitiesService } from '../../../services/activities.service';
 import { ApiResponseListActivitiesIT, DetailActivityByModuleIT } from '../../../interfaces/activities.interface';
 import * as XLSX from 'xlsx';
 import * as iconos from '@fortawesome/free-solid-svg-icons';
+import { SingleSelectComponent } from '../single-select/single-select.component';
+import { OrderWordsComponent } from '../order-words/order-words.component';
+import { TrueOrFalseComponent } from '../true-or-false/true-or-false.component';
+import { CompleteWordComponent } from '../complete-word/complete-word.component';
 
 @Component({
   selector: 'app-list-activities',
@@ -81,7 +85,7 @@ export class ListActivitiesComponent {
 
   //Método que descarga un archivo de Excel con los datos de la tabla
   downloadXLSX() {
-    if(this.moduleID == 0){
+    if (this.moduleID == 0) {
       this.toastr.showToastInformation("Información", "Primero debe seleccionar un módulo");
       return;
     }
@@ -158,21 +162,43 @@ export class ListActivitiesComponent {
     this.spinnerStatus = false;
     this.moduleID = moduleID;
     this.activitiesService.getActivitiesByModule(this.getHeaders(), 1, this.itemsForPage, "id", "asc", moduleID)
-    .subscribe({
-      next: (data: ApiResponseListActivitiesIT) => {
-        this.arrayActivities = data.data;
-        this.totalPage = data.details.total_page;
-        this.setPaginator();
-        this.spinnerStatus = true;
-        if(this.arrayActivities.length == 0){
-          this.toastr.showToastInformation("Información", "Este módulo no contiene actividades registradas");
+      .subscribe({
+        next: (data: ApiResponseListActivitiesIT) => {
+          this.arrayActivities = data.data;
+          this.totalPage = data.details.total_page;
+          this.setPaginator();
+          this.spinnerStatus = true;
+          if (this.arrayActivities.length == 0) {
+            this.toastr.showToastInformation("Información", "Este módulo no contiene actividades registradas");
+          }
+        },
+        error: (error) => {
+          this.spinnerStatus = true;
+          this.toastr.showToastError("Error", "No se pudo obtener el listado de actividades");
         }
-      },
-      error: (error) => {
-        this.spinnerStatus = true;
-        this.toastr.showToastError("Error", "No se pudo obtener el listado de actividades");
-      }
-    });
+      });
+  }
+
+  //Método que redirige al componente de editar la actividad
+  editActivity(activityID: number, typeQuestion: string) {
+    switch (typeQuestion) {
+      case ("multi_choice_text"):
+        this.router.navigateByUrl("/teacher/home/activities/edit-activity-single-selection")
+        SingleSelectComponent.activityID = activityID;
+        break;
+      case ("order_word"):
+        this.router.navigateByUrl("/teacher/home/activities/edit-activity-order-word")
+        OrderWordsComponent.activityID = activityID;
+        break;
+      case ("true_or_false"):
+        this.router.navigateByUrl("/teacher/home/activities/edit-activity-true-or-false")
+        TrueOrFalseComponent.activityID = activityID;
+        break;
+      case ("complete_word"):
+        this.router.navigateByUrl("/teacher/home/activities/edit-activity-complete-word")
+        CompleteWordComponent.activityID = activityID;
+        break;
+    }
   }
 
   //Icons to use

@@ -1,3 +1,8 @@
+body{
+    border-radius: 10px;
+    padding: 0 15px;
+}
+
 .text-hide{
     color: #FFF;
 }
