@@ -21,7 +21,7 @@
                             placeholder="Título*"
                             [ngClass]="{
                                     'is-invalid': editForm.get('title')?.hasError('required') && editForm.get('title')?.touched || editForm.get('title')?.hasError('pattern') }"
-                            [maxlength]="22">
+                            [maxlength]="50">
                         @if(editForm.get('title')?.hasError('required') && editForm.get('title')?.touched){
                             <div class="validators">
                                 <small>¡Este campo es requerido!</small>
@@ -43,7 +43,7 @@
                             formControlName="shortDescription" placeholder="Descripción corta*"
                             [ngClass]="{
                                     'is-invalid': editForm.get('shortDescription')?.hasError('required') && editForm.get('shortDescription')?.touched || editForm.get('shortDescription')?.hasError('pattern') }"
-                            [maxlength]="125">
+                            [maxlength]="80">
                         @if(editForm.get('shortDescription')?.hasError('required') && editForm.get('shortDescription')?.touched){
                             <div class="validators">
                                 <small>¡Este campo es requerido!</small>
