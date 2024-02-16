@@ -75,7 +75,7 @@ export const routes: Routes = [
     ]
   },
   {
-    path: 'teacher',
+    path: 'teacher', canActivate:[PermissionsGuard],
     children: [
       {
         path: 'home', component: DashboardComponent,
