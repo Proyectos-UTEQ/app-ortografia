@@ -28,6 +28,7 @@ import { TrueOrFalseComponent } from './teacher/components/activities/true-or-fa
 import { ListVideosHelpComponent } from './teacher/components/help/list-videos-help/list-videos-help.component';
 import { ViewVideosHelpComponent } from './teacher/components/help/view-videos-help/view-videos-help.component';
 import { UserProfileComponent } from './shared-components/user-profile/user-profile.component';
+import { PermissionsGuard } from './shared-components/guards/permissions.guard';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'auth', pathMatch: 'full' },
@@ -42,7 +43,7 @@ export const routes: Routes = [
     ]
   },
   {
-    path: 'student',
+    path: 'student', canActivate:[PermissionsGuard],
     children: [
       {
         path: 'home', component: DashboardComponent,
