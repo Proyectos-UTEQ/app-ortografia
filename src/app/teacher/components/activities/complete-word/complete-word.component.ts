@@ -4,11 +4,13 @@ import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { SpinnerComponent } from '../../../../shared-components/spinner/spinner.component';
 import { SweetAlertsConfirm } from '../../../../shared-components/alerts/confirm-alerts.component';
-import { ApiResponseRegisterQuestionIT, BodyRegisterQuestionIT, BodyUpdateQuestionIT } from '../../../interfaces/activities.interface';
+import { ApiResponseGenerateQuestionWithIAIT, ApiResponseRegisterQuestionIT, BodyRegisterQuestionIT, BodyUpdateQuestionIT } from '../../../interfaces/activities.interface';
 import { ToastAlertsService } from '../../../../shared-components/services/toast-alerts.service';
 import { ActivitiesService } from '../../../services/activities.service';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import * as iconos from '@fortawesome/free-solid-svg-icons';
+import { GenerateWithIAComponent } from '../modals/generate-with-ia/generate-with-ia.component';
+import { MatDialog } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-complete-word',
@@ -38,6 +40,8 @@ export class CompleteWordComponent {
   questionForm!: FormGroup;
   spinnerStatus: boolean = false;
   questionData: ApiResponseRegisterQuestionIT = {} as ApiResponseRegisterQuestionIT;
+  static questionWithIA: ApiResponseGenerateQuestionWithIAIT = {} as ApiResponseGenerateQuestionWithIAIT;
+  generatedWithIA: boolean = false;
 
   //constructor
   constructor(
@@ -46,6 +50,7 @@ export class CompleteWordComponent {
     private sweetAlerts: SweetAlertsConfirm,
     private toastr: ToastAlertsService,
     private router: Router,
+    public dialog: MatDialog
   ) { }
 
   //ngOnInit
@@ -72,6 +77,21 @@ export class CompleteWordComponent {
         this.router.navigateByUrl("/teacher/home/activities/list-activities");
         this.spinnerStatus = true;
       }
+    });
+  }
+
+  //Método que genera la pregunta con IA
+  generateWithIA() {
+    GenerateWithIAComponent.typeQuestion = "complete_word";
+    let dialogRef = this.dialog.open(GenerateWithIAComponent, {
+      width: '600px',
+    });
+    dialogRef.afterClosed().subscribe(result => {
+      this.generatedWithIA = true;
+      this.questionForm.get('textRoot')?.setValue(CompleteWordComponent.questionWithIA.result.text_root);
+      this.questionForm.get('hind')?.setValue(CompleteWordComponent.questionWithIA.result.options.hind);
+      this.questionForm.get('wordToComplete')?.setValue(CompleteWordComponent.questionWithIA.result.correct_answer.text_options[0]);
+      this.questionForm.get('difficulty')?.setValue(CompleteWordComponent.questionWithIA.result.difficulty);
     });
   }
 

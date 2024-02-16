@@ -85,3 +85,32 @@ export interface BodyUpdateQuestionIT {
         text_to_complete: string[];
     }
 }
+
+//Interfaz con el body requerido para generar una pregunta con IA
+export interface BodyGenerateQuestionWithIAIT {
+    type_question: string;
+    context: string;
+    model_version: number;
+}
+
+//Interfaz de respuesta de la API cuando se genera una pregunta con IA
+export interface ApiResponseGenerateQuestionWithIAIT {
+    result: {
+        id: number;
+        text_root: string;
+        difficulty: number;
+        type_question: string;
+        options: {
+            select_mode: string;
+            text_options: string[];
+            text_to_complete: string;
+            hind: string;
+        },
+        correct_answer: {
+            id: number;
+            true_or_false: boolean
+            text_options: string[],
+            text_to_complete: string;
+        }
+    }
+}

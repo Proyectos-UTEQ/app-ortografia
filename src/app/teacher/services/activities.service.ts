@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { environment } from '../../../environments/environment';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { ApiResponseListActivitiesIT, ApiResponseRegisterQuestionIT, BodyRegisterQuestionIT } from '../interfaces/activities.interface';
+import { ApiResponseGenerateQuestionWithIAIT, ApiResponseListActivitiesIT, ApiResponseRegisterQuestionIT, BodyGenerateQuestionWithIAIT, BodyRegisterQuestionIT } from '../interfaces/activities.interface';
 
 @Injectable({
   providedIn: 'root'
@@ -56,6 +56,12 @@ export class ActivitiesService {
   deleteQuestion(headers: Map<string, any>, moduleID: number, activityID: number): Observable<any> {
     this.options = this.getHeaders(headers);
     return this.http.delete<any>(this.urlApi + `/api/module/${moduleID}/question/${activityID}`, this.options);
+  }
+
+  //Método que consume el servicio para generar preguntas con IA
+  generateQuestionWithIA(headers: Map<string, any>, body: BodyGenerateQuestionWithIAIT): Observable<ApiResponseGenerateQuestionWithIAIT> {
+    this.options = this.getHeaders(headers);
+    return this.http.post<ApiResponseGenerateQuestionWithIAIT>(this.urlApi + `/api/gpt/generate-question`, body, this.options);
   }
 
   //Método que obtiene los headers

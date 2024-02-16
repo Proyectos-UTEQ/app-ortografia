@@ -4,12 +4,14 @@ import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { SpinnerComponent } from '../../../../shared-components/spinner/spinner.component';
 import { SweetAlertsConfirm } from '../../../../shared-components/alerts/confirm-alerts.component';
-import { ApiResponseRegisterQuestionIT, BodyUpdateQuestionIT } from './../../../interfaces/activities.interface';
+import { ApiResponseGenerateQuestionWithIAIT, ApiResponseRegisterQuestionIT, BodyUpdateQuestionIT } from './../../../interfaces/activities.interface';
 import { BodyRegisterQuestionIT } from '../../../interfaces/activities.interface';
 import { ActivitiesService } from '../../../services/activities.service';
 import { ToastAlertsService } from '../../../../shared-components/services/toast-alerts.service';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import * as iconos from '@fortawesome/free-solid-svg-icons';
+import { GenerateWithIAComponent } from '../modals/generate-with-ia/generate-with-ia.component';
+import { MatDialog } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-single-select',
@@ -19,11 +21,12 @@ import * as iconos from '@fortawesome/free-solid-svg-icons';
     FormsModule,
     ReactiveFormsModule,
     FontAwesomeModule,
-    SpinnerComponent
+    SpinnerComponent,
+    GenerateWithIAComponent,
   ],
   providers: [
     ActivitiesService,
-    SweetAlertsConfirm
+    SweetAlertsConfirm,
   ],
   templateUrl: './single-select.component.html',
   styleUrl: './single-select.component.css'
@@ -39,6 +42,8 @@ export class SingleSelectComponent {
   questionForm!: FormGroup;
   spinnerStatus: boolean = false;
   questionData: ApiResponseRegisterQuestionIT = {} as ApiResponseRegisterQuestionIT;
+  static questionWithIA: ApiResponseGenerateQuestionWithIAIT = {} as ApiResponseGenerateQuestionWithIAIT;
+  generatedWithIA: boolean = false;
 
   //constructor
   constructor(
@@ -46,7 +51,8 @@ export class SingleSelectComponent {
     private activitiesService: ActivitiesService,
     private sweetAlerts: SweetAlertsConfirm,
     private toastr: ToastAlertsService,
-    private router: Router
+    private router: Router,
+    public dialog: MatDialog
   ) { }
 
   //ngOnInit
@@ -76,13 +82,29 @@ export class SingleSelectComponent {
     });
   }
 
+  //Método que genera la pregunta con IA
+  generateWithIA() {
+    GenerateWithIAComponent.typeQuestion = "multi_choice_text";
+    let dialogRef = this.dialog.open(GenerateWithIAComponent, {
+      width: '600px',
+    });
+    dialogRef.afterClosed().subscribe(result => {
+      this.generatedWithIA = true;
+      this.questionForm.get('textRoot')?.setValue(SingleSelectComponent.questionWithIA.result.text_root);
+      this.questionForm.get('optionOne')?.setValue(SingleSelectComponent.questionWithIA.result.correct_answer.text_options[0]);
+      this.questionForm.get('optionTwo')?.setValue(SingleSelectComponent.questionWithIA.result.options.text_options[0]);
+      this.questionForm.get('optionThree')?.setValue(SingleSelectComponent.questionWithIA.result.options.text_options[1]);
+      this.questionForm.get('difficulty')?.setValue(SingleSelectComponent.questionWithIA.result.difficulty);
+    });
+  }
+
   //Método que crea el formulario para registrar una pregunta de tipo selección única
   createQuestionForm() {
     this.questionForm = this.formBuilder.group({
       textRoot: ['',
         [
           Validators.required,
-          Validators.pattern('^[a-zA-ZáéíóúÁÉÍÓÚñÑ\\s]*$')
+          Validators.pattern('^[a-zA-ZáéíóúÁÉÍÓÚñÑ¿?!¡.,;:()""#$%&\\s]*$')
         ]
       ],
       optionOne: ['',

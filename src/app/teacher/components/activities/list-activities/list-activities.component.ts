@@ -1,26 +1,26 @@
-import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { Component } from '@angular/core';
-import { SpinnerComponent } from '../../../../shared-components/spinner/spinner.component';
+import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { SearchRegistersPipe } from '../../../../shared-components/pipes/search-registers.pipe';
-import { environment } from '../../../../../environments/environment';
-import { MatInputModule } from '@angular/material/input';
-import { MatAutocompleteModule } from '@angular/material/autocomplete';
-import { ModulesService } from '../../../services/modules.service';
-import { ApiResponseAllModulesIT, DataAllModulesIT } from '../../../interfaces/modules.interface';
-import { Router } from '@angular/router';
-import { ToastAlertsService } from '../../../../shared-components/services/toast-alerts.service';
-import { ActivitiesService } from '../../../services/activities.service';
-import { ApiResponseListActivitiesIT, ApiResponseRegisterQuestionIT, DetailActivityByModuleIT } from '../../../interfaces/activities.interface';
-import * as XLSX from 'xlsx';
-import * as iconos from '@fortawesome/free-solid-svg-icons';
 import { SingleSelectComponent } from '../single-select/single-select.component';
 import { OrderWordsComponent } from '../order-words/order-words.component';
 import { TrueOrFalseComponent } from '../true-or-false/true-or-false.component';
 import { CompleteWordComponent } from '../complete-word/complete-word.component';
 import { MultipleSelectComponent } from '../multiple-select/multiple-select.component';
 import { SweetAlertsConfirm } from '../../../../shared-components/alerts/confirm-alerts.component';
+import { SpinnerComponent } from '../../../../shared-components/spinner/spinner.component';
+import { ApiResponseListActivitiesIT, ApiResponseRegisterQuestionIT, DetailActivityByModuleIT } from '../../../interfaces/activities.interface';
+import { ApiResponseAllModulesIT, DataAllModulesIT } from '../../../interfaces/modules.interface';
+import { ModulesService } from '../../../services/modules.service';
+import { ToastAlertsService } from '../../../../shared-components/services/toast-alerts.service';
+import { ActivitiesService } from '../../../services/activities.service';
+import { SearchRegistersPipe } from '../../../../shared-components/pipes/search-registers.pipe';
+import { environment } from '../../../../../environments/environment';
+import { MatInputModule } from '@angular/material/input';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import * as XLSX from 'xlsx';
+import * as iconos from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-list-activities',
@@ -144,11 +144,8 @@ export class ListActivitiesComponent {
 
   //Método para manejar el cambio de página
   pageChanged(page: number) {
-    console.log("cambiar la pagina")
     this.arrayActivities = [];
-    console.log(this.arrayActivities)
     this.currentPage = page;
-    console.log(this.moduleID, this.currentPage, this.itemsForPage)
     this.getActivitiesByModule(this.moduleID, this.currentPage);
   }
 
@@ -174,11 +171,7 @@ export class ListActivitiesComponent {
     this.activitiesService.getActivitiesByModule(this.getHeaders(), this.currentPage, 10, "id", "asc", moduleID)
       .subscribe({
         next: (data: ApiResponseListActivitiesIT) => {
-          console.log("Antes de llenar")
-          console.log(this.arrayActivities)
           this.arrayActivities = data.data;
-          console.log("Después de llenar")
-          console.log(this.arrayActivities)
           this.totalPage = data.details.total_page;
           this.setPaginator();
           this.spinnerStatus = true;

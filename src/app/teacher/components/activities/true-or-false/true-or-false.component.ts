@@ -4,11 +4,13 @@ import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { SpinnerComponent } from '../../../../shared-components/spinner/spinner.component';
 import { SweetAlertsConfirm } from '../../../../shared-components/alerts/confirm-alerts.component';
-import { ApiResponseRegisterQuestionIT, BodyRegisterQuestionIT, BodyUpdateQuestionIT } from '../../../interfaces/activities.interface';
+import { ApiResponseGenerateQuestionWithIAIT, ApiResponseRegisterQuestionIT, BodyRegisterQuestionIT, BodyUpdateQuestionIT } from '../../../interfaces/activities.interface';
 import { ActivitiesService } from '../../../services/activities.service';
 import { ToastAlertsService } from '../../../../shared-components/services/toast-alerts.service';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import * as iconos from '@fortawesome/free-solid-svg-icons';
+import { GenerateWithIAComponent } from '../modals/generate-with-ia/generate-with-ia.component';
+import { MatDialog } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-true-or-false',
@@ -40,6 +42,8 @@ export class TrueOrFalseComponent {
   selectedOption: string | null = null;
   answer: boolean = false;
   questionData: ApiResponseRegisterQuestionIT = {} as ApiResponseRegisterQuestionIT;
+  static questionWithIA: ApiResponseGenerateQuestionWithIAIT = {} as ApiResponseGenerateQuestionWithIAIT;
+  generatedWithIA: boolean = false;
 
   //constructor
   constructor(
@@ -47,7 +51,8 @@ export class TrueOrFalseComponent {
     private activitiesService: ActivitiesService,
     private sweetAlerts: SweetAlertsConfirm,
     private toastr: ToastAlertsService,
-    private router: Router
+    private router: Router,
+    public dialog: MatDialog
   ) { }
 
   //ngOnInit
@@ -75,6 +80,21 @@ export class TrueOrFalseComponent {
         this.router.navigateByUrl("/teacher/home/activities/list-activities");
         this.spinnerStatus = true;
       }
+    });
+  }
+
+  //Método que genera la pregunta con IA
+  generateWithIA() {
+    GenerateWithIAComponent.typeQuestion = "true_or_false";
+    let dialogRef = this.dialog.open(GenerateWithIAComponent, {
+      width: '600px',
+    });
+    dialogRef.afterClosed().subscribe(result => {
+      this.generatedWithIA = true;
+      this.questionForm.get('textRoot')?.setValue(TrueOrFalseComponent.questionWithIA.result.text_root);
+      this.questionForm.get('difficulty')?.setValue(TrueOrFalseComponent.questionWithIA.result.difficulty);
+      this.answer = TrueOrFalseComponent.questionWithIA.result.correct_answer.true_or_false;
+      this.selectedOption = TrueOrFalseComponent.questionWithIA.result.correct_answer.true_or_false ? "option1" : "option2";
     });
   }
 
