@@ -40,6 +40,15 @@ body {
     color: #bebebe;
 }
 
+#htmlExcelTable td:nth-child(2),
+#htmlExcelTable th:nth-child(2) {
+  max-width: 200px !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  position: relative !important;
+}
+
 /*For small screens*/
 @media screen and (max-width: 760px) {
     #title {

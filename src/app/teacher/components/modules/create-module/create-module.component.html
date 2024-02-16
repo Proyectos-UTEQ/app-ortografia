@@ -21,7 +21,7 @@
                             placeholder="Título*" [ngClass]="{
                                 'is-invalid': createNewModule.get('title')?.hasError('required') && createNewModule.get('title')?.touched || createNewModule.get('title')?.hasError('pattern'),
                                 'is-valid': createNewModule.get('title')?.value?.length >= 4 && createNewModule.get('title')?.hasError('pattern') == false
-                              }" [maxlength]="22">
+                              }" [maxlength]="50">
                         @if(createNewModule.get('title')?.hasError('required') && createNewModule.get('title')?.touched){
                             <div class="validators">
                                 <small>¡Este campo es requerido!</small>
@@ -43,7 +43,7 @@
                             formControlName="shortDescription" placeholder="Descripción corta*" [ngClass]="{
                                 'is-invalid': createNewModule.get('shortDescription')?.hasError('required') && createNewModule.get('shortDescription')?.touched || createNewModule.get('shortDescription')?.hasError('pattern'),
                                 'is-valid': createNewModule.get('shortDescription')?.value?.length >= 4 && createNewModule.get('shortDescription')?.hasError('pattern') == false
-                              }" [maxlength]="125">
+                              }" [maxlength]="80">
                         @if(createNewModule.get('shortDescription')?.hasError('required') && createNewModule.get('shortDescription')?.touched){
                             <div class="validators">
                                 <small>¡Este campo es requerido!</small>
