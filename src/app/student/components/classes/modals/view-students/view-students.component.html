@@ -15,7 +15,6 @@
                         <tr>
                             <th scope="col">N°</th>
                             <th scope="col">Nombres</th>
-                            <th scope="col">Apellidos</th>
                             <th scope="col">correo</th>
                             <th scope="col">Fecha de nacimiento</th>
                             <th scope="col">Estado</th>
@@ -23,11 +22,10 @@
                     </thead>
                     <tbody>
                         @if(arrayStudents.length > 0) {
+                            @for(class of arrayStudents; track $index){
                             <tr>
-                                @for(class of arrayStudents; track $index){
                                     <th scope="row">{{$index+1}}</th>
                                     <td>{{class.first_name}}</td>
-                                    <td>{{class.last_name}}</td>
                                     <td>{{class.email}}</td>
                                     <td>{{class.birth_date}}</td>
                                     <td>
@@ -39,8 +37,8 @@
                                             {{class.status? "Activo" : "Inactivo"}}
                                         </div>
                                     </td>
-                                }
-                            </tr>
+                                </tr>
+                            }
                         }
                         @else{
                             @if(!spinnerStatus){
@@ -52,7 +50,7 @@
                             }
                             @else {
                                 <tr>
-                                    <td colspan="7" class="no-results">Sin resultados...</td>
+                                    <td colspan="5" class="no-results">Sin resultados...</td>
                                 </tr>
                             }
                         }
