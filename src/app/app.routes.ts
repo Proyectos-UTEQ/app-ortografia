@@ -25,6 +25,8 @@ import { MultipleSelectComponent } from './teacher/components/activities/multipl
 import { OrderWordsComponent } from './teacher/components/activities/order-words/order-words.component';
 import { CompleteWordComponent } from './teacher/components/activities/complete-word/complete-word.component';
 import { TrueOrFalseComponent } from './teacher/components/activities/true-or-false/true-or-false.component';
+import { ListVideosHelpComponent } from './teacher/components/help/list-videos-help/list-videos-help.component';
+import { ViewVideosHelpComponent } from './teacher/components/help/view-videos-help/view-videos-help.component';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'auth', pathMatch: 'full' },
@@ -55,6 +57,12 @@ export const routes: Routes = [
             ]
           },
           { path: 'chat-ia', component: ChatIaComponent },
+          { path: 'help',
+            children: [
+              { path: 'list-videos-help', component: ListVideosHelpComponent }, //Arreglar esto
+              { path: 'view-video', component: ViewVideosHelpComponent }, //Arreglar esto
+            ]
+          },
           { path: '', redirectTo: 'learn/modules', pathMatch: 'full' },
         ],
       },
@@ -87,6 +95,12 @@ export const routes: Routes = [
               { path: 'edit-activity-order-word', component: OrderWordsComponent },
               { path: 'edit-activity-true-or-false', component: TrueOrFalseComponent },
               { path: 'edit-activity-complete-word', component: CompleteWordComponent },
+            ]
+          },
+          { path: 'help',
+            children: [
+              { path: 'list-videos-help', component: ListVideosHelpComponent },
+              { path: 'view-video', component: ViewVideosHelpComponent },
             ]
           },
           { path: 'classes/list-classes', component: ListClassComponent },
