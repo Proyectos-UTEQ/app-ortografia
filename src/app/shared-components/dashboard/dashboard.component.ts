@@ -49,7 +49,7 @@ export class DashboardComponent {
       // this.optionsMenu.push({icon: this.iconInformation, optionName: 'Acerca de', link: 'information', status: true});
     }
     else if(this.typeUser==environment.TEACHER){
-      this.router.navigate(['dashboard/options'], { relativeTo: this.routerActivated })
+      this.router.navigate(['modules/list-modules'], { relativeTo: this.routerActivated })
       this.optionsMenu.push({icon: this.iconModules, optionName: 'Módulos', link: 'modules/list-modules', status: true});
       this.optionsMenu.push({icon: this.iconActivities, optionName: 'Actividades', link: 'activities/list-activities', status: true});
       this.optionsMenu.push({icon: this.iconMyClass, optionName: 'Mis clases', link: 'classes/list-classes', status: true});
