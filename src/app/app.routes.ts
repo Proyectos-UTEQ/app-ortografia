@@ -29,6 +29,7 @@ import { ListVideosHelpComponent } from './teacher/components/help/list-videos-h
 import { ViewVideosHelpComponent } from './teacher/components/help/view-videos-help/view-videos-help.component';
 import { UserProfileComponent } from './shared-components/user-profile/user-profile.component';
 import { PermissionsGuard } from './shared-components/guards/permissions.guard';
+import { PasswordComponent } from './shared-components/password/password.component';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'auth', pathMatch: 'full' },
@@ -67,6 +68,7 @@ export const routes: Routes = [
           },
           { path: '', redirectTo: 'learn/modules', pathMatch: 'full' },
           { path: 'user/user-profile', component: UserProfileComponent },
+          { path: 'user/change-passwrod', component: PasswordComponent },
         ],
       },
       { path: '', redirectTo: '/student/home/learn/modules', pathMatch: 'full' },
@@ -108,6 +110,7 @@ export const routes: Routes = [
           },
           { path: 'classes/list-classes', component: ListClassComponent },
           { path: 'user/user-profile', component: UserProfileComponent },
+          { path: 'user/change-passwrod', component: PasswordComponent },
         ]
       }
     ]
