@@ -145,6 +145,16 @@ export class DashboardComponent {
     }, 2000);
   }
 
+  //Método que redirige al usuario al inicio según el perfil
+  goToHome(){
+    if(this.typeUser==environment.STUDENT)
+      this.router.navigateByUrl('student/home/learn/modules');
+    else if(this.typeUser==environment.TEACHER)
+      this.router.navigateByUrl('teacher/home/dashboard/options');
+    else
+      this.router.navigateByUrl('admin/home/dashboard/options');
+  }
+
   //Icons to use
   iconBars = iconos.faBars;
 
