@@ -30,6 +30,7 @@ import { ViewVideosHelpComponent } from './teacher/components/help/view-videos-h
 import { UserProfileComponent } from './shared-components/user-profile/user-profile.component';
 import { PermissionsGuard } from './shared-components/guards/permissions.guard';
 import { PasswordComponent } from './shared-components/password/password.component';
+import { ListUsersComponent } from './admin/components/users/list-users/list-users.component';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'auth', pathMatch: 'full' },
@@ -109,6 +110,31 @@ export const routes: Routes = [
             ]
           },
           { path: 'classes/list-classes', component: ListClassComponent },
+          { path: 'user/user-profile', component: UserProfileComponent },
+          { path: 'user/change-passwrod', component: PasswordComponent },
+        ]
+      }
+    ]
+  },
+  {
+    path: 'admin', canActivate:[PermissionsGuard],
+    children: [
+      {
+        path: 'home', component: DashboardComponent,
+        children: [
+          { path: 'dashboard/options', component: OptionsHomeComponent },
+          {
+            path: 'users',
+            children: [
+              { path: 'list-users', component: ListUsersComponent },
+            ]
+          },
+          { path: 'help',
+            children: [
+              { path: 'list-videos-help', component: ListVideosHelpComponent },
+              { path: 'view-video', component: ViewVideosHelpComponent },
+            ]
+          },
           { path: 'user/user-profile', component: UserProfileComponent },
           { path: 'user/change-passwrod', component: PasswordComponent },
         ]

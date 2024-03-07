@@ -99,7 +99,7 @@ export class LoginComponent {
               this.toastr.showToastSuccess("Bienvenido de nuevo!", "Profesor")
             } else if (res.user.type_user === environment.ADMIN) {
               this.spinnerStatus = true;
-             /*  this.router.navigateByUrl('/student/home/dashboard'); */
+              this.router.navigateByUrl('/admin/home/dashboard/options');
               this.toastr.showToastSuccess("Bienvenido de nuevo!", "Administrador")
             }
           },
