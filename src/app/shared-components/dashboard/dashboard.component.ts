@@ -57,7 +57,9 @@ export class DashboardComponent {
       // this.optionsMenu.push({icon: this.iconInformation, optionName: 'Acerca de', link: 'information', status: true});
     }
     else {
-      //Opciones de administrador
+      this.router.navigate(['dashboard/options'], { relativeTo: this.routerActivated })
+      this.optionsMenu.push({icon: this.iconUsers, optionName: 'Usuarios', link: 'users/list-users', status: true});
+      this.optionsMenu.push({icon: this.iconHelp, optionName: 'Ayuda', link: 'help/list-videos-help', status: true});
     }
     this.showHideMenuProfile();
     this.showHideSidebar();
@@ -174,6 +176,7 @@ export class DashboardComponent {
   iconActivities = iconos.faIcons;
 
   //ADMINISTRADOR: iconos de las opciones del menú
+  iconUsers = iconos.faUsers;
 
   //OPCIONES PERFIL: iconos de las opciones del menú en la foto de perfil
   iconProfile = iconos.faUserCircle;
