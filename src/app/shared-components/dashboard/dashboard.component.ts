@@ -41,7 +41,7 @@ export class DashboardComponent {
     this.userInformation = JSON.parse(sessionStorage.getItem("infoUser") || '{}');
 
     if(this.typeUser==environment.STUDENT){
-      this.router.navigate(['learn/modules'], { relativeTo: this.routerActivated })
+      this.router.navigate(['user/user-profile'], { relativeTo: this.routerActivated })
       this.optionsMenu.push({icon: this.iconPositions, optionName: 'Posiciones', link: 'positions/positions-table', status: true});
       this.optionsMenu.push({icon: this.iconMyClass, optionName: 'Mis clases', link: 'classes/my-class', status: true});
       this.optionsMenu.push({icon: this.iconChatIA, optionName: 'Chat IA', link: 'chat-ia', status: true});
