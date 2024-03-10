@@ -7,6 +7,9 @@ import { environment } from '../../../environments/environment';
 import { UserLoginI } from '../../auth/interfaces/login';
 import { SpinnerComponent } from '../spinner/spinner.component';
 import * as iconos from '@fortawesome/free-solid-svg-icons';
+import { ApiResponseGetInfoUserI } from '../interfaces/user-profile';
+import { UserProfileService } from '../services/user-profile.service';
+import { ToastAlertsService } from '../services/toast-alerts.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -15,7 +18,10 @@ import * as iconos from '@fortawesome/free-solid-svg-icons';
     CommonModule,
     FontAwesomeModule,
     RouterModule,
-    SpinnerComponent    
+    SpinnerComponent
+  ],
+  providers: [
+    UserProfileService
   ],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.css'
@@ -23,48 +29,73 @@ import * as iconos from '@fortawesome/free-solid-svg-icons';
 export class DashboardComponent {
 
   //Variables
-  optionsMenu: DashboardI [] = [];
-  userInformation: UserLoginI = {} as UserLoginI;
+  optionsMenu: DashboardI[] = [];
+  userInformation: ApiResponseGetInfoUserI = {} as ApiResponseGetInfoUserI;
   spinnerStatus: boolean = false;
   typeUser: string = '';
 
   //constructor
   constructor(
     private router: Router,
-    private routerActivated: ActivatedRoute
-  ){}
+    private routerActivated: ActivatedRoute,
+    private toastr: ToastAlertsService,
+    private userProfileService: UserProfileService
+  ) { }
 
   //ngOnInit()
-  ngOnInit(){
+  ngOnInit() {
     this.spinnerStatus = true;
     this.typeUser = sessionStorage.getItem("typeUser") || "student";
-    this.userInformation = JSON.parse(sessionStorage.getItem("infoUser") || '{}');
+    this.getInfoUser();
 
-    if(this.typeUser==environment.STUDENT){
-      this.router.navigate(['user/user-profile'], { relativeTo: this.routerActivated })
-      this.optionsMenu.push({icon: this.iconPositions, optionName: 'Posiciones', link: 'positions/positions-table', status: true});
-      this.optionsMenu.push({icon: this.iconMyClass, optionName: 'Mis clases', link: 'classes/my-class', status: true});
-      this.optionsMenu.push({icon: this.iconChatIA, optionName: 'Chat IA', link: 'chat-ia', status: true});
-      this.optionsMenu.push({icon: this.iconHelp, optionName: 'Ayuda', link: 'help/list-videos-help', status: true});
+    if (this.typeUser == environment.STUDENT) {
+      this.router.navigate(['learn/modules'], { relativeTo: this.routerActivated })
+      this.optionsMenu.push({ icon: this.iconPositions, optionName: 'Posiciones', link: 'positions/positions-table', status: true });
+      this.optionsMenu.push({ icon: this.iconMyClass, optionName: 'Mis clases', link: 'classes/my-class', status: true });
+      this.optionsMenu.push({ icon: this.iconChatIA, optionName: 'Chat IA', link: 'chat-ia', status: true });
+      this.optionsMenu.push({ icon: this.iconHelp, optionName: 'Ayuda', link: 'help/list-videos-help', status: true });
       // this.optionsMenu.push({icon: this.iconInformation, optionName: 'Acerca de', link: 'information', status: true});
     }
-    else if(this.typeUser==environment.TEACHER){
+    else if (this.typeUser == environment.TEACHER) {
       this.router.navigate(['dashboard/options'], { relativeTo: this.routerActivated })
-      this.optionsMenu.push({icon: this.iconModules, optionName: 'Módulos', link: 'modules/list-modules', status: true});
-      this.optionsMenu.push({icon: this.iconActivities, optionName: 'Actividades', link: 'activities/list-activities', status: true});
-      this.optionsMenu.push({icon: this.iconMyClass, optionName: 'Mis clases', link: 'classes/list-classes', status: true});
-      this.optionsMenu.push({icon: this.iconHelp, optionName: 'Ayuda', link: 'help/list-videos-help', status: true});
+      this.optionsMenu.push({ icon: this.iconModules, optionName: 'Módulos', link: 'modules/list-modules', status: true });
+      this.optionsMenu.push({ icon: this.iconActivities, optionName: 'Actividades', link: 'activities/list-activities', status: true });
+      this.optionsMenu.push({ icon: this.iconMyClass, optionName: 'Mis clases', link: 'classes/list-classes', status: true });
+      this.optionsMenu.push({ icon: this.iconHelp, optionName: 'Ayuda', link: 'help/list-videos-help', status: true });
       // this.optionsMenu.push({icon: this.iconInformation, optionName: 'Acerca de', link: 'information', status: true});
     }
     else {
       this.router.navigate(['dashboard/options'], { relativeTo: this.routerActivated })
-      this.optionsMenu.push({icon: this.iconUsers, optionName: 'Usuarios', link: 'users/list-users', status: true});
-      this.optionsMenu.push({icon: this.iconHelp, optionName: 'Ayuda', link: 'help/list-videos-help', status: true});
+      this.optionsMenu.push({ icon: this.iconUsers, optionName: 'Usuarios', link: 'users/list-users', status: true });
+      this.optionsMenu.push({ icon: this.iconHelp, optionName: 'Ayuda', link: 'help/list-videos-help', status: true });
     }
     this.showHideMenuProfile();
     this.showHideSidebar();
     this.detectedScreen();
     this.optionSelectedOnMenu();
+  }
+
+  //Método que obtiene los headers
+  getHeaders() {
+    let headers = new Map();
+    headers.set("token", sessionStorage.getItem("token"));
+    headers.set("typeUser", sessionStorage.getItem("typeUser"));
+    return headers;
+  }
+
+  //Método que consume el servicio para obtener la información del usuario
+  getInfoUser() {
+    this.spinnerStatus = false;
+    this.userProfileService.getInfoUser(this.getHeaders()).subscribe({
+      next: (data: ApiResponseGetInfoUserI) => {
+        this.spinnerStatus = true;
+        this.userInformation = data;
+      },
+      error: (error) => {
+        this.spinnerStatus = true;
+        this.toastr.showToastError("Error", "Ocurrió un error al obtener la información del usuario");
+      }
+    })
   }
 
   // Método que muestra y oculta el menú de la foto de perfil
@@ -148,10 +179,10 @@ export class DashboardComponent {
   }
 
   //Método que redirige al usuario al inicio según el perfil
-  goToHome(){
-    if(this.typeUser==environment.STUDENT)
+  goToHome() {
+    if (this.typeUser == environment.STUDENT)
       this.router.navigateByUrl('student/home/learn/modules');
-    else if(this.typeUser==environment.TEACHER)
+    else if (this.typeUser == environment.TEACHER)
       this.router.navigateByUrl('teacher/home/dashboard/options');
     else
       this.router.navigateByUrl('admin/home/dashboard/options');
