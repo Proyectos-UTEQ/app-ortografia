@@ -33,8 +33,8 @@
             </form>
 
             <div class="profile d-flex">
-                <img [src]="userInformation.url_avatar" alt="img-profile">
-                <p class="mt-2">&nbsp;&nbsp;{{userInformation.first_name + userInformation.last_name}} <fa-icon [icon]="iconArrowDown"></fa-icon></p>
+                <img [src]="userInformation.url_avatar?userInformation.url_avatar:'../../../assets/user-profile.png'" alt="img-profile">
+                <p class="mt-2">&nbsp;&nbsp;{{userInformation.first_name + " " + userInformation.last_name}} <fa-icon [icon]="iconArrowDown"></fa-icon></p>
                 <ul class="profile-link">
                     <div class="info">
                         <p><small><i class="text-capitalize">{{userInformation.type_user}}</i></small> <br />{{userInformation.first_name + userInformation.last_name}}</p>
