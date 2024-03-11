@@ -113,7 +113,7 @@
                                             placeholder="Apellidos" [ngClass]="{
                                                 'is-invalid': userProfileForm.get('birth_date')?.hasError('required') && userProfileForm.get('birth_date')?.touched || userProfileForm.get('birth_date')?.hasError('pattern'),
                                                 'is-valid': userProfileForm.get('birth_date')?.value?.length >= 4 && userProfileForm.get('birth_date')?.hasError('pattern') == false
-                                              }" [readOnly]="!isEdit">
+                                              }" readOnly>
                                         @if(userProfileForm.get('birth_date')?.hasError('required') && userProfileForm.get('birth_date')?.touched){
                                             <div class="validators">
                                                 <small>¡Este campo es requerido!</small>
