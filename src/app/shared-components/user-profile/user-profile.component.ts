@@ -7,6 +7,8 @@ import { UserProfileService } from '../services/user-profile.service';
 import { ApiResponseGetInfoUserI, UpdateUserProfileI } from '../interfaces/user-profile';
 import { ToastAlertsService } from '../services/toast-alerts.service';
 import * as iconos from '@fortawesome/free-solid-svg-icons';
+import { UploadPhotoProfileComponent } from '../upload-photo-profile/upload-photo-profile.component';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
   selector: 'app-user-profile',
@@ -16,7 +18,8 @@ import * as iconos from '@fortawesome/free-solid-svg-icons';
     FontAwesomeModule,
     FormsModule,
     ReactiveFormsModule,
-    CommonModule
+    CommonModule,
+    UploadPhotoProfileComponent
   ],
   providers: [
     UserProfileService
@@ -36,6 +39,7 @@ export class UserProfileComponent {
   //constructor
   constructor(
     private formBuilder: FormBuilder,
+    public modal: NgbModal,
     private userProfileService: UserProfileService,
     private toastr: ToastAlertsService,
   ) { }
@@ -62,6 +66,7 @@ export class UserProfileComponent {
       next: (data: ApiResponseGetInfoUserI) => {
         this.spinnerStatus = true;
         this.infoUser = data;
+        console.log(this.infoUser)
         this.fillInputFields();
       },
       error: (error) => {
@@ -125,7 +130,6 @@ export class UserProfileComponent {
         this.spinnerStatus = true;
         this.toastr.showToastSuccess("Información actualizada con éxito", "Éxito");
         this.isEdit = false;
-        window.location.reload();
       },
       error: (error) => {
         if (error.status == 200) {
@@ -139,6 +143,17 @@ export class UserProfileComponent {
         }
       }
     })
+  }
+
+  //Método que abre el modal para subir una foto
+  openModalUploadPhoto(viewUserDetail: any) {
+    this.modal.open(viewUserDetail, { size: 'md', centered: true });
+  }
+
+  //Método que cancela el modo de edición
+  cancelEdit(){
+    this.isEdit = false;
+    this.getInfoUser();
   }
 
   //Icons to use

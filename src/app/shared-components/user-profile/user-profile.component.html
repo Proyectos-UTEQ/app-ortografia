@@ -14,18 +14,18 @@
                 <div class="col-lg-4">
                     <div class="card mb-4">
                         <div class="card-body text-center">
-                            <img [src]="infoUser.url_avatar" alt="avatar"
+                            <img [src]="infoUser.url_avatar?infoUser.url_avatar:'../../../assets/user-profile.png'" alt="avatar"
                                 class="rounded-circle img-fluid" style="width: 125px;" id="img-profile">
                             <h4 class="my-3">{{infoUser.first_name + " " + infoUser.last_name}}</h4>
                             <p class="text-muted mb-4"><i>{{infoUser.type_user=="teacher"?"Profesor":infoUser.type_user=="student"?"Estudiante":"Adminisytrador"}}</i></p>
                             <div class="d-flex justify-content-center mb-2">
                                  @if(!isEdit){
                                     <button type="button" class="btn btn-primary" (click)="changeEdit()">Editar perfil</button>
-                                    <button type="button" class="btn btn-secondary">Nueva foto</button>
+                                    <button type="button" class="btn btn-secondary" (click)="openModalUploadPhoto(uploadPhoto)">Nueva foto</button>
                                  }
                                  @else {
                                     <button type="button" class="btn btn-primary" (click)="editUserInformation()">Guardar</button>
-                                    <button type="button" class="btn btn-danger" (click)="changeEdit()">Cancelar</button>
+                                    <button type="button" class="btn btn-danger" (click)="cancelEdit()">Cancelar</button>
                                  }
                             </div>
                             <div class="local text-center">
@@ -157,3 +157,9 @@
         </div>
     </div>
 </body>
+
+
+<!--Modal para poder subir una foto a Google-->
+<ng-template #uploadPhoto>
+    <app-upload-photo-profile></app-upload-photo-profile>
+ </ng-template>
