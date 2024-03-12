@@ -20,7 +20,6 @@ export class RegisterUserService {
   
     //Método que consume el servicio para registrar un nuevo usuario
     registerNewUser(body: RegisterUserI): Observable<ApiResponseRegisterUserI> {
-      // this.options = this.authService.getHeaders(headers);
-      return this.http.post<ApiResponseRegisterUserI>(this.urlApi + "/api/auth/sign-up", body);
+      return this.http.post<ApiResponseRegisterUserI>(this.urlApi + "/api/auth/sign-up", body, {});
     }
 }

@@ -6,7 +6,7 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import * as iconos from '@fortawesome/free-solid-svg-icons';
 import * as AOS from 'aos';
 import { RegisterUserService } from '../../services/register-user.service';
-import { ApiResponseRegisterUserI } from '../../interfaces/register-user';
+import { ApiResponseRegisterUserI, RegisterUserI } from '../../interfaces/register-user';
 import { ToastAlertsService } from '../../../shared-components/services/toast-alerts.service';
 import { HttpClientModule } from '@angular/common/http';
 import { ToastrModule } from 'ngx-toastr';
@@ -144,7 +144,15 @@ export class RegisterComponent {
   // Método que registra un nuevo usuario
   registerNewUser() {
     this.spinnerStatus = false;
-    this.registerUserService.registerNewUser(this.registerForm.value)
+    let body: RegisterUserI = {
+      first_name: this.registerForm.get('first_name')?.value,
+      email: this.registerForm.get('email')?.value,
+      password: this.registerForm.get('password')?.value,
+      type_user: this.registerForm.get('type_user')?.value
+    }
+    console.log("Formulario de registro")
+    console.log(this.registerForm.value);
+    this.registerUserService.registerNewUser(body)
       .subscribe({
         next: (res: ApiResponseRegisterUserI) => {
           if (res.status == "success") {
