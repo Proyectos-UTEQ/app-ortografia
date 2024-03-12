@@ -11,18 +11,23 @@
                     <input type="text" class="form-control form-control-lg bg-light fs-6" formControlName="first_name"
                         placeholder="Nombre*" [ngClass]="{
                             'is-invalid': registerForm.get('first_name')?.hasError('required') && registerForm.get('first_name')?.touched || registerForm.get('first_name')?.hasError('pattern')==true,
-                            'is-valid': registerForm.get('first_name')?.hasError('required')==false && registerForm.get('first_name')?.hasError('pattern') == false && registerForm.get('first_name')?.value?.length >= 4
+                            'is-valid': registerForm.get('first_name')?.hasError('required')==false && registerForm.get('first_name')?.hasError('pattern') == false && registerForm.get('first_name')?.value?.length >= 7
                             }">
                     @if (registerForm.get('first_name')?.hasError('required') && registerForm.get('first_name')?.touched) {
-                    <div class="validators">
-                        <small>¡Este campo es requerido!</small>
-                    </div>
+                        <div class="validators">
+                            <small>¡Este campo es requerido!</small>
+                        </div>
                     }
                     @if (registerForm.get('first_name')?.hasError('pattern')) {
-                    <div class="validators">
-                        <small>¡Solo se permiten letras!</small>
-                    </div>
+                        <div class="validators">
+                            <small>¡Solo se permiten letras!</small>
+                        </div>
                     }
+                    @if (registerForm.get('first_name')?.touched && registerForm.get('first_name')?.value?.length <= 7) {
+                        <div class="validators">
+                            <small>¡El nombre es muy corto, continúa escribiendo!</small>
+                        </div>
+                        }
                 </div>
                 <!--Email-->
                 <div class="mb-3">
